@@ -6,13 +6,13 @@
     <title>Лагерь Времени</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-        
+
         /* --- ЧЕРНЫЙ ФОН БРАУЗЕРА (ДЛЯ ПК) --- */
-        body { 
-            background-color: #050505; 
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; width: 100vw; margin: 0; overflow: hidden; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; color: #fff; 
+        body {
+            background-color: #050505;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw; margin: 0; overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;
         }
 
         /* --- ИГРОВОЙ КАДР (ПРИВЯЗКА МАКСИМУМ 540x960) --- */
@@ -20,7 +20,8 @@
             position: relative;
             width: 100%; height: 100%;
             max-width: 540px; max-height: 960px;
-            background-color: #0a0c0f; overflow: hidden;
+            background-color: #3b5a59; /* Цвет воды с картинки */
+            overflow: hidden;
             box-shadow: 0 0 30px rgba(0,0,0,0.9);
         }
         @media (min-width: 540px) and (min-height: 960px) {
@@ -34,8 +35,6 @@
         .cloud-left, .cloud-right { position: relative; width: 60%; height: 100%; transition: transform 1.0s cubic-bezier(0.65, 0, 0.35, 1); }
         .cloud-left { left: 0; } .cloud-right { right: 0; }
         .cloud-left::before, .cloud-left::after, .cloud-right::before, .cloud-right::after, .cloud-right .fluff { content: ''; position: absolute; border-radius: 50%; background: inherit; }
-        
-        /* Заменены vh на проценты для адаптации внутри кадра */
         .cloud-left::before { width: 90%; aspect-ratio: 1; right: -25%; top: 15%; }
         .cloud-left::after { width: 110%; aspect-ratio: 1; right: -35%; top: 50%; }
         .cloud-right::before { width: 80%; aspect-ratio: 1; left: -25%; top: 5%; }
@@ -48,78 +47,112 @@
         .clouds-transition.open .cloud-left { transform: translateX(-150%); }
         .clouds-transition.open .cloud-right { transform: translateX(150%); }
 
-        /* --- ЗАДНИЙ ФОН И ЗВЕЗДЫ --- */
-        .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background-image: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 85% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 50% 80%, rgba(255,255,255,0.05) 2px, transparent 2px); background-size: 100px 100px; animation: starDrift 60s linear infinite; }
-        @keyframes starDrift { from { transform: translateY(0); } to { transform: translateY(-100px); } }
-        .glow-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; max-width: 800px; max-height: 800px; background: radial-gradient(circle, rgba(32, 178, 170, 0.1) 0%, transparent 60%); z-index: 1; pointer-events: none; }
+        /* --- ВЕРХНИЙ БЛОК (КАК В РУЛЕТКЕ) --- */
+        .top-status-container { 
+            position: absolute; top: 20px; 
+            left: 50%; transform: translateX(-50%); 
+            width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; 
+        }
+        .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; transition: transform 0.3s; }
+        .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #ffd700; z-index: 1;}
+        .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); transform: translateY(-2px); line-height: 1; }
 
-        /* --- ВЕРХНИЙ ИНТЕРФЕЙС --- */
-        .top-ui { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 100; pointer-events: none; }
+        .top-progress-bar {
+            flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px);
+            border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center;
+        }
+        .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
+        .progress-fill {
+            position: absolute; left: 0; top: 0; height: 100%; width: 0%; 
+            background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px);
+            background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); 
+        }
+
+        .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+        .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #a68b5b; z-index: 1; }
+        .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
+
+        /* --- НИЖНЕЕ МЕНЮ (КАК В РУЛЕТКЕ) --- */
+        .bottom-menu {
+            position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #0a0d10 0%, rgba(24, 28, 29, 0.95) 100%);
+            border-top: 2px solid #3a3f42; padding: 10px 10px 20px 10px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; box-shadow: 0 -15px 30px rgba(0,0,0,0.8);
+        }
+        .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; }
         
-        .left-stats { display: flex; flex-direction: column; gap: 10px; pointer-events: auto; }
-        
-        .level-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid #4a433a; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.2s; }
-        .level-badge:active { transform: scale(0.95); }
-        .level-icon { width: 40px; height: 40px; background: radial-gradient(circle, #dcb254, #8c6a23); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 20px; color: #121517; box-shadow: inset 0 0 5px #ffdf00, 0 0 10px #dcb254; }
-        .level-text { font-size: 14px; color: #fcebbb; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-icon { font-size: 26px; cursor: pointer; color: #8b7968; transition: color 0.3s, transform 0.3s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
+        .menu-icon:hover { color: #dcb254; transform: translateY(-3px); }
 
-        .sand-counter { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); padding: 8px 20px; border-radius: 20px; border: 1px solid #dcb254; box-shadow: 0 4px 10px rgba(0,0,0,0.5); width: max-content; }
-        .sand-counter svg { width: 18px; height: 18px; fill: #ffdf00; filter: drop-shadow(0 0 5px #ffdf00); }
-        .sand-counter span { font-size: 18px; font-weight: bold; color: #ffdf00; text-shadow: 0 2px 4px #000; }
+        /* Иконка настроек вместо кнопки "Назад" */
+        .settings-icon { fill: #8b7968; width: 30px; height: 30px; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: fill 0.3s, transform 0.3s; margin-right: 10px; }
+        .settings-icon:hover { fill: #dcb254; transform: translateY(-3px) rotate(45deg); }
 
-        /* ИКОНКА ЕЖЕДНЕВНЫХ НАГРАД (PASS) */
-        .daily-btn { pointer-events: auto; background: rgba(0,0,0,0.6); border: 2px solid #20b2aa; border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(32,178,170,0.4); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; animation: dailyPulse 2s infinite alternate; position: relative; }
-        .daily-btn:active { transform: scale(0.9); }
-        .daily-btn svg { width: 24px; height: 24px; fill: #fcebbb; }
-        @keyframes dailyPulse { 0% { box-shadow: 0 0 10px rgba(32,178,170,0.4); transform: scale(1); } 100% { box-shadow: 0 0 25px rgba(32,178,170,0.8); transform: scale(1.05); } }
-        /* Индикатор, что награда готова */
-        .notification-dot { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; background: #ff4500; border: 2px solid #0a0c0f; border-radius: 50%; display: none; }
+        .boy-wrapper { 
+            position: relative; pointer-events: auto; cursor: pointer; 
+            margin-bottom: -15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
+            transition: transform 0.2s;
+        }
+        .boy-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
+
+        .boy-sand-counter {
+            position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); background: rgba(10, 13, 16, 0.95); border: 1px solid #dcb254; border-radius: 12px;
+            padding: 3px 10px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; transition: transform 0.3s, color 0.3s;
+        }
+        .boy-sand-counter svg { width: 14px; height: 14px; fill: #dcb254; }
+        .boy-sand-counter span { color: #fcebbb; font-size: 14px; font-weight: bold; }
+
+        /* --- КАРТА ДЕРЕВНИ --- */
+        .map-container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; aspect-ratio: 1024 / 683; /* Пропорции исходной картинки */
+            max-height: 80vh;
+            background-image: url('viledges_2.jpg');
+            background-size: cover; background-position: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        /* --- ИНТЕРАКТИВНЫЕ МЕТКИ НА КАРТЕ --- */
+        .map-pin {
+            position: absolute; transform: translate(-50%, -100%);
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; z-index: 15;
+            transition: transform 0.2s;
+        }
+        .map-pin:hover { transform: translate(-50%, -105%) scale(1.1); z-index: 20; }
+        .map-pin:active { transform: translate(-50%, -100%) scale(0.95); }
+
+        .pin-label {
+            background: rgba(10, 12, 14, 0.85); border: 2px solid #4a433a;
+            padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; color: #fcebbb;
+            text-shadow: 0 2px 4px #000; box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            white-space: nowrap; transition: border-color 0.3s, color 0.3s;
+        }
+        .map-pin:hover .pin-label { border-color: #dcb254; color: #ffdf00; }
+
+        .pin-pointer {
+            width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
+            border-top: 8px solid #4a433a; margin-top: -1px;
+            transition: border-top-color 0.3s;
+        }
+        .map-pin:hover .pin-pointer { border-top-color: #dcb254; }
+
+        /* Позиционирование меток поверх домов на viledges_2.jpg */
+        #pin-hall { top: 28%; left: 52%; }      /* Зал Царства (Верхний большой дом) */
+        #pin-lib { top: 40%; left: 35%; }       /* Библиотека (Левый дом) */
+        #pin-gate { top: 58%; left: 51%; }      /* Врата (Колодец в центре) */
+        #pin-tent { top: 52%; left: 81%; }      /* Ежедневки (Палатка справа) */
+        #pin-mpso { top: 66%; left: 66%; }      /* МПСО (Домик снизу справа) */
+
+        /* Спецэффекты для Врат и Палатки */
+        #pin-gate .pin-label { border-color: #20b2aa; color: #fff; box-shadow: 0 0 15px rgba(32,178,170,0.6); animation: float-gate 2s infinite alternate; }
+        #pin-gate .pin-pointer { border-top-color: #20b2aa; }
+        @keyframes float-gate { 0% { transform: translateY(0); } 100% { transform: translateY(-5px); box-shadow: 0 0 25px rgba(32,178,170,0.9); } }
+
+        /* Индикатор уведомлений на палатке (Ежедневки) */
+        .notification-dot { position: absolute; top: -5px; right: -5px; width: 14px; height: 14px; background: #ff4500; border: 2px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 10px #ff4500; }
         .notification-dot.active { display: block; }
-
-        /* --- ПАРЯЩИЕ ОСТРОВА (ЛОКАЦИИ) --- */
-        .village-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 10; }
-        
-        .island { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .island:hover { transform: scale(1.1) translateY(-10px); z-index: 50; }
-        .island:active { transform: scale(0.95); }
-        
-        .island-base { width: 120px; height: 40px; background: radial-gradient(ellipse at center, #2a3136 0%, #121517 70%); border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.1); position: relative; margin-top: -15px; z-index: 1; }
-        .island-base::after { content: ''; position: absolute; top: 20px; left: 10%; width: 80%; height: 30px; background: #121517; border-radius: 0 0 50px 50px; clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%); }
-
-        .island-title { background: rgba(0,0,0,0.7); border: 1px solid #4a433a; padding: 4px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #fcebbb; margin-top: 15px; text-shadow: 0 2px 4px #000; transition: color 0.3s, border-color 0.3s; z-index: 10; pointer-events: none; }
-        .island:hover .island-title { color: #ffdf00; border-color: #dcb254; }
-
-        /* Остров 1: Центр (ВРАТА) */
-        .island-center { top: 40%; left: 50%; transform: translate(-50%, -50%); animation: float-main 4s ease-in-out infinite; z-index: 10; }
-        .island-center .island-base { width: 160px; height: 50px; box-shadow: 0 10px 30px rgba(32,178,170,0.4), inset 0 2px 5px rgba(255,255,255,0.2); }
-        .portal-building { width: 100px; height: 100px; position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; }
-        .portal-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 4px solid transparent; border-top-color: #20b2aa; border-bottom-color: #20b2aa; animation: spin 4s linear infinite; box-shadow: 0 0 15px #20b2aa, inset 0 0 15px #20b2aa; }
-        .portal-ring-2 { position: absolute; width: 80%; height: 80%; border-radius: 50%; border: 3px solid transparent; border-left-color: #dcb254; border-right-color: #dcb254; animation: spin-reverse 3s linear infinite; box-shadow: 0 0 10px #dcb254; }
-        .portal-core { width: 40%; height: 40%; background: #fff; border-radius: 50%; box-shadow: 0 0 20px #fff, 0 0 40px #20b2aa; animation: pulse-core 2s infinite alternate; }
-
-        /* Остров 2: Слева (БИБЛИОТЕКА) */
-        .island-left { top: 60%; left: 15%; transform: translate(-50%, -50%); animation: float-alt 5s ease-in-out infinite 1s; }
-        .archive-building { width: 80px; height: 80px; z-index: 2; display: flex; justify-content: center; align-items: flex-end; position: relative; }
-        .archive-building svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8)); transition: filter 0.3s; }
-        .island:hover .archive-building svg { filter: drop-shadow(0 0 15px rgba(220,178,84,0.6)); }
-
-        /* Остров 3: Справа (ЗАЛ ЦАРСТВА) */
-        .island-right { top: 60%; left: 85%; transform: translate(-50%, -50%); animation: float-alt 4.5s ease-in-out infinite 0.5s; }
-        .hof-building { width: 70px; height: 80px; z-index: 2; position: relative; }
-        .hof-building svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8)); }
-        .island:hover .hof-building svg { filter: drop-shadow(0 0 15px rgba(255,223,0,0.6)); }
-
-        /* Остров 4: Снизу (МПСО) */
-        .island-bottom { top: 80%; left: 50%; transform: translate(-50%, -50%); animation: float-alt 5.5s ease-in-out infinite 2s; }
-        .island-bottom .island-base { width: 100px; height: 35px; }
-        .mine-building { width: 60px; height: 60px; z-index: 2; position: relative; display: flex; justify-content: center; align-items: center; }
-        .mine-building svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8)); }
-
-        @keyframes float-main { 0%, 100% { top: 40%; } 50% { top: 38%; } }
-        @keyframes float-alt { 0%, 100% { margin-top: 0px; } 50% { margin-top: -15px; } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
-        @keyframes pulse-core { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 30px #fff, 0 0 60px #20b2aa; } }
+        #pin-tent.reward-ready .pin-label { border-color: #ffdf00; animation: float-gate 1.5s infinite alternate; }
+        #pin-tent.reward-ready .pin-pointer { border-top-color: #ffdf00; }
 
         /* --- ВСПЛЫВАЮЩЕЕ ОКНО НАГРАД (MODAL) --- */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.8); backdrop-filter: blur(5px); z-index: 200; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; }
@@ -137,7 +170,6 @@
         .day-reward { font-size: 16px; font-weight: bold; color: #fcebbb; display: flex; align-items: center; gap: 3px;}
         .day-reward svg { width: 14px; height: 14px; fill: #dcb254; }
         
-        /* Состояния карточек */
         .day-card.claimed { border-color: #8c6a23; opacity: 0.5; }
         .day-card.claimed .day-title { color: #8c6a23; text-decoration: line-through; }
         
@@ -156,11 +188,8 @@
         .claim-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .claim-btn:disabled { background: #3a3f42; border-color: #555; color: #888; cursor: not-allowed; box-shadow: none; }
 
-        .close-modal-btn { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #121517; border: 2px solid #dcb254; border-radius: 50%; color: #dcb254; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px #000; }
+        .close-modal-btn { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #121517; border: 2px solid #dcb254; border-radius: 50%; color: #dcb254; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px #000; z-index: 5; }
         .close-modal-btn:active { transform: scale(0.9); }
-
-        .bottom-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; text-align: center; color: #8ba2c2; font-size: 13px; font-style: italic; pointer-events: none; animation: pulse-text 2s infinite alternate; z-index: 100;}
-        @keyframes pulse-text { 0% { opacity: 0.5; } 100% { opacity: 1; } }
 
     </style>
 </head>
@@ -176,92 +205,77 @@
         <div class="cloud-layer layer-1"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
     </div>
 
-    <div class="stars"></div>
-    <div class="glow-bg"></div>
-
-    <!-- ИНТЕРФЕЙС -->
-    <div class="top-ui">
-        <div class="left-stats">
-            <div class="level-badge" onclick="alert('Ваш уровень Хранителя. Повышайте его, собирая опыт (XP) в путешествиях!')">
-                <div class="level-icon" id="village-level">1</div>
-                <div class="level-text">Эпоха</div>
-            </div>
-            <div class="sand-counter">
-                <svg viewBox="0 0 24 24"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>
-                <span id="village-sand">0</span>
-            </div>
+    <!-- ВЕРХНИЙ БЛОК (СИНХРОНИЗИРОВАН С ЧАСАМИ) -->
+    <div class="top-status-container">
+        <div class="level-badge">
+            <svg class="level-gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58z" /></svg>
+            <span class="level-text" id="level-display">1</span>
         </div>
-
-        <!-- КНОПКА ЕЖЕДНЕВНОГО ПРОПУСКА -->
-        <div class="daily-btn" onclick="openDailyModal()">
-            <div class="notification-dot" id="daily-dot"></div>
-            <!-- Иконка Календаря/Подарка -->
-            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
+        <div class="top-progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+            <span class="xp-text" id="xp-text">0 / 50</span>
+        </div>
+        <div class="level-up-badge">
+            <svg class="level-up-gear" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58z" /></svg>
+            <span class="level-up-arrow">↑</span>
         </div>
     </div>
 
-    <!-- ПАРЯЩАЯ ДЕРЕВНЯ -->
-    <div class="village-container">
+    <!-- КАРТА ДЕРЕВНИ -->
+    <div class="map-container">
         
-        <!-- ЦЕНТР: ВРАТА (ССЫЛКА ИЗМЕНЕНА НА gate.html) -->
-        <div class="island island-center" onclick="goToLocation('gate.html')">
-            <div class="portal-building">
-                <div class="portal-ring"></div>
-                <div class="portal-ring-2"></div>
-                <div class="portal-core"></div>
-            </div>
-            <div class="island-base"></div>
-            <div class="island-title">Врата</div>
+        <!-- Верхний дом (Зал Царства) -->
+        <div class="map-pin" id="pin-hall" onclick="alert('Зал Царства: Место встреч и духовного обучения. В разработке!')">
+            <div class="pin-label">Зал Царства</div>
+            <div class="pin-pointer"></div>
         </div>
 
-        <!-- СЛЕВА: БИБЛИОТЕКА -->
-        <div class="island island-left" onclick="alert('Библиотека: Здесь хранятся знания и архивные карточки. В разработке!')">
-            <div class="archive-building">
-                <!-- Здание Библиотеки (Классическое) -->
-                <svg viewBox="0 0 100 100">
-                    <path d="M10,80 L90,80 L90,90 L10,90 Z" fill="#4a433a"/>
-                    <path d="M15,40 L25,40 L25,80 L15,80 Z" fill="#8b7968"/>
-                    <path d="M45,40 L55,40 L55,80 L45,80 Z" fill="#8b7968"/>
-                    <path d="M75,40 L85,40 L85,80 L75,80 Z" fill="#8b7968"/>
-                    <path d="M5,40 L50,15 L95,40 Z" fill="#dcb254"/>
-                    <circle cx="50" cy="30" r="5" fill="#20b2aa"/>
-                </svg>
-            </div>
-            <div class="island-base"></div>
-            <div class="island-title">Библиотека</div>
+        <!-- Левый дом (Библиотека) -->
+        <div class="map-pin" id="pin-lib" onclick="alert('Библиотека: Архивные карточки и события. В разработке!')">
+            <div class="pin-label">Библиотека</div>
+            <div class="pin-pointer"></div>
         </div>
 
-        <!-- СПРАВА: ЗАЛ ЦАРСТВА -->
-        <div class="island island-right" onclick="alert('Зал Царства: Место встреч и духовного обучения. В разработке!')">
-            <div class="hof-building">
-                <!-- Здание Зала Царства -->
-                <svg viewBox="0 0 100 100">
-                    <path d="M10,80 L90,80 L90,90 L10,90 Z" fill="#4a433a"/>
-                    <path d="M20,45 L80,45 L80,80 L20,80 Z" fill="#8b7968"/>
-                    <path d="M10,45 L50,15 L90,45 Z" fill="#dcb254"/>
-                    <rect x="40" y="55" width="20" height="25" fill="#fcebbb"/>
-                </svg>
-            </div>
-            <div class="island-base"></div>
-            <div class="island-title">Зал Царства</div>
+        <!-- Центральный колодец (ВРАТА - Переход к часам) -->
+        <div class="map-pin" id="pin-gate" onclick="goToLocation('gate.html')">
+            <div class="pin-label">🌀 Врата Времени</div>
+            <div class="pin-pointer"></div>
         </div>
 
-        <!-- СНИЗУ: МПСО -->
-        <div class="island island-bottom" onclick="alert('МПСО: Местный проектно-строительный отдел. В разработке!')">
-            <div class="mine-building">
-                <!-- Иконка МПСО (Стройка/Краны/Блоки) -->
-                <svg viewBox="0 0 100 100">
-                    <rect x="15" y="70" width="70" height="10" fill="#4a433a"/>
-                    <rect x="25" y="40" width="10" height="30" fill="#dcb254"/>
-                    <rect x="45" y="50" width="10" height="20" fill="#dcb254"/>
-                    <rect x="65" y="30" width="10" height="40" fill="#dcb254"/>
-                    <path d="M20,20 L80,20 L80,25 L20,25 Z" fill="#ffdf00"/> 
-                    <path d="M30,25 L30,40" stroke="#fff" stroke-width="2"/>
-                    <path d="M70,25 L70,30" stroke="#fff" stroke-width="2"/>
-                </svg>
+        <!-- Нижний правый дом (МПСО) -->
+        <div class="map-pin" id="pin-mpso" onclick="alert('МПСО: Управление строительством. В разработке!')">
+            <div class="pin-label">МПСО</div>
+            <div class="pin-pointer"></div>
+        </div>
+
+        <!-- Палатка справа (ЕЖЕДНЕВНЫЕ НАГРАДЫ) -->
+        <div class="map-pin" id="pin-tent" onclick="openDailyModal()">
+            <div class="notification-dot" id="daily-dot"></div>
+            <div class="pin-label">🎁 Пропуск</div>
+            <div class="pin-pointer"></div>
+        </div>
+
+    </div>
+
+    <!-- НИЖНЕЕ МЕНЮ (СИНХРОНИЗИРОВАН С ЧАСАМИ) -->
+    <div class="bottom-menu">
+        <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
+            <div class="menu-icon" onclick="alert('Ваш инвентарь')">🎒</div>
+            <div class="menu-icon" style="margin-left: 15px;" onclick="alert('Ваша коллекция')">📜</div>
+        </div>
+        
+        <div class="boy-wrapper" onclick="alert('У вас ' + gameData.sandCount + ' песчинок!')">
+            <img src="ty.png" class="boy-avatar" alt="Мальчик" onerror="this.style.display='none'">
+            <div class="boy-sand-counter">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>
+                <span id="sand-display">150</span>
             </div>
-            <div class="island-base"></div>
-            <div class="island-title">МПСО</div>
+        </div>
+
+        <div class="menu-side-group" style="justify-content: flex-end; padding-right: 10px;">
+            <svg class="settings-icon" viewBox="0 0 24 24" onclick="alert('Настройки игры')">
+                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </svg>
         </div>
     </div>
 
@@ -280,12 +294,10 @@
         </div>
     </div>
 
-    <div class="bottom-hint">Выберите локацию для перемещения</div>
-
   </div> <!-- КОНЕЦ ИГРОВОГО КАДРА -->
 
     <script>
-        // Инициализация данных
+        // Инициализация данных (Синхронизация с рулеткой)
         let gameData = JSON.parse(localStorage.getItem('timeGateData')) || {
             sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50
         };
@@ -294,7 +306,7 @@
         if (typeof gameData.loginStreak === 'undefined') gameData.loginStreak = 0;
         if (typeof gameData.lastClaimDate === 'undefined') gameData.lastClaimDate = null;
 
-        // Награды за 7 дней (потом цикл повторяется)
+        // Награды за 7 дней
         const dailyRewards = [10, 15, 20, 25, 30, 50, 100];
 
         window.onload = () => {
@@ -307,8 +319,14 @@
         };
 
         function updateUI() {
-            document.getElementById('village-level').innerText = gameData.epochLevel || 1;
-            document.getElementById('village-sand').innerText = gameData.sandCount || 0;
+            // Обновляем текст
+            document.getElementById('level-display').innerText = gameData.epochLevel || 1;
+            document.getElementById('sand-display').innerText = gameData.sandCount || 0;
+            document.getElementById('xp-text').innerText = `${Math.floor(gameData.currentXP)} / ${gameData.targetXP}`;
+            
+            // Обновляем полосу XP
+            let fillPercent = (gameData.currentXP / gameData.targetXP) * 100;
+            document.getElementById('progress-fill').style.width = fillPercent + '%';
         }
 
         // Проверяем, можно ли сегодня забрать награду
@@ -316,12 +334,13 @@
             let today = new Date().toDateString(); 
             let canClaim = (gameData.lastClaimDate !== today);
             
+            let tentPin = document.getElementById('pin-tent');
             if (canClaim) {
                 document.getElementById('daily-dot').classList.add('active');
-                document.querySelector('.daily-btn').style.animation = 'dailyPulse 1s infinite alternate';
+                tentPin.classList.add('reward-ready');
             } else {
                 document.getElementById('daily-dot').classList.remove('active');
-                document.querySelector('.daily-btn').style.animation = 'none';
+                tentPin.classList.remove('reward-ready');
             }
         }
 
@@ -341,7 +360,6 @@
             let today = new Date().toDateString();
             let canClaimToday = (gameData.lastClaimDate !== today);
             
-            // Если игрок прошел 7 дней, начинаем заново
             let currentDayIndex = gameData.loginStreak % 7;
 
             for (let i = 0; i < 7; i++) {
@@ -359,7 +377,6 @@
                     ${dailyRewards[i]}
                 `;
 
-                // Логика стилей карточки
                 if (i < currentDayIndex) {
                     card.classList.add('claimed');
                 } else if (i === currentDayIndex) {
@@ -375,7 +392,6 @@
                 grid.appendChild(card);
             }
 
-            // Настройка кнопки
             let btn = document.getElementById('claim-btn');
             if (canClaimToday) {
                 btn.disabled = false;
@@ -393,7 +409,6 @@
             let currentDayIndex = gameData.loginStreak % 7;
             let reward = dailyRewards[currentDayIndex];
 
-            // Начисляем награду
             gameData.sandCount += reward;
             gameData.lastClaimDate = today;
             gameData.loginStreak++;
@@ -403,7 +418,6 @@
             checkDailyStatus();
             renderDaysGrid(); 
 
-            // Анимация получения
             let btn = document.getElementById('claim-btn');
             btn.innerText = `Получено +${reward} ⏳!`;
             setTimeout(() => {
