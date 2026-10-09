@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Башня Эпох</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { background: linear-gradient(to bottom, #0f1214, #181c1d); overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
+
+        /* --- АНИМАЦИЯ ПЕРЕХОДА (МНОГОСЛОЙНЫЕ ОБЛАКА) --- */
+        .clouds-transition {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 9999; pointer-events: none;
+            opacity: 1; visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+        .clouds-transition.open {
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.5s ease 1.2s, visibility 0s 1.7s; 
+        }
+        .cloud-layer {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: flex; justify-content: space-between;
+        }
+        
+        .cloud-left, .cloud-right {
+            position: relative; width: 60vw; height: 100vh;
+            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .cloud-left { left: 0; } 
+        .cloud-right { right: 0; }
+
+        .cloud-left::before, .cloud-left::after,
+        .cloud-right::before, .cloud-right::after, .cloud-right .fluff {
+            content: ''; position: absolute; border-radius: 50%; background: inherit;
+        }
+
+        .cloud-left::before { width: 50vh; height: 50vh; right: -15vh; top: 15vh; }
+        .cloud-left::after { width: 60vh; height: 60vh; right: -20vh; top: 50vh; }
+        .cloud-right::before { width: 45vh; height: 45vh; left: -15vh; top: 5vh; }
+        .cloud-right::after { width: 55vh; height: 55vh; left: -25vh; top: 35vh; }
+        .cloud-right .fluff { width: 40vh; height: 40vh; left: -10vh; top: 75vh; }
+
+        .layer-3 .cloud-left, .layer-3 .cloud-right { background: #8ba2c2; transition-duration: 1.6s; }
+        .layer-2 .cloud-left, .layer-2 .cloud-right { background: #b8c5d1; transition-duration: 1.3s; }
+        .layer-1 .cloud-left, .layer-1 .cloud-right { background: #f0f4f8; transition-duration: 1.0s; }
+
+        .clouds-transition.open .cloud-left { transform: translateX(calc(-100% - 30vh)); }
+        .clouds-transition.open .cloud-right { transform: translateX(calc(100% + 30vh)); }
+
+        /* --- ИНТЕРФЕЙС ИГРЫ --- */
+        .minigame-ui-top {
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 205;
+        }
+        .mg-title { color: #dcb254; font-size: 24px; font-weight: bold; text-shadow: 0 2px 4px #000; }
+        .mg-score { color: #20b2aa; font-size: 20px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 10px; border: 1px solid #4a433a;}
+        
+        #gameCanvas { width: 100vw; max-width: 500px; height: 100vh; cursor: pointer; display: block; margin: 0 auto; }
+
+        .mg-perfect-text {
+            position: absolute; top: 30%; left: 50%; transform: translate(-50%, 20px);
+            color: #ffdf00; font-size: 32px; font-weight: bold; text-shadow: 0 0 10px #ffaa00, 0 4px 6px #000; 
+            opacity: 0; pointer-events: none; transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        .mg-perfect-text.show { opacity: 1; transform: translate(-50%, -30px); }
+
+        .mg-result {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1f2427, #121517); border: 2px solid #dcb254;
+            padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px #000;
+            display: none; z-index: 210; width: 85vw; max-width: 400px;
+        }
+        .mg-result.show { display: block; }
+        .mg-result h2 { color: #20b2aa; margin-bottom: 10px; }
+        .mg-result p { font-size: 22px; color: #fcebbb; margin-bottom: 25px; }
+
+        /* Текст автостарта */
+        .auto-start-text { color: #dcb254; font-size: 14px; font-weight: bold; margin-top: 15px; animation: pulse-text 1s infinite alternate; }
+        @keyframes pulse-text { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- АНИМАЦИЯ ПЕРЕХОДА (ТУМАН) -->
+    <div class="clouds-transition" id="clouds">
+        <div class="cloud-layer layer-3">
+            <div class="cloud-left"></div>
+            <div class="cloud-right"><div class="fluff"></div></div>
+        </div>
+        <div class="cloud-layer layer-2">
+            <div class="cloud-left"></div>
+            <div class="cloud-right"><div class="fluff"></div></div>
+        </div>
+        <div class="cloud-layer layer-1">
+            <div class="cloud-left"></div>
+            <div class="cloud-right"><div class="fluff"></div></div>
+        </div>
+    </div>
+
+    <div class="minigame-ui-top">
+        <div class="mg-title">Башня Эпох</div>
+        <div class="mg-score" id="mg-score">Очки: 0</div>
+    </div>
+    
+    <canvas id="gameCanvas"></canvas>
+    
+    <div class="mg-perfect-text" id="perfect-text">ИДЕАЛЬНО! +15 XP</div>
+
+    <div class="mg-result" id="mg-result">
+        <h2>Строительство завершено!</h2>
+        <p id="mg-final-score">Заработано: 0 XP</p>
+        <p class="auto-start-text">Возвращение к Вратам через 5 секунд...</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const perfectText = document.getElementById('perfect-text');
+        
+        let towerBlocks = []; let currBlock = null;
+        let dustParticles = []; let perfectSparks = []; let floatingTexts = [];
+        let towerScore = 0; let blockHeight = 40; let blockSpeed = 4;
+        let mgLoopId; let mgState = 'idle'; 
+        let towerCameraY = 0; let targetCameraY = 0; let shakeMagnitude = 0;
+
+        window.onload = () => {
+            setTimeout(() => { document.getElementById('clouds').classList.add('open'); }, 200);
+            setTimeout(() => { initMinigame(); }, 1000); 
+        };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth > 500 ? 500 : window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function initMinigame() {
+            resizeCanvas();
+            towerScore = 0;
+            blockSpeed = canvas.width * 0.007; 
+            updateMgScore();
+            
+            let w = canvas.width * 0.6;
+            towerBlocks = [{
+                x: (canvas.width - w) / 2, y: 0, w: w
+            }];
+
+            spawnBlock();
+            mgState = 'playing';
+            mgLoop();
+        }
+
+        function spawnBlock() {
+            let prev = towerBlocks[towerBlocks.length - 1];
+            currBlock = { x: 0, y: towerBlocks.length, w: prev.w, dir: 1 };
+            blockSpeed += 0.15; 
+        }
+
+        document.body.addEventListener('mousedown', dropBlock);
+        document.body.addEventListener('touchstart', (e) => { e.preventDefault(); dropBlock(); }, {passive: false});
+
+        function dropBlock() {
+            if (mgState !== 'playing' || !currBlock) return;
+            mgState = 'waiting'; 
+            
+            let prev = towerBlocks[towerBlocks.length - 1];
+            let diff = currBlock.x - prev.x;
+            let overlap = prev.w - Math.abs(diff);
+
+            if (overlap <= 0) {
+                shakeMagnitude = 12; mgState = 'over';
+                setTimeout(showMgResult, 1000);
+                return;
+            }
+
+            if (Math.abs(diff) < 8) {
+                currBlock.x = prev.x; currBlock.w = prev.w;
+                // БАЛАНС: +15 XP за идеальный блок
+                let pts = 15; 
+                towerScore += pts;
+                shakeMagnitude = 4; 
+                spawnPerfectSparks(currBlock.x, currBlock.y, currBlock.w);
+                
+                perfectText.innerText = `ИДЕАЛЬНО! +${pts} XP`;
+                perfectText.classList.remove('show'); void perfectText.offsetWidth; perfectText.classList.add('show');
+            } else {
+                currBlock.w = overlap;
+                let cutX, cutW;
+                if (diff > 0) { currBlock.x = prev.x + diff; cutX = currBlock.x + overlap; cutW = Math.abs(diff); } 
+                else { currBlock.x = prev.x; cutX = prev.x + diff; cutW = Math.abs(diff); }
+                
+                shakeMagnitude = 6;
+                spawnDust(cutX, currBlock.y, cutW);
+                // БАЛАНС: +5 XP за кривой блок
+                towerScore += 5;
+            }
+
+            towerBlocks.push({...currBlock});
+            updateMgScore();
+            
+            let storedY = currBlock.y; currBlock = null; 
+
+            if (storedY * blockHeight > canvas.height / 2) targetCameraY = (storedY * blockHeight) - canvas.height / 2;
+
+            setTimeout(() => {
+                if (mgState !== 'over') { spawnBlock(); mgState = 'playing'; }
+            }, 700);
+        }
+
+        function spawnDust(x, levelY, w) {
+            let worldY = canvas.height - 100 - (levelY * blockHeight);
+            for(let i=0; i<w; i+=2) { 
+                dustParticles.push({
+                    x: x + Math.random() * w, y: worldY + Math.random() * blockHeight,
+                    vx: (Math.random() - 0.5) * 4, vy: -(Math.random() * 3 + 1), life: 1, size: Math.random() * 4 + 2
+                });
+            }
+        }
+
+        function spawnPerfectSparks(x, levelY, w) {
+            let worldY = canvas.height - 100 - (levelY * blockHeight) + blockHeight; 
+            for(let i=0; i<w; i+=4) { 
+                perfectSparks.push({
+                    x: x + Math.random() * w, y: worldY,
+                    vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 6 - 2, life: 1, size: Math.random() * 3 + 2
+                });
+            }
+        }
+
+        function updateMgScore() { document.getElementById('mg-score').innerText = `Очки: ${towerScore}`; }
+
+        function showMgResult() {
+            document.getElementById('mg-final-score').innerText = `Заработано: ${towerScore} XP`;
+            document.getElementById('mg-result').classList.add('show');
+            // АВТО-ВОЗВРАТ
+            setTimeout(finishTowerGame, 5000);
+        }
+
+        function drawPlatform(x, worldY, w, h, level) {
+            let ratio = Math.min(level / 20, 1);
+            let r = Math.floor(133 + (255 - 133) * ratio); let g = Math.floor(100 + (215 - 100) * ratio); let b = Math.floor(69 + (0 - 69) * ratio);
+            
+            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`; ctx.fillRect(x, worldY, w, h);
+            ctx.strokeStyle = `rgba(0,0,0,0.4)`; ctx.lineWidth = 1; ctx.strokeRect(x, worldY, w, h);
+            for(let cx = x; cx < x + w; cx += 25) {
+                ctx.beginPath(); ctx.moveTo(cx, worldY); ctx.lineTo(cx, worldY + h); ctx.stroke();
+            }
+            ctx.fillStyle = `rgba(255,255,255,0.15)`; ctx.fillRect(x, worldY, w, 4);
+        }
+
+        function mgLoop() {
+            if (mgState === 'idle') return;
+            towerCameraY += (targetCameraY - towerCameraY) * 0.1;
+
+            if (mgState === 'playing' && currBlock) {
+                let limitLeft = -(currBlock.w * 0.9); let limitRight = canvas.width - (currBlock.w * 0.1);
+                currBlock.x += blockSpeed * currBlock.dir;
+                if (currBlock.x < limitLeft) { currBlock.x = limitLeft; currBlock.dir = 1; }
+                if (currBlock.x > limitRight) { currBlock.x = limitRight; currBlock.dir = -1; }
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            
+            if (shakeMagnitude > 0.5) {
+                ctx.translate((Math.random() - 0.5) * shakeMagnitude, (Math.random() - 0.5) * shakeMagnitude);
+                shakeMagnitude *= 0.8;
+            }
+
+            let baseY = canvas.height - 100;
+
+            for (let b of towerBlocks) drawPlatform(b.x, baseY - (b.y * blockHeight) + towerCameraY, b.w, blockHeight, b.y);
+            if (currBlock) drawPlatform(currBlock.x, baseY - (currBlock.y * blockHeight) + towerCameraY, currBlock.w, blockHeight, currBlock.y);
+
+            for(let i = perfectSparks.length - 1; i >= 0; i--) {
+                let p = perfectSparks[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+                if(p.life <= 0) perfectSparks.splice(i, 1);
+                else { ctx.fillStyle = `rgba(255, 140, 0, ${p.life})`; ctx.fillRect(p.x, p.y + towerCameraY, p.size, p.size); }
+            }
+
+            for(let i = dustParticles.length - 1; i >= 0; i--) {
+                let p = dustParticles[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+                if(p.life <= 0) dustParticles.splice(i, 1);
+                else { ctx.fillStyle = `rgba(160, 160, 160, ${p.life})`; ctx.fillRect(p.x, p.y + towerCameraY, p.size, p.size); }
+            }
+
+            ctx.restore();
+            mgLoopId = requestAnimationFrame(mgLoop);
+        }
+
+        function finishTowerGame() {
+            let gameData = JSON.parse(localStorage.getItem('timeGateData')) || {};
+            gameData.pendingPoints = (gameData.pendingPoints || 0) + towerScore;
+            localStorage.setItem('timeGateData', JSON.stringify(gameData));
+
+            document.getElementById('clouds').classList.remove('open');
+            // ИСПОЛЬЗУЕМ REPLACE ЧТОБЫ ЗАПРЕТИТЬ КНОПКУ "НАЗАД"
+            setTimeout(() => { window.location.replace('index.html?fromMinigame=true'); }, 1200);
+        }
+
+    </script>
+</body>
+</html>

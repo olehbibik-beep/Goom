@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>В поисках царя</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { background-color: #121517; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; color: #fff; }
+
+        /* Контейнер для тряски экрана */
+        #game-container {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+        }
+
+        /* Тряска экрана при промахе */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-12px, 6px); }
+            40% { transform: translate(12px, -6px); }
+            60% { transform: translate(-12px, -6px); }
+            80% { transform: translate(12px, 6px); }
+        }
+        .shake-screen { animation: shake 0.3s ease-in-out; }
+
+        /* --- ОБЛАКА --- */
+        .clouds-transition { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; pointer-events: none; opacity: 1; transition: opacity 0.3s ease; }
+        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 1.2s, visibility 0s 1.7s; }
+        .cloud-layer { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: space-between; }
+        .cloud-left, .cloud-right { position: relative; width: 60vw; height: 100vh; transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1); }
+        .cloud-left { left: 0; } .cloud-right { right: 0; }
+        .cloud-left::before, .cloud-left::after, .cloud-right::before, .cloud-right::after, .cloud-right .fluff { content: ''; position: absolute; border-radius: 50%; background: inherit; }
+        .cloud-left::before { width: 50vh; height: 50vh; right: -15vh; top: 15vh; } .cloud-left::after { width: 60vh; height: 60vh; right: -20vh; top: 50vh; }
+        .cloud-right::before { width: 45vh; height: 45vh; left: -15vh; top: 5vh; } .cloud-right::after { width: 55vh; height: 55vh; left: -25vh; top: 35vh; } .cloud-right .fluff { width: 40vh; height: 40vh; left: -10vh; top: 75vh; }
+        .layer-3 .cloud-left, .layer-3 .cloud-right { background: #8ba2c2; transition-duration: 1.6s; }
+        .layer-2 .cloud-left, .layer-2 .cloud-right { background: #b8c5d1; transition-duration: 1.3s; }
+        .layer-1 .cloud-left, .layer-1 .cloud-right { background: #f0f4f8; transition-duration: 1.0s; }
+        .clouds-transition.open .cloud-left { transform: translateX(calc(-100% - 30vh)); }
+        .clouds-transition.open .cloud-right { transform: translateX(calc(100% + 30vh)); }
+
+        /* --- ИГРОВОЕ ПОЛЕ И ПРОЖЕКТОР --- */
+        #game-board {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(-45deg, #1a1d21, #1a1d21 15px, #121517 15px, #121517 30px);
+        }
+        
+        #spotlight-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 50;
+            background: radial-gradient(circle 60px at var(--x) var(--y), transparent 60px, rgba(10, 13, 16, 0.99) 61px);
+        }
+
+        .game-item {
+            position: absolute; width: 60px; height: 60px;
+            transform: translate(-50%, -50%); transition: opacity 0.3s;
+        }
+
+        /* --- ЛЕТЯЩАЯ КОРОНА --- */
+        .flying-crown {
+            position: fixed; width: 60px; height: 60px;
+            z-index: 1000; pointer-events: none;
+            filter: drop-shadow(0 0 10px #ffdf00);
+        }
+
+        /* --- ИНТЕРФЕЙС И БЕСКОНЕЧНАЯ ЛИНИЯ --- */
+        .bottom-area {
+            position: absolute; bottom: 40px; left: 0; width: 100%;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            z-index: 100; pointer-events: none;
+        }
+        
+        /* Уменьшенные компактные часики */
+        .ui-timer { 
+            color: #ffdf00; font-size: 20px; font-weight: bold; text-shadow: 0 2px 4px #000; 
+            background: rgba(0,0,0,0.6); padding: 4px 20px; border-radius: 12px; border: 1px solid #4a433a; 
+            transition: color 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        /* Зона видимости линии на всю ширину экрана */
+        .progress-viewport {
+            width: 100%; height: 12px; position: relative; overflow: hidden;
+        }
+
+        /* Сама бесконечная линия, начинающаяся от центра и уходящая вправо */
+        .progress-track {
+            position: absolute; top: 0; left: 50%; height: 100%; width: 5000px;
+            background-color: rgba(10, 13, 16, 0.8);
+            border: 1px solid #4a433a; border-radius: 6px;
+            /* Золотые точки внутри линии с шагом 50px */
+            background-image: radial-gradient(circle at 25px 5px, #ffd700 2px, transparent 3px);
+            background-size: 50px 12px;
+            /* Анимация движения всей линии влево */
+            transition: transform 0.3s ease-out;
+            transform: translateX(calc(-50px * var(--crowns, 0)));
+        }
+        
+        /* Заполняющаяся часть (растет вправо) */
+        .progress-fill {
+            position: absolute; top: 0; left: 0; height: 100%;
+            width: calc(50px * var(--crowns, 0));
+            background: linear-gradient(90deg, #dcb254, #ffdf00);
+            border-radius: 6px; transition: width 0.3s ease-out;
+        }
+        
+        /* ЭФФЕКТ ОГНЯ (КОМБО!) */
+        .progress-fill.on-fire {
+            background: linear-gradient(90deg, #ff4500, #ffaa00, #ffdf00);
+            background-size: 200% 200%;
+            animation: firePulse 0.6s infinite alternate;
+            box-shadow: 0 -3px 10px #ff4500, 0 3px 10px #ffdf00, inset 0 0 5px #fff;
+        }
+        @keyframes firePulse {
+            0% { background-position: 0% 50%; box-shadow: 0 -3px 10px #ff4500, 0 3px 10px #ffaa00; }
+            100% { background-position: 100% 50%; box-shadow: 0 -8px 20px #ff0000, 0 8px 20px #ff4500; }
+        }
+
+        /* --- ОСТАЛЬНОЕ --- */
+        .start-instruction {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; z-index: 100; color: #fff; text-shadow: 0 4px 6px #000;
+            pointer-events: none; transition: opacity 0.5s;
+        }
+        .start-instruction h1 { color: #dcb254; margin-bottom: 10px; font-size: 36px; }
+        .start-instruction p { font-size: 18px; color: #fcebbb; line-height: 1.4; }
+
+        .floating-score {
+            position: absolute; font-size: 28px; font-weight: bold;
+            text-shadow: 0 4px 6px #000; z-index: 60; pointer-events: none;
+            animation: floatUp 1s ease-out forwards; transform: translate(-50%, -50%);
+        }
+        @keyframes floatUp { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -100px) scale(1.2); opacity: 0; } }
+
+        .catch-spark {
+            position: absolute; width: 4px; height: 15px; background: #ffdf00; border-radius: 2px;
+            box-shadow: 0 0 8px #ffdf00, 0 0 15px #ff4500; pointer-events: none; z-index: 55;
+            animation: spark-fly 0.5s cubic-bezier(0.1, 1, 0.3, 1) forwards;
+        }
+
+        .mg-result {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1f2427, #121517); border: 2px solid #dcb254;
+            padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px #000;
+            display: none; z-index: 210; width: 85vw; max-width: 400px;
+        }
+        .mg-result.show { display: block; }
+        .mg-result h2 { color: #ffd700; margin-bottom: 10px; }
+        .mg-result p { font-size: 22px; color: #fcebbb; margin-bottom: 25px; }
+        .auto-start-text { color: #dcb254; font-size: 14px; font-weight: bold; margin-bottom: 10px; animation: pulse-text 1s infinite alternate; }
+
+    </style>
+</head>
+<body>
+
+    <div class="clouds-transition" id="clouds">
+        <div class="cloud-layer layer-3"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
+        <div class="cloud-layer layer-2"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
+        <div class="cloud-layer layer-1"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
+    </div>
+
+    <!-- ВЕСЬ ИГРОВОЙ КОНТЕНТ ЗАВЕРНУТ ДЛЯ ТРЯСКИ -->
+    <div id="game-container">
+        
+        <div class="start-instruction" id="instructions">
+            <h1>В поисках царя</h1>
+            <p>Ждите, пока луч выхватит цель.<br><br><span style="color:#20b2aa;">+5 сек</span> за корону<br><span style="color:#ff4500;">-10 сек</span> за мусор</p>
+        </div>
+
+        <div id="game-board"></div>
+        <div id="spotlight-overlay" style="--x: 50vw; --y: 50vh;"></div>
+
+        <!-- НИЖНЯЯ ПАНЕЛЬ С ЧАСАМИ И БЕСКОНЕЧНОЙ ЛИНИЕЙ -->
+        <div class="bottom-area">
+            <div class="ui-timer" id="timer-display">01:00</div>
+            <div class="progress-viewport">
+                <!-- Сама ползущая дорожка -->
+                <div class="progress-track" id="progress-track">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mg-result" id="mg-result">
+            <h2>Воцарение завершено!</h2>
+            <p id="mg-final-score">Заработано: 0 XP</p>
+            <p class="auto-start-text">Возвращение к Вратам через 5 секунд...</p>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('game-container');
+        const board = document.getElementById('game-board');
+        const overlay = document.getElementById('spotlight-overlay');
+        const timerDisplay = document.getElementById('timer-display');
+        const instructions = document.getElementById('instructions');
+        const progressTrack = document.getElementById('progress-track');
+        const progressFill = document.getElementById('progress-fill');
+        
+        let score = 0;
+        let timeLeft = 60;
+        let isPlaying = false;
+        let gameTimerId = null;
+        let lastClickTime = 0; 
+        let nextSpawnTimer = null;
+
+        let crownsCaught = 0;
+        let comboCount = 0;
+
+        let spotX = 0, spotY = 0;
+        let spotVx = 0, spotVy = 0; 
+        let currentSpeed = 3.0; // Медленный и комфортный старт
+
+        let activeItem = null;
+
+        const svgs = {
+            crown: `<svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M10,80 L90,80 L100,20 L70,50 L50,10 L30,50 L0,20 Z" fill="#ffd700"/><rect x="15" y="85" width="70" height="10" fill="#b8860b"/></svg>`,
+            goldApple: `<svg viewBox="0 0 100 100" width="100%" height="100%"><ellipse cx="50" cy="55" rx="35" ry="40" fill="#ffd700"/><path d="M50,15 Q60,5 70,15" stroke="#8b4513" stroke-width="4" fill="none"/></svg>`,
+            goldRing: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="30" fill="none" stroke="#ffd700" stroke-width="15"/><circle cx="50" cy="20" r="8" fill="#fff" opacity="0.8"/></svg>`,
+            goldSun: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="25" fill="#ffd700"/><path d="M50,10 L50,0 M50,90 L50,100 M10,50 L0,50 M90,50 L100,50 M25,25 L15,15 M75,75 L85,85 M25,75 L15,85 M75,25 L85,15" stroke="#ffd700" stroke-width="6" stroke-linecap="round"/></svg>`,
+            sweater: `<svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M30,30 L70,30 L90,60 L80,65 L70,40 L70,90 L30,90 L30,40 L20,65 L10,60 Z" fill="#ff5722"/></svg>`,
+            shoes: `<svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M15,75 Q15,50 40,50 L45,75 Z M55,75 Q55,50 80,50 L85,75 Z M15,75 L45,75 L45,85 L15,85 Z M55,75 L85,75 L85,85 L55,85 Z" fill="#795548"/></svg>`,
+            lipstick: `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="35" y="50" width="30" height="40" fill="#d4af37"/><rect x="40" y="20" width="20" height="30" fill="#e91e63"/><path d="M40,20 L60,20 L50,5 Z" fill="#e91e63"/></svg>`,
+            smiley: `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="40" fill="#ffeb3b"/><circle cx="35" cy="40" r="5" fill="#000"/><circle cx="65" cy="40" r="5" fill="#000"/><path d="M30,60 Q50,80 70,60" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+            heart: `<svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50,30 C50,10 15,10 15,40 C15,65 50,90 50,90 C50,90 85,65 85,40 C85,10 50,10 50,30 Z" fill="#f44336"/></svg>`
+        };
+
+        window.onload = () => {
+            setTimeout(() => { document.getElementById('clouds').classList.add('open'); }, 200);
+            setTimeout(() => { startGame(); }, 2500); 
+        };
+
+        function scheduleNextSpawn(delay) {
+            clearTimeout(nextSpawnTimer);
+            nextSpawnTimer = setTimeout(spawnTargetAhead, delay);
+        }
+
+        function startGame() {
+            instructions.style.opacity = '0';
+            score = 0; timeLeft = 60; isPlaying = true; currentSpeed = 3.0;
+            crownsCaught = 0; comboCount = 0;
+            updateProgressUI();
+            
+            board.innerHTML = '';
+            updateUI();
+            startSweep(); 
+            requestAnimationFrame(moveSpotlight);
+
+            gameTimerId = setInterval(() => {
+                timeLeft--; updateUI();
+                if (timeLeft <= 0) endGame();
+            }, 1000);
+        }
+
+        // Обновление бесконечной шкалы
+        function updateProgressUI() {
+            // Двигаем дорожку влево, а заливку вправо. 
+            // За счет этого голова заливки всегда стоит на месте (по центру экрана)
+            progressTrack.style.setProperty('--crowns', crownsCaught);
+
+            // Комбо Огонь!
+            if (comboCount >= 2) {
+                progressFill.classList.add('on-fire');
+            } else {
+                progressFill.classList.remove('on-fire');
+            }
+        }
+
+        function startSweep() {
+            if (!isPlaying) return;
+            board.innerHTML = ''; 
+            activeItem = null;
+
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            let margin = 150; 
+
+            let dir = Math.floor(Math.random() * 4);
+            let startX, startY, endX, endY;
+
+            if (dir === 0) {
+                startX = -margin; startY = 100 + Math.random() * (h - 200);
+                endX = w + margin; endY = 100 + Math.random() * (h - 200);
+            } else if (dir === 1) {
+                startX = 100 + Math.random() * (w - 200); startY = -margin;
+                endX = 100 + Math.random() * (w - 200); endY = h + margin;
+            } else if (dir === 2) {
+                startX = w + margin; startY = 100 + Math.random() * (h - 200);
+                endX = -margin; endY = 100 + Math.random() * (h - 200);
+            } else {
+                startX = 100 + Math.random() * (w - 200); startY = h + margin;
+                endX = 100 + Math.random() * (w - 200); endY = -margin;
+            }
+
+            spotX = startX;
+            spotY = startY;
+            
+            let dx = endX - startX;
+            let dy = endY - startY;
+            let dist = Math.hypot(dx, dy);
+            
+            spotVx = dx / dist;
+            spotVy = dy / dist;
+
+            let t = 0.3 + Math.random() * 0.4; 
+            let itemX = startX + dx * t;
+            let itemY = startY + dy * t;
+
+            let isCrown = Math.random() < 0.40;
+            let typePool = isCrown ? ['crown'] : ['goldApple', 'goldRing', 'goldSun', 'sweater', 'shoes', 'lipstick', 'smiley', 'heart'];
+            let type = typePool[Math.floor(Math.random() * typePool.length)];
+
+            let el = document.createElement('div');
+            el.className = 'game-item';
+            el.innerHTML = svgs[type];
+            el.style.left = itemX + 'px';
+            el.style.top = itemY + 'px';
+            let rot = (Math.random() - 0.5) * 40; 
+            el.style.transform = `translate(-50%, -50%) rotate(${rot}deg)`;
+            
+            board.appendChild(el);
+            activeItem = { el, x: itemX, y: itemY, isCrown, type };
+        }
+
+        function moveSpotlight() {
+            if(!isPlaying) return;
+
+            spotX += spotVx * currentSpeed; 
+            spotY += spotVy * currentSpeed;
+
+            overlay.style.setProperty('--x', spotX + 'px');
+            overlay.style.setProperty('--y', spotY + 'px');
+
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            let margin = 100;
+            
+            if (spotX < -margin - 50 || spotX > w + margin + 50 || spotY < -margin - 50 || spotY > h + margin + 50) {
+                startSweep();
+            }
+
+            requestAnimationFrame(moveSpotlight);
+        }
+
+        document.addEventListener('mousedown', tryCatch);
+        document.addEventListener('touchstart', tryCatch, {passive: false});
+
+        function tryCatch(e) {
+            if(!isPlaying || !activeItem) return;
+            
+            let now = Date.now();
+            if (now - lastClickTime < 200) return; 
+            lastClickTime = now;
+
+            let clickX = 0, clickY = 0;
+            if (e.touches && e.touches.length > 0) {
+                clickX = e.touches[0].clientX;
+                clickY = e.touches[0].clientY;
+            } else {
+                clickX = e.clientX;
+                clickY = e.clientY;
+            }
+
+            let distToSpot = Math.hypot(activeItem.x - spotX, activeItem.y - spotY);
+            let distToClick = Math.hypot(activeItem.x - clickX, activeItem.y - clickY);
+
+            // ОГРОМНАЯ ЗОНА ПРОЩЕНИЯ 
+            if (distToSpot <= 200 && distToClick <= 300) {
+                
+                if (activeItem.isCrown) {
+                    // ПОБЕДА (БАЛАНС: 10 XP за корону)
+                    score += 10;
+                    timeLeft += 5;
+                    crownsCaught++;
+                    comboCount++; 
+                    
+                    currentSpeed *= 1.10; // Мягкое ускорение
+                    if (currentSpeed > 15.0) currentSpeed = 15.0; 
+                    
+                    showFloatingText("+5 сек", activeItem.x, activeItem.y, "#20b2aa");
+                    spawnSparks(activeItem.x, activeItem.y);
+                    
+                    // Полет короны точно в центр заполнения шкалы
+                    flyCrownToBottom(activeItem.type, activeItem.x, activeItem.y);
+                    
+                    activeItem.el.remove();
+                    activeItem = null; 
+                    
+                    updateProgressUI();
+                    startSweep();
+                    
+                    overlay.style.background = `radial-gradient(circle 65px at var(--x) var(--y), rgba(255,215,0,0.5) 0%, rgba(10, 13, 16, 0.99) 66px)`;
+                    setTimeout(() => {
+                        overlay.style.background = `radial-gradient(circle 60px at var(--x) var(--y), transparent 60px, rgba(10, 13, 16, 0.99) 61px)`;
+                    }, 150);
+
+                } else {
+                    // Нажали на МУСОР
+                    applyPenalty(clickX, clickY);
+                }
+            } else {
+                // Нажали вообще мимо 
+                applyPenalty(clickX, clickY);
+            }
+
+            updateUI();
+            if (timeLeft <= 0) { endGame(); }
+        }
+
+        function applyPenalty(x, y) {
+            timeLeft -= 10;
+            comboCount = 0; 
+            updateProgressUI();
+
+            showFloatingText("-10 сек", x, y, "#ff4500");
+            
+            container.classList.remove('shake-screen');
+            void container.offsetWidth; 
+            container.classList.add('shake-screen');
+
+            overlay.style.background = `radial-gradient(circle 60px at var(--x) var(--y), rgba(255,0,0,0.5) 60px, rgba(10, 13, 16, 0.99) 61px)`;
+            setTimeout(() => {
+                overlay.style.background = `radial-gradient(circle 60px at var(--x) var(--y), transparent 60px, rgba(10, 13, 16, 0.99) 61px)`;
+            }, 150);
+        }
+
+        function flyCrownToBottom(type, startX, startY) {
+            let clone = document.createElement('div');
+            clone.className = 'flying-crown';
+            clone.innerHTML = svgs[type];
+            clone.style.left = startX + 'px';
+            clone.style.top = startY + 'px';
+            document.body.appendChild(clone);
+
+            // Целимся ровно в центр экрана (там всегда находится голова шкалы)
+            let targetRect = document.querySelector('.progress-viewport').getBoundingClientRect();
+            let targetX = window.innerWidth / 2; 
+            let targetY = targetRect.top + 6; // Ровно в тонкую линию
+
+            let animation = clone.animate([
+                { transform: 'translate(-50%, -50%) scale(1)' },
+                { transform: `translate(calc(${targetX - startX}px - 50%), calc(${targetY - startY}px - 50%)) scale(0.2)` }
+            ], { duration: 400, easing: 'cubic-bezier(0.25, 1, 0.5, 1)', fill: 'forwards' });
+
+            animation.onfinish = () => {
+                clone.remove();
+            };
+        }
+
+        function showFloatingText(text, x, y, color) {
+            let el = document.createElement('div');
+            el.className = 'floating-score'; 
+            el.style.color = color;
+            el.innerText = text;
+            el.style.left = x + 'px'; el.style.top = y + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        function spawnSparks(x, y) {
+            for(let i=0; i<8; i++) {
+                let spark = document.createElement('div'); spark.className = 'catch-spark';
+                spark.style.left = x + 'px'; spark.style.top = y + 'px';
+                let angle = (Math.random() * 360) * Math.PI / 180;
+                let dist = 30 + Math.random() * 50;
+                spark.style.setProperty('--tx', (dist * Math.cos(angle)) + 'px');
+                spark.style.setProperty('--ty', (dist * Math.sin(angle)) + 'px');
+                spark.style.setProperty('--rot', (angle * 180 / Math.PI + 90) + 'deg');
+                document.body.appendChild(spark);
+                setTimeout(() => spark.remove(), 500);
+            }
+        }
+
+        function updateUI() {
+            let s = timeLeft;
+            if (s < 0) s = 0;
+            
+            if (s <= 10) timerDisplay.style.color = '#ff4500';
+            else timerDisplay.style.color = '#ffdf00';
+
+            let mins = Math.floor(s / 60);
+            let secs = s % 60;
+            timerDisplay.innerText = `0${mins}:${secs < 10 ? '0'+secs : secs}`;
+        }
+
+        function endGame() {
+            if(!isPlaying) return;
+            isPlaying = false;
+            clearInterval(gameTimerId);
+            clearTimeout(nextSpawnTimer);
+            
+            document.getElementById('mg-final-score').innerText = `Заработано: ${score} XP`;
+            document.getElementById('mg-result').classList.add('show');
+
+            setTimeout(() => { finishCrownGame(); }, 5000);
+        }
+
+        function finishCrownGame() {
+            let gameData = JSON.parse(localStorage.getItem('timeGateData')) || {};
+            gameData.pendingPoints = (gameData.pendingPoints || 0) + score;
+            localStorage.setItem('timeGateData', JSON.stringify(gameData));
+
+            document.getElementById('clouds').classList.remove('open');
+            // ИСПОЛЬЗУЕМ REPLACE ЧТОБЫ ЗАПРЕТИТЬ КНОПКУ "НАЗАД"
+            setTimeout(() => { window.location.replace('index.html?fromMinigame=true'); }, 1200);
+        }
+
+    </script>
+</body>
+</html>
