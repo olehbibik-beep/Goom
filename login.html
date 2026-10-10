@@ -87,20 +87,20 @@
     </div>
 </div>
 
-<!-- ПОДКЛЮЧАЕМ ФАЙРБЕЙЗ (Модульная структура) -->
+<!-- ПОДКЛЮЧАЕМ ФАЙРБЕЙЗ (Модульная структура для GitHub Pages) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // ВНИМАНИЕ: Сюда вставьте ваш настоящий конфиг
+    // Ваша настоящая конфигурация
     const firebaseConfig = {
-      apiKey: "ВАШ_API_KEY",
+      apiKey: "AIzaSyDFCGFnL3pNfrHiwqCZkXapdhC5bKmg_SE",
       authDomain: "time-gate-game.firebaseapp.com",
       projectId: "time-gate-game",
-      storageBucket: "time-gate-game.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456:web:abcd1234"
+      storageBucket: "time-gate-game.firebasestorage.app",
+      messagingSenderId: "789791906588",
+      appId: "1:789791906588:web:5bf53149ff3b14de9178d9"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -138,19 +138,16 @@
 
         try {
             if (isLoginMode) {
-                // Вход существующего игрока
+                // Вход
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                
-                // Сохраняем UID игрока локально, чтобы другие страницы знали, чьи данные качать
-                localStorage.setItem('userUid', user.uid);
+                localStorage.setItem('userUid', userCredential.user.uid);
                 window.location.href = 'index.html'; 
             } else {
-                // Регистрация нового игрока
+                // Регистрация
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Создаем для него стартовые данные в базе данных
+                // Базовые стартовые данные для нового игрока
                 const initialGameData = {
                     sandCount: 150,
                     epochLevel: 1,
@@ -164,7 +161,6 @@
 
                 await setDoc(doc(db, "users", user.uid), initialGameData);
                 
-                // Сохраняем UID и пускаем в игру
                 localStorage.setItem('userUid', user.uid);
                 window.location.href = 'index.html';
             }
@@ -180,15 +176,13 @@
         errorMsg.style.display = 'block';
     }
 
-    // Переводчик базовых ошибок для удобства игрока
     function translateFirebaseError(code) {
-        if (code === 'auth/invalid-email') return 'Неверный формат Email';
+        if (code === 'auth/invalid-email') return 'Неверный формат Email (нужен @)';
         if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') return 'Неверный логин или пароль';
         if (code === 'auth/email-already-in-use') return 'Этот Email уже зарегистрирован';
         if (code === 'auth/weak-password') return 'Пароль должен быть не менее 6 символов';
         return 'Ошибка: ' + code;
     }
 </script>
-
 </body>
 </html>
