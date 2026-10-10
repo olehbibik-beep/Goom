@@ -317,6 +317,10 @@
   </div>
 
     <script>
+        // Охранник: если UID пользователя нет, выкидываем на страницу входа
+if (!localStorage.getItem('userUid')) {
+    window.location.replace('login.html');
+}
         // Инициализация данных 
         let gameData = JSON.parse(localStorage.getItem('timeGateData')) || {
             sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50
