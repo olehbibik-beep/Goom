@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Огородик Времени</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            background-color: #050505;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw; margin: 0; overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;
+        }
+
+        #game-frame {
+            position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px;
+            background-color: #1a110b; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            display: flex; flex-direction: column;
+        }
+        @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
+
+        /* --- СЛОИ ЗЕМЛИ --- */
+        .layers-container {
+            flex-grow: 1; display: flex; flex-direction: column; width: 100%; position: relative; z-index: 1;
+        }
+        .layer {
+            flex: 1; width: 100%; display: flex; justify-content: center; align-items: center;
+            position: relative; font-weight: bold; font-size: 11px; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 2px;
+            border-bottom: 2px solid rgba(0,0,0,0.3);
+        }
+        /* Сверху вниз: 7 - Поверхность, 1 - Глубина */
+        .layer-7 { background: linear-gradient(to bottom, #5b8e88 0%, #4a756f 50%, #3a5c57 100%); flex: 1.5; color: rgba(255,255,255,0.8); } /* Поверхность */
+        .layer-6 { background: #6b543a; } /* Мусор и песок */
+        .layer-5 { background: #5c3a21; } /* Глина */
+        .layer-4 { background: #4a2e1b; } /* Грунт */
+        .layer-3 { background: #382518; } /* Железная руда */
+        .layer-2 { background: #261a12; } /* Золотая жила */
+        .layer-1 { background: #17100a; border-bottom: none; } /* Камень / Порода */
+
+        /* --- РОСТОК И КАПЛЯ --- */
+        .sprout-container {
+            position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 85%; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; pointer-events: none;
+        }
+        .seed { width: 24px; height: 16px; background: #8c6a23; border-radius: 50%; box-shadow: inset -3px -3px 5px rgba(0,0,0,0.5), 0 0 10px rgba(140,106,35,0.8); position: relative; z-index: 2; transition: transform 0.3s; }
+        .seed.pulse { transform: scale(1.3); background: #a6ff4d; box-shadow: 0 0 20px #a6ff4d; }
+        
+        .stem-wrapper { width: 8px; height: 100%; position: relative; display: flex; align-items: flex-end; justify-content: center; }
+        .stem {
+            width: 100%; background: linear-gradient(to top, #2e8b57, #3cb371, #a6ff4d);
+            border-radius: 4px 4px 0 0; box-shadow: 0 0 10px rgba(60, 179, 113, 0.8);
+            transition: height 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: absolute; bottom: 0;
+        }
+
+        .water-drop {
+            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            width: 12px; height: 16px; background: #00bfff; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 0 15px #00bfff; opacity: 0; z-index: 20; pointer-events: none;
+        }
+        @keyframes drop-fall {
+            0% { top: -20px; opacity: 1; transform: translateX(-50%) scale(1); }
+            80% { top: 90%; opacity: 1; transform: translateX(-50%) scale(0.8, 1.2); }
+            100% { top: 100%; opacity: 0; transform: translateX(-50%) scale(2, 0.2); }
+        }
+
+        /* --- ИНТЕРФЕЙС УПРАВЛЕНИЯ --- */
+        .top-bar { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 30; }
+        .back-btn { background: rgba(0,0,0,0.6); border: 2px solid #4a433a; color: #fff; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        .info-box { background: rgba(0,0,0,0.8); border: 1px solid #20b2aa; padding: 10px 15px; border-radius: 8px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .info-box span { display: block; color: #8ba2c2; font-size: 12px; }
+        .info-box strong { font-size: 18px; color: #20b2aa; }
+
+        .water-btn-wrapper { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .water-btn {
+            background: linear-gradient(135deg, #00bfff, #0077b3); border: 2px solid #fff; border-radius: 50%;
+            width: 80px; height: 80px; font-size: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+            transition: transform 0.1s, filter 0.2s; display: flex; justify-content: center; align-items: center; outline: none;
+        }
+        .water-btn:active:not(:disabled) { transform: scale(0.9); }
+        .water-btn:disabled { background: #333; border-color: #555; box-shadow: none; cursor: not-allowed; filter: grayscale(100%); }
+        .drops-count { background: #fff; color: #000; padding: 4px 12px; border-radius: 15px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+
+        .tree-alert {
+            position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+            background: rgba(10,12,14,0.95); border: 2px solid #a6ff4d; padding: 25px; border-radius: 15px;
+            text-align: center; z-index: 100; opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
+            width: 85%; max-width: 380px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .tree-alert.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .tree-alert h2 { color: #a6ff4d; margin-bottom: 10px; text-shadow: 0 0 10px #a6ff4d; font-size: 24px; }
+        .tree-alert p { color: #fff; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
+        .tree-alert button { background: #a6ff4d; color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+
+    </style>
+</head>
+<body>
+
+<div id="game-frame">
+    
+    <div class="top-bar">
+        <button class="back-btn" onclick="window.location.replace('index.html')">◀ В Лагерь</button>
+        <div class="info-box">
+            <span>Выращено кустов</span>
+            <strong id="trees-count">0</strong>
+        </div>
+    </div>
+
+    <!-- 7 слоев -->
+    <div class="layers-container">
+        <div class="layer layer-7">Поверхность ☀️</div>
+        <div class="layer layer-6">Песок ⏳</div>
+        <div class="layer layer-5">Глина 🧱</div>
+        <div class="layer layer-4">Грунт 🌱</div>
+        <div class="layer layer-3">Железо 🪙</div>
+        <div class="layer layer-2">Золото ✨</div>
+        <div class="layer layer-1">Порода 🪨</div>
+    </div>
+
+    <div class="sprout-container">
+        <div class="water-drop" id="water-drop"></div>
+        <div class="stem-wrapper">
+            <div class="stem" id="stem" style="height: 0%;"></div>
+        </div>
+        <div class="seed" id="seed"></div>
+    </div>
+
+    <div class="water-btn-wrapper">
+        <div class="drops-count">Доступно капель: <span id="drops-display">0</span></div>
+        <button class="water-btn" id="water-btn" onclick="waterPlant()">💧</button>
+    </div>
+
+    <div class="tree-alert" id="tree-alert">
+        <h2>Росток пробился! 🎉</h2>
+        <p>Какое чудо! Прорвавшись сквозь камень, золото и песок, росток достиг солнечного света. На острове в деревне вырос прекрасный кустик!</p>
+        <button onclick="closeAlert()">Продолжить</button>
+    </div>
+
+</div>
+
+<script>
+    // Загрузка данных (Синхронизация с общим файлом)
+    let gameData = JSON.parse(localStorage.getItem('timeGateData')) || { 
+        epochLevel: 1, 
+        sandCount: 150, 
+        currentXP: 0, 
+        targetXP: 50 
+    };
+    
+    // Переменные огородика
+    if (typeof gameData.gardenWaterUsed === 'undefined') gameData.gardenWaterUsed = 0;
+    
+    let totalWaterAvailable = 0;
+    let currentProgress = 0; // от 0 до 7
+    let treesGrown = 0;
+
+    window.onload = () => {
+        calculateGardenStats();
+        updateUI();
+    };
+
+    function calculateGardenStats() {
+        // Доступно капель = Уровень эпохи минус уже потраченные
+        totalWaterAvailable = gameData.epochLevel - gameData.gardenWaterUsed;
+        if (totalWaterAvailable < 0) totalWaterAvailable = 0;
+
+        // Каждый 7-й уровень - это новый прорыв к свету (новое дерево/куст)
+        treesGrown = Math.floor(gameData.gardenWaterUsed / 7);
+        currentProgress = gameData.gardenWaterUsed % 7; 
+    }
+
+    function updateUI() {
+        document.getElementById('drops-display').innerText = totalWaterAvailable;
+        document.getElementById('trees-count').innerText = treesGrown;
+        
+        let btn = document.getElementById('water-btn');
+        btn.disabled = (totalWaterAvailable <= 0);
+
+        // Расчет высоты стебля
+        let targetHeight = (currentProgress / 7) * 100;
+        document.getElementById('stem').style.height = targetHeight + '%';
+    }
+
+    function waterPlant() {
+        if (totalWaterAvailable <= 0) return;
+
+        let btn = document.getElementById('water-btn');
+        btn.disabled = true; // Блок кликов
+
+        // Анимация капли
+        let drop = document.getElementById('water-drop');
+        drop.style.animation = 'none';
+        void drop.offsetWidth; // Сброс
+        drop.style.animation = 'drop-fall 0.8s ease-in forwards';
+
+        setTimeout(() => {
+            // Импульс семечка
+            let seed = document.getElementById('seed');
+            seed.classList.add('pulse');
+            setTimeout(() => seed.classList.remove('pulse'), 300);
+
+            // Фиксация изменений в БД
+            gameData.gardenWaterUsed++;
+            calculateGardenStats();
+            localStorage.setItem('timeGateData', JSON.stringify(gameData));
+            
+            updateUI();
+
+            // Если пробит 7-й слой
+            if (currentProgress === 0 && gameData.gardenWaterUsed > 0) {
+                setTimeout(() => {
+                    document.getElementById('tree-alert').classList.add('show');
+                    
+                    // Сбрасываем росток без анимации
+                    setTimeout(() => {
+                        let stem = document.getElementById('stem');
+                        stem.style.transition = 'none';
+                        stem.style.height = '0%';
+                        void stem.offsetWidth;
+                        stem.style.transition = 'height 1s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                    }, 500);
+                }, 1000);
+            } else {
+                // Если не финал - возвращаем кнопку активной
+                setTimeout(() => {
+                    if (totalWaterAvailable > 0) btn.disabled = false;
+                }, 400);
+            }
+
+        }, 800); 
+    }
+
+    function closeAlert() {
+        document.getElementById('tree-alert').classList.remove('show');
+        let btn = document.getElementById('water-btn');
+        if (totalWaterAvailable > 0) btn.disabled = false;
+    }
+</script>
+</body>
+</html>

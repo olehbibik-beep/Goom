@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Вход - Врата Времени</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            background-color: #050505; display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw; margin: 0; overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;
+        }
+
+        #game-frame {
+            position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px;
+            background: radial-gradient(circle at center, #1a2224 0%, #0a0c0f 100%);
+            overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        @media (min-width: 540px) and (min-height: 960px) {
+            #game-frame { border-radius: 12px; border: 1px solid #333; }
+        }
+
+        /* Звезды на фоне */
+        .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background-image: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 85% 30%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 50% 80%, rgba(255,255,255,0.1) 2px, transparent 2px); background-size: 100px 100px; animation: starDrift 60s linear infinite; }
+        @keyframes starDrift { from { transform: translateY(0); } to { transform: translateY(-100px); } }
+
+        /* Логотип */
+        .logo { z-index: 10; margin-bottom: 40px; text-align: center; }
+        .logo-icon { font-size: 60px; filter: drop-shadow(0 0 15px rgba(32,178,170,0.8)); animation: float 3s ease-in-out infinite alternate; }
+        .logo-text { font-size: 32px; font-weight: 900; color: #dcb254; text-shadow: 0 4px 10px rgba(0,0,0,0.8); margin-top: 10px; letter-spacing: 2px; text-transform: uppercase; }
+        @keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+
+        /* Форма */
+        .auth-form {
+            z-index: 10; width: 85%; max-width: 320px; background: rgba(10, 12, 15, 0.8);
+            border: 2px solid #4a433a; border-radius: 15px; padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+        }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 12px; color: #8ba2c2; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
+        .input-group input {
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #8ba2c2; color: #fff;
+            padding: 12px 15px; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.3s;
+        }
+        .input-group input:focus { border-color: #20b2aa; box-shadow: 0 0 10px rgba(32,178,170,0.3); }
+
+        .btn {
+            width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
+            cursor: pointer; transition: transform 0.2s, filter 0.2s; margin-bottom: 15px; outline: none;
+        }
+        .btn-primary { background: linear-gradient(135deg, #20b2aa, #137a75); color: #fff; box-shadow: 0 4px 15px rgba(32,178,170,0.4); border: 1px solid #fff; }
+        .btn-primary:active { transform: scale(0.95); }
+        
+        .switch-mode { text-align: center; font-size: 13px; color: #8ba2c2; cursor: pointer; text-decoration: underline; margin-top: 10px; }
+        .switch-mode:hover { color: #fff; }
+
+        .error-msg { color: #ff4500; font-size: 13px; text-align: center; margin-bottom: 15px; display: none; }
+    </style>
+</head>
+<body>
+
+<div id="game-frame">
+    <div class="stars"></div>
+    <div class="logo">
+        <div class="logo-icon">🌀</div>
+        <div class="logo-text">Врата Времени</div>
+    </div>
+
+    <div class="auth-form" id="login-box">
+        <div class="error-msg" id="error-msg">Ошибка</div>
+        
+        <div class="input-group">
+            <label>Email хранителя</label>
+            <input type="email" id="email" placeholder="example@mail.com" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Тайный пароль</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="off">
+        </div>
+
+        <button class="btn btn-primary" id="action-btn">Войти в игру</button>
+        <div class="switch-mode" id="switch-btn">Нет аккаунта? Создать</div>
+    </div>
+</div>
+
+<!-- ПОДКЛЮЧАЕМ ФАЙРБЕЙЗ (Модульная структура) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    // ВНИМАНИЕ: Сюда вставьте ваш настоящий конфиг
+    const firebaseConfig = {
+      apiKey: "ВАШ_API_KEY",
+      authDomain: "time-gate-game.firebaseapp.com",
+      projectId: "time-gate-game",
+      storageBucket: "time-gate-game.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456:web:abcd1234"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let isLoginMode = true;
+    const actionBtn = document.getElementById('action-btn');
+    const switchBtn = document.getElementById('switch-btn');
+    const errorMsg = document.getElementById('error-msg');
+
+    switchBtn.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        errorMsg.style.display = 'none';
+        if (isLoginMode) {
+            actionBtn.innerText = 'Войти в игру';
+            switchBtn.innerText = 'Нет аккаунта? Создать';
+        } else {
+            actionBtn.innerText = 'Создать аккаунт';
+            switchBtn.innerText = 'Уже есть аккаунт? Войти';
+        }
+    });
+
+    actionBtn.addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if(!email || !password) {
+            showError('Введите email и пароль!');
+            return;
+        }
+
+        actionBtn.innerText = "Загрузка...";
+        actionBtn.disabled = true;
+
+        try {
+            if (isLoginMode) {
+                // Вход существующего игрока
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                // Сохраняем UID игрока локально, чтобы другие страницы знали, чьи данные качать
+                localStorage.setItem('userUid', user.uid);
+                window.location.href = 'index.html'; 
+            } else {
+                // Регистрация нового игрока
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Создаем для него стартовые данные в базе данных
+                const initialGameData = {
+                    sandCount: 150,
+                    epochLevel: 1,
+                    currentXP: 0,
+                    targetXP: 50,
+                    loginStreak: 0,
+                    lastClaimDate: null,
+                    gardenWaterUsed: 0,
+                    lastHarvestTime: null
+                };
+
+                await setDoc(doc(db, "users", user.uid), initialGameData);
+                
+                // Сохраняем UID и пускаем в игру
+                localStorage.setItem('userUid', user.uid);
+                window.location.href = 'index.html';
+            }
+        } catch (error) {
+            showError(translateFirebaseError(error.code));
+            actionBtn.disabled = false;
+            actionBtn.innerText = isLoginMode ? 'Войти в игру' : 'Создать аккаунт';
+        }
+    });
+
+    function showError(text) {
+        errorMsg.innerText = text;
+        errorMsg.style.display = 'block';
+    }
+
+    // Переводчик базовых ошибок для удобства игрока
+    function translateFirebaseError(code) {
+        if (code === 'auth/invalid-email') return 'Неверный формат Email';
+        if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') return 'Неверный логин или пароль';
+        if (code === 'auth/email-already-in-use') return 'Этот Email уже зарегистрирован';
+        if (code === 'auth/weak-password') return 'Пароль должен быть не менее 6 символов';
+        return 'Ошибка: ' + code;
+    }
+</script>
+
+</body>
+</html>

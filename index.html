@@ -7,7 +7,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
-        /* --- ЧЕРНЫЙ ФОН БРАУЗЕРА (ДЛЯ ПК) --- */
         body {
             background-color: #050505;
             display: flex; justify-content: center; align-items: center;
@@ -15,12 +14,11 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;
         }
 
-        /* --- ИГРОВОЙ КАДР (ПРИВЯЗКА МАКСИМУМ 540x960) --- */
         #game-frame {
             position: relative;
             width: 100%; height: 100%;
             max-width: 540px; max-height: 960px;
-            background-color: #5b8e88; /* Цвет воды */
+            background-color: #5b8e88; 
             overflow: hidden;
             box-shadow: 0 0 30px rgba(0,0,0,0.9);
         }
@@ -40,14 +38,13 @@
         .cloud-right::before { width: 80%; aspect-ratio: 1; left: -25%; top: 5%; }
         .cloud-right::after { width: 100%; aspect-ratio: 1; left: -45%; top: 35%; }
         .cloud-right .fluff { width: 70%; aspect-ratio: 1; left: -20%; top: 75%; }
-        
         .layer-3 .cloud-left, .layer-3 .cloud-right { background: #8ba2c2; transition-duration: 1.4s; }
         .layer-2 .cloud-left, .layer-2 .cloud-right { background: #b8c5d1; transition-duration: 1.1s; }
         .layer-1 .cloud-left, .layer-1 .cloud-right { background: #f0f4f8; transition-duration: 0.8s; }
         .clouds-transition.open .cloud-left { transform: translateX(-150%); }
         .clouds-transition.open .cloud-right { transform: translateX(150%); }
 
-        /* --- ВЕРХНИЙ БЛОК (СИНХРОНИЗАЦИЯ С ЧАСАМИ) --- */
+        /* --- ВЕРХНИЙ БЛОК --- */
         .top-status-container { 
             position: absolute; top: 20px; 
             left: 50%; transform: translateX(-50%); 
@@ -79,17 +76,14 @@
             border-top: 2px solid #3a3f42; padding: 10px 10px 20px 10px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; box-shadow: 0 -15px 30px rgba(0,0,0,0.8);
         }
         .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; }
-        
         .menu-icon { font-size: 26px; cursor: pointer; color: #8b7968; transition: color 0.3s, transform 0.3s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
         .menu-icon:hover { color: #dcb254; transform: translateY(-3px); }
-
         .settings-icon { fill: #8b7968; width: 30px; height: 30px; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: fill 0.3s, transform 0.3s; margin-right: 10px; }
         .settings-icon:hover { fill: #dcb254; transform: translateY(-3px) rotate(45deg); }
 
         .boy-wrapper { 
             position: relative; pointer-events: auto; cursor: pointer; 
-            margin-bottom: -15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
-            transition: transform 0.2s;
+            margin-bottom: -15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s;
         }
         .boy-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
 
@@ -102,90 +96,117 @@
 
         /* --- КАРТА ДЕРЕВНИ НА ВЕСЬ ЭКРАН --- */
         .map-container {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url('viledges_2_2.jpg');
-            background-size: cover; background-position: center;
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('viledges_2_3.jpg'); background-size: cover; background-position: center; z-index: 10;
         }
 
-        /* --- ИНТЕРАКТИВНЫЕ МЕТКИ НА КАРТЕ --- */
+        /* --- НЕВИДИМЫЕ ИНТЕРАКТИВНЫЕ МЕТКИ НА ЗДАНИЯХ --- */
         .map-pin {
-            position: absolute; transform: translate(-50%, -100%);
-            display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; z-index: 15;
-            transition: transform 0.2s;
+            position: absolute; transform: translate(-50%, -50%);
+            cursor: pointer; z-index: 15; border-radius: 20px;
+            /* Раскомментируйте строку ниже, чтобы увидеть зоны клика: */
+            /* border: 2px solid rgba(255, 0, 0, 0.5); background: rgba(255,0,0,0.2); */
         }
-        .map-pin:hover { transform: translate(-50%, -105%) scale(1.1); z-index: 20; }
-        .map-pin:active { transform: translate(-50%, -100%) scale(0.95); }
+        .map-pin:active { transform: translate(-50%, -50%) scale(0.95); } /* Легкий отклик при клике */
 
-        .pin-label {
-            background: rgba(10, 12, 14, 0.85); border: 2px solid #4a433a;
-            padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; color: #fcebbb;
-            text-shadow: 0 2px 4px #000; box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-            white-space: nowrap; transition: border-color 0.3s, color 0.3s;
-        }
-        .map-pin:hover .pin-label { border-color: #dcb254; color: #ffdf00; }
+        /* Точные невидимые контуры поверх зданий */
+        #pin-hall { top: 38%; left: 52%; width: 120px; height: 100px; }      /* Зал Царства */
+        #pin-lib { top: 48%; left: 26%; width: 90px; height: 90px; }        /* Библиотека */
+        #pin-gate { top: 56%; left: 50%; width: 80px; height: 80px; }       /* Врата */
+        #pin-tent { top: 52%; left: 78%; width: 90px; height: 90px; }       /* Палатка */
+        #pin-mpso { top: 67%; left: 65%; width: 80px; height: 80px; }       /* МПСО */
+        #pin-garden { top: 68%; left: 28%; width: 80px; height: 80px; }     /* Огород (Зона для перехода) */
 
-        .pin-pointer {
-            width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
-            border-top: 8px solid #4a433a; margin-top: -1px;
-            transition: border-top-color 0.3s;
-        }
-        .map-pin:hover .pin-pointer { border-top-color: #dcb254; }
-
-        /* Новые координаты поверх вертикальной картинки viledges_2_2.jpg */
-        #pin-hall { top: 48%; left: 52%; }      /* Зал Царства (Верхний большой дом) */
-        #pin-lib { top: 55%; left: 28%; }       /* Библиотека (Левый дом) */
-        #pin-gate { top: 58%; left: 51%; }      /* Врата (Колодец в центре) */
-        #pin-tent { top: 56%; left: 78%; }      /* Ежедневки (Палатка справа) */
-        #pin-mpso { top: 66%; left: 63%; }      /* МПСО (Домик снизу справа) */
-
-        /* Спецэффекты для Врат и Палатки */
-        #pin-gate .pin-label { border-color: #20b2aa; color: #fff; box-shadow: 0 0 15px rgba(32,178,170,0.6); animation: float-gate 2s infinite alternate; }
-        #pin-gate .pin-pointer { border-top-color: #20b2aa; }
-        @keyframes float-gate { 0% { transform: translateY(0); } 100% { transform: translateY(-5px); box-shadow: 0 0 25px rgba(32,178,170,0.9); } }
-
-        /* Индикатор уведомлений на палатке (Ежедневки) */
-        .notification-dot { position: absolute; top: -5px; right: -5px; width: 14px; height: 14px; background: #ff4500; border: 2px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 10px #ff4500; }
+        /* Красная точка уведомлений теперь крепится прямо к прозрачной зоне палатки */
+        .notification-dot { position: absolute; top: 10px; right: 10px; width: 16px; height: 16px; background: #ff4500; border: 2px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 10px #ff4500; }
         .notification-dot.active { display: block; }
-        #pin-tent.reward-ready .pin-label { border-color: #ffdf00; animation: float-gate 1.5s infinite alternate; }
-        #pin-tent.reward-ready .pin-pointer { border-top-color: #ffdf00; }
 
-        /* --- ВСПЛЫВАЮЩЕЕ ОКНО НАГРАД (MODAL) --- */
+        /* ========================================= */
+        /* --- ОГОРОД И ВЫРАЩЕННЫЙ КУСТИК --- */
+        /* ========================================= */
+        .grown-bush-container {
+            position: absolute; top: 61%; left: 24%;
+            width: 80px; height: 80px; z-index: 20;
+            cursor: pointer; pointer-events: auto; /* Теперь куст кликабельный */
+            display: none; /* Скрыт, пока не выростет */
+            animation: wind-sway 4s ease-in-out infinite alternate;
+        }
+        .grown-bush-container.active { display: block; }
+        .grown-bush-container:active { transform: scale(0.9) !important; animation: none; }
+        .grown-bush-container img {
+            width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+            mix-blend-mode: multiply; /* Убирает белый фон (лучше вырезать в PNG) */
+        }
+        @keyframes wind-sway {
+            0% { transform: skewX(-2deg) scale(1); }
+            100% { transform: skewX(2deg) scale(1.02); }
+        }
+
+        /* Пузырек с песчинками над кустом */
+        .harvest-bubble {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            background: #ffdf00; color: #000; font-weight: bold; font-size: 14px;
+            padding: 2px 8px; border-radius: 10px; border: 1px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.8); z-index: 25;
+            animation: float-bubble 1.5s infinite alternate; pointer-events: none;
+        }
+        @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -5px); } }
+
+        /* ========================================= */
+        /* --- ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (ПРИБОЙ) --- */
+        /* ========================================= */
+        .surf-wave { position: absolute; width: 30px; height: 8px; border-bottom: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; }
+        .surf-l1 { top: 69%; left: 16%; animation: surf-left 4s infinite ease-in-out 0s; }
+        .surf-l2 { top: 76%; left: 28%; animation: surf-left 4.5s infinite ease-in-out 1.2s; }
+        .surf-l3 { top: 82%; left: 40%; animation: surf-left 5s infinite ease-in-out 2.5s; }
+        .surf-r1 { top: 81%; left: 60%; animation: surf-right 4.2s infinite ease-in-out 0.8s; }
+        .surf-r2 { top: 73%; left: 74%; animation: surf-right 4.8s infinite ease-in-out 3s; }
+        .surf-r3 { top: 67%; left: 86%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
+        @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
+        @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
+
+        /* ========================================= */
+        /* --- КОНТЕЙНЕР ДЛЯ ЛОДКИ --- */
+        /* ========================================= */
+        .boat-container { position: absolute; top: 73%; left: 64%; width: 75px; height: 50px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+        @keyframes boat-rock { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(3px) rotate(2deg); } }
+
+        /* ========================================= */
+        /* --- КРОШЕЧНЫЕ СТАИ ПТИЦ --- */
+        /* ========================================= */
+        .flock-container { position: absolute; top: 20%; left: -20%; width: 120px; height: 80px; pointer-events: none; z-index: 11; opacity: 0.5; }
+        .tiny-bird { position: absolute; width: 6px; height: 4px; fill: #1a2226; animation: bird-wander 3s ease-in-out infinite alternate; }
+        @keyframes fly-across { 0% { transform: translateX(0vw) translateY(0); } 50% { transform: translateX(70vw) translateY(-20px); } 100% { transform: translateX(140vw) translateY(10px); } }
+        @keyframes fly-across-reverse { 0% { transform: translateX(120vw) translateY(0) scaleX(-1); } 50% { transform: translateX(50vw) translateY(15px) scaleX(-1); } 100% { transform: translateX(-40vw) translateY(-10px) scaleX(-1); } }
+        @keyframes bird-wander { 0% { transform: translate(0, 0) scale(var(--scale)); } 100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale)); } }
+
+        /* --- ВСПЛЫВАЮЩЕЕ ОКНО НАГРАД --- */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.8); backdrop-filter: blur(5px); z-index: 200; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; }
         .modal-overlay.show { opacity: 1; visibility: visible; pointer-events: auto; }
-        
         .daily-modal { background: linear-gradient(135deg, #1f2427, #121517); border: 2px solid #dcb254; border-radius: 15px; width: 90%; max-width: 380px; padding: 25px 15px; text-align: center; box-shadow: 0 10px 30px #000; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); position: relative; }
         .modal-overlay.show .daily-modal { transform: scale(1); }
-        
         .daily-title { color: #dcb254; font-size: 22px; font-weight: bold; margin-bottom: 5px; text-shadow: 0 2px 4px #000; }
         .daily-subtitle { color: #8ba2c2; font-size: 14px; margin-bottom: 20px; }
-
         .days-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
         .day-card { background: rgba(0,0,0,0.5); border: 1px solid #4a433a; border-radius: 8px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: transform 0.2s, box-shadow 0.2s; }
         .day-title { font-size: 12px; color: #8ba2c2; }
         .day-reward { font-size: 16px; font-weight: bold; color: #fcebbb; display: flex; align-items: center; gap: 3px;}
         .day-reward svg { width: 14px; height: 14px; fill: #dcb254; }
-        
         .day-card.claimed { border-color: #8c6a23; opacity: 0.5; }
         .day-card.claimed .day-title { color: #8c6a23; text-decoration: line-through; }
-        
         .day-card.active { background: rgba(32, 178, 170, 0.15); border-color: #20b2aa; box-shadow: 0 0 10px rgba(32,178,170,0.5); transform: scale(1.05); }
         .day-card.active .day-title { color: #20b2aa; font-weight: bold; }
         .day-card.active .day-reward { color: #fff; text-shadow: 0 0 5px #20b2aa; }
         .day-card.active .day-reward svg { fill: #fff; }
-
         .day-card:last-child { grid-column: span 3; background: linear-gradient(135deg, rgba(220,178,84,0.1), rgba(140,106,35,0.2)); border-color: #dcb254; flex-direction: row; justify-content: space-around; padding: 15px; }
         .day-card:last-child .day-title { font-size: 14px; color: #dcb254; font-weight: bold; }
         .day-card:last-child .day-reward { font-size: 20px; color: #ffdf00; }
         .day-card:last-child .day-reward svg { width: 18px; height: 18px; fill: #ffdf00; }
-
         .claim-btn { background: linear-gradient(135deg, #20b2aa, #137a75); border: 1px solid #fff; color: #fff; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: filter 0.2s, transform 0.2s; width: 100%; outline: none;}
         .claim-btn:hover:not(:disabled) { filter: brightness(1.2); }
         .claim-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .claim-btn:disabled { background: #3a3f42; border-color: #555; color: #888; cursor: not-allowed; box-shadow: none; }
-
         .close-modal-btn { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #121517; border: 2px solid #dcb254; border-radius: 50%; color: #dcb254; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px #000; z-index: 5; }
         .close-modal-btn:active { transform: scale(0.9); }
 
@@ -196,50 +217,53 @@
   <!-- ГЛАВНЫЙ ИГРОВОЙ КАДР -->
   <div id="game-frame">
 
-    <!-- КАРТА ДЕРЕВНИ НА ВЕСЬ ЭКРАН -->
     <div class="map-container">
         
-        <!-- Верхний дом (Зал Царства) -->
-        <div class="map-pin" id="pin-hall" onclick="alert('Зал Царства: Место встреч и духовного обучения. В разработке!')">
-            <div class="pin-label">Зал Царства</div>
-            <div class="pin-pointer"></div>
+        <!-- Прибой -->
+        <div class="surf-wave surf-l1"></div><div class="surf-wave surf-l2"></div><div class="surf-wave surf-l3"></div>
+        <div class="surf-wave surf-r1"></div><div class="surf-wave surf-r2"></div><div class="surf-wave surf-r3"></div>
+
+        <!-- Лодка -->
+        <div class="boat-container"><img class="boat-img" src="boat.png" alt="Лодка"></div>
+
+        <!-- ПОЛУЧЕННЫЙ ВЫРАЩЕННЫЙ КУСТИК (Кликабельный для сбора песка) -->
+        <div class="grown-bush-container" id="grown-bush" onclick="harvestSand(event)">
+            <img src="bush.png" alt="Выросший куст">
+            <div class="harvest-bubble" id="harvest-bubble" style="display:none;">+0</div>
         </div>
 
-        <!-- Левый дом (Библиотека) -->
-        <div class="map-pin" id="pin-lib" onclick="alert('Библиотека: Архивные карточки и события. В разработке!')">
-            <div class="pin-label">Библиотека</div>
-            <div class="pin-pointer"></div>
-        </div>
+        <div id="birds-layer"></div>
 
-        <!-- Центральный колодец (ВРАТА - Переход к часам) -->
-        <div class="map-pin" id="pin-gate" onclick="goToLocation('gate.html')">
-            <div class="pin-label">🌀 Врата Времени</div>
-            <div class="pin-pointer"></div>
-        </div>
+        <!-- НЕВИДИМЫЕ ЗОНЫ КЛИКА ПОВЕРХ ЗДАНИЙ (Без текста) -->
+        <!-- Зал Царства -->
+        <div class="map-pin" id="pin-hall" onclick="alert('Зал Царства: Место встреч и духовного обучения. В разработке!')"></div>
 
-        <!-- Нижний правый дом (МПСО) -->
-        <div class="map-pin" id="pin-mpso" onclick="alert('МПСО: Управление строительством. В разработке!')">
-            <div class="pin-label">МПСО</div>
-            <div class="pin-pointer"></div>
-        </div>
+        <!-- Библиотека -->
+        <div class="map-pin" id="pin-lib" onclick="alert('Библиотека: Архивные карточки и события. В разработке!')"></div>
 
-        <!-- Палатка справа (ЕЖЕДНЕВНЫЕ НАГРАДЫ) -->
+        <!-- Врата Времени -->
+        <div class="map-pin" id="pin-gate" onclick="goToLocation('gate.html')"></div>
+
+        <!-- МПСО -->
+        <div class="map-pin" id="pin-mpso" onclick="alert('МПСО: Управление строительством. В разработке!')"></div>
+
+        <!-- Палатка Ежедневных наград -->
         <div class="map-pin" id="pin-tent" onclick="openDailyModal()">
             <div class="notification-dot" id="daily-dot"></div>
-            <div class="pin-label">🎁 Пропуск</div>
-            <div class="pin-pointer"></div>
         </div>
+
+        <!-- Огород Времени (Скрытая зона рядом с кустом для перехода) -->
+        <div class="map-pin" id="pin-garden" onclick="goToLocation('garden.html')"></div>
 
     </div>
 
-    <!-- ОБЛАКА ПЕРЕХОДА -->
     <div class="clouds-transition" id="clouds">
         <div class="cloud-layer layer-3"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
         <div class="cloud-layer layer-2"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
         <div class="cloud-layer layer-1"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
     </div>
 
-    <!-- ВЕРХНИЙ БЛОК (СИНХРОНИЗИРОВАН С ЧАСАМИ) -->
+    <!-- ВЕРХНИЙ БЛОК -->
     <div class="top-status-container">
         <div class="level-badge" onclick="alert('Ваш уровень Хранителя. Повышайте его, собирая опыт (XP) в путешествиях!')">
             <svg class="level-gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58z" /></svg>
@@ -250,12 +274,12 @@
             <span class="xp-text" id="xp-text">0 / 50</span>
         </div>
         <div class="level-up-badge">
-            <svg class="level-up-gear" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58z" /></svg>
+            <svg class="level-up-gear" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61L19.14,12.94z" /></svg>
             <span class="level-up-arrow">↑</span>
         </div>
     </div>
 
-    <!-- НИЖНЕЕ МЕНЮ (СИНХРОНИЗИРОВАН С ЧАСАМИ) -->
+    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
             <div class="menu-icon" onclick="alert('Ваш инвентарь')">🎒</div>
@@ -284,61 +308,172 @@
             <h2 class="daily-title">Пропуск</h2>
             <p class="daily-subtitle">Заходите каждый день и получайте Песчинки!</p>
             
-            <div class="days-grid" id="days-grid">
-                <!-- Карточки генерируются через JS -->
-            </div>
+            <div class="days-grid" id="days-grid"></div>
 
             <button class="claim-btn" id="claim-btn" onclick="claimDailyReward()">Забрать награду</button>
         </div>
     </div>
 
-  </div> <!-- КОНЕЦ ИГРОВОГО КАДРА -->
+  </div>
 
     <script>
-        // Инициализация данных (Синхронизация с рулеткой)
+        // Инициализация данных 
         let gameData = JSON.parse(localStorage.getItem('timeGateData')) || {
             sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50
         };
         
-        // Добавляем параметры для ежедневки, если их нет
         if (typeof gameData.loginStreak === 'undefined') gameData.loginStreak = 0;
         if (typeof gameData.lastClaimDate === 'undefined') gameData.lastClaimDate = null;
+        if (typeof gameData.gardenWaterUsed === 'undefined') gameData.gardenWaterUsed = 0;
+        if (typeof gameData.lastHarvestTime === 'undefined') gameData.lastHarvestTime = null;
 
-        // Награды за 7 дней
         const dailyRewards = [10, 15, 20, 25, 30, 50, 100];
 
         window.onload = () => {
             updateUI();
             checkDailyStatus();
+            checkBushVisibility(); 
+            createBirdsFlock(); 
+
+            // Запускаем цикл проверки пассивного дохода (каждую минуту)
+            setInterval(checkHarvest, 60000);
 
             setTimeout(() => { 
                 document.getElementById('clouds').classList.add('open'); 
             }, 200);
         };
 
+        // --- ЛОГИКА ПАССИВНОГО ДОХОДА С ОГОРОДА ---
+        function checkBushVisibility() {
+            let treesGrown = Math.floor(gameData.gardenWaterUsed / 7);
+            let bushContainer = document.getElementById('grown-bush');
+            
+            if (treesGrown >= 1) {
+                bushContainer.classList.add('active');
+                if (!gameData.lastHarvestTime) {
+                    // Если куст только вырос, запускаем таймер сбора
+                    gameData.lastHarvestTime = Date.now();
+                    localStorage.setItem('timeGateData', JSON.stringify(gameData));
+                }
+                checkHarvest(); // Проверяем, накопилось ли уже что-то
+            } else {
+                bushContainer.classList.remove('active');
+            }
+        }
+
+        function checkHarvest() {
+            let treesGrown = Math.floor(gameData.gardenWaterUsed / 7);
+            if (treesGrown < 1 || !gameData.lastHarvestTime) return;
+
+            let msPassed = Date.now() - gameData.lastHarvestTime;
+            // 60 песчинок за 24 часа за каждый куст (86400000 миллисекунд в сутках)
+            let accumulated = Math.floor((msPassed / 86400000) * (60 * treesGrown));
+            
+            let bubble = document.getElementById('harvest-bubble');
+            if (accumulated > 0) {
+                bubble.innerText = `+${accumulated}`;
+                bubble.style.display = 'block';
+            } else {
+                bubble.style.display = 'none';
+            }
+        }
+
+        // Сбор песка по клику на кустик
+        function harvestSand(e) {
+            e.stopPropagation(); // Чтобы не нажалась земля (переход в огород)
+            let treesGrown = Math.floor(gameData.gardenWaterUsed / 7);
+            if (treesGrown < 1) return;
+
+            let msPassed = Date.now() - gameData.lastHarvestTime;
+            let msPerSand = 86400000 / (60 * treesGrown);
+            let accumulated = Math.floor(msPassed / msPerSand);
+
+            if (accumulated > 0) {
+                gameData.sandCount += accumulated;
+                // Сдвигаем время сбора вперед ровно на столько, сколько собрали (остаток времени сохраняется!)
+                gameData.lastHarvestTime += accumulated * msPerSand;
+                localStorage.setItem('timeGateData', JSON.stringify(gameData));
+                
+                updateUI();
+                checkHarvest();
+                showFloatingText(e.clientX, e.clientY, `+${accumulated} ⏳`);
+            } else {
+                alert(`Песчинки еще копятся!\nВаши кусты дают ${60 * treesGrown} шт. в сутки.`);
+            }
+        }
+
+        // Красивый отлетающий текст при сборе
+        function showFloatingText(x, y, text) {
+            let el = document.createElement('div');
+            el.innerText = text;
+            el.style.position = 'fixed';
+            el.style.left = (x - 20) + 'px';
+            el.style.top = y + 'px';
+            el.style.color = '#ffdf00';
+            el.style.fontWeight = 'bold';
+            el.style.fontSize = '20px';
+            el.style.textShadow = '0 2px 4px #000';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '1000';
+            el.style.transition = 'all 1s ease-out';
+            document.body.appendChild(el);
+
+            setTimeout(() => {
+                el.style.transform = 'translateY(-50px)';
+                el.style.opacity = '0';
+            }, 50);
+
+            setTimeout(() => { el.remove(); }, 1050);
+        }
+
+        // --- ГЕНЕРАЦИЯ СТАИ ПТИЦ ---
+        function createBirdsFlock() {
+            const birdsLayer = document.getElementById('birds-layer');
+            for(let f = 0; f < 2; f++) {
+                let flock = document.createElement('div');
+                flock.className = 'flock-container';
+                flock.style.top = (10 + f * 15) + '%';
+                if(f === 0) { flock.style.animation = `fly-across 45s linear infinite ${f * 10}s`; } 
+                else { flock.style.animation = `fly-across-reverse 50s linear infinite ${f * 20}s`; }
+                
+                for(let i = 0; i < 15; i++) {
+                    let bird = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    bird.setAttribute("viewBox", "0 0 30 20");
+                    bird.classList.add("tiny-bird");
+                    bird.style.left = (Math.random() * 100) + 'px';
+                    bird.style.top = (Math.random() * 80) + 'px';
+                    
+                    let randomScale = 0.3 + Math.random() * 0.7;
+                    bird.style.setProperty('--dx', (Math.random() * 40 - 20) + 'px');
+                    bird.style.setProperty('--dy', (Math.random() * 40 - 20) + 'px');
+                    bird.style.setProperty('--scale', randomScale);
+                    bird.style.animationDelay = (Math.random() * 4) + 's';
+                    bird.style.animationDuration = (2 + Math.random() * 3) + 's';
+                    
+                    let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute("d", "M0,10 Q5,0 15,10 Q25,0 30,10 Q25,5 15,15 Q5,5 0,10 Z");
+                    bird.appendChild(path); flock.appendChild(bird);
+                }
+                birdsLayer.appendChild(flock);
+            }
+        }
+
         function updateUI() {
-            // Обновляем текст
             document.getElementById('level-display').innerText = gameData.epochLevel || 1;
             document.getElementById('sand-display').innerText = gameData.sandCount || 0;
             document.getElementById('xp-text').innerText = `${Math.floor(gameData.currentXP)} / ${gameData.targetXP}`;
-            
-            // Обновляем полосу XP
             let fillPercent = (gameData.currentXP / gameData.targetXP) * 100;
             document.getElementById('progress-fill').style.width = fillPercent + '%';
         }
 
-        // Проверяем, можно ли сегодня забрать награду
         function checkDailyStatus() {
             let today = new Date().toDateString(); 
             let canClaim = (gameData.lastClaimDate !== today);
-            
             let tentPin = document.getElementById('pin-tent');
             if (canClaim) {
                 document.getElementById('daily-dot').classList.add('active');
-                tentPin.classList.add('reward-ready');
             } else {
                 document.getElementById('daily-dot').classList.remove('active');
-                tentPin.classList.remove('reward-ready');
             }
         }
 
@@ -354,80 +489,55 @@
         function renderDaysGrid() {
             let grid = document.getElementById('days-grid');
             grid.innerHTML = '';
-            
             let today = new Date().toDateString();
             let canClaimToday = (gameData.lastClaimDate !== today);
-            
             let currentDayIndex = gameData.loginStreak % 7;
 
             for (let i = 0; i < 7; i++) {
                 let card = document.createElement('div');
                 card.className = 'day-card';
-                
                 let title = document.createElement('div');
-                title.className = 'day-title';
-                title.innerText = `День ${i + 1}`;
-                
+                title.className = 'day-title'; title.innerText = `День ${i + 1}`;
                 let reward = document.createElement('div');
                 reward.className = 'day-reward';
-                reward.innerHTML = `
-                    <svg viewBox="0 0 24 24"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>
-                    ${dailyRewards[i]}
-                `;
+                reward.innerHTML = `<svg viewBox="0 0 24 24"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>${dailyRewards[i]}`;
 
-                if (i < currentDayIndex) {
-                    card.classList.add('claimed');
-                } else if (i === currentDayIndex) {
-                    if (canClaimToday) {
-                        card.classList.add('active'); 
-                    } else {
-                        card.classList.add('claimed'); 
-                    }
+                if (i < currentDayIndex) { card.classList.add('claimed'); } 
+                else if (i === currentDayIndex) {
+                    if (canClaimToday) { card.classList.add('active'); } 
+                    else { card.classList.add('claimed'); }
                 }
-
-                card.appendChild(title);
-                card.appendChild(reward);
-                grid.appendChild(card);
+                card.appendChild(title); card.appendChild(reward); grid.appendChild(card);
             }
 
             let btn = document.getElementById('claim-btn');
             if (canClaimToday) {
-                btn.disabled = false;
-                btn.innerText = "Забрать награду";
+                btn.disabled = false; btn.innerText = "Забрать награду";
             } else {
-                btn.disabled = true;
-                btn.innerText = "Возвращайтесь завтра";
+                btn.disabled = true; btn.innerText = "Возвращайтесь завтра";
             }
         }
 
         function claimDailyReward() {
             let today = new Date().toDateString();
             if (gameData.lastClaimDate === today) return; 
-
             let currentDayIndex = gameData.loginStreak % 7;
             let reward = dailyRewards[currentDayIndex];
 
             gameData.sandCount += reward;
             gameData.lastClaimDate = today;
             gameData.loginStreak++;
-            
             localStorage.setItem('timeGateData', JSON.stringify(gameData));
-            updateUI();
-            checkDailyStatus();
-            renderDaysGrid(); 
+            updateUI(); checkDailyStatus(); renderDaysGrid(); 
 
             let btn = document.getElementById('claim-btn');
             btn.innerText = `Получено +${reward} ⏳!`;
-            setTimeout(() => {
-                closeDailyModal();
-            }, 1500);
+            setTimeout(() => { closeDailyModal(); }, 1500);
         }
 
         function goToLocation(url) {
             document.getElementById('clouds').classList.remove('open');
-            setTimeout(() => { 
-                window.location.replace(url); 
-            }, 1200);
+            setTimeout(() => { window.location.replace(url); }, 1200);
         }
     </script>
 </body>
