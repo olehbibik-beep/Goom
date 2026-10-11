@@ -51,8 +51,9 @@
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: scale(0.95); }
         
-        #pin-hall { top: 54.5%; left: 42.5%; width: 150px; height: 180px; }  
-        #pin-lib { top: 54%; left: 57%; width: 150px; height: 150px; }       
+        /* ИСПРАВЛЕННЫЕ КООРДИНАТЫ ИЗ DEV-РЕЖИМА */
+        #pin-hall { top: 53.7%; left: 45.4%; width: 150px; height: 180px; }  
+        #pin-lib { top: 54.8%; left: 59.7%; width: 150px; height: 150px; }       
         #pin-mpso { top: 46%; left: 51%; width: 220px; height: 140px; }      
         #pin-gate { top: 61%; left: 50.5%; width: 100px; height: 100px; }    
         #pin-tent { top: 65%; left: 51.5%; width: 120px; height: 100px; }    
@@ -61,28 +62,29 @@
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: #ff4500; border: 3px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 15px #ff4500; }
         .notification-dot.active { display: block; }
 
-        .grown-bush-container { position: absolute; top: 62.5%; left: 42.5%; width: 110px; height: 110px; z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
+        /* ОГОРОД И ВЫРАЩЕННЫЙ КУСТИК (Новые координаты) */
+        .grown-bush-container { position: absolute; top: 46.7%; left: 51.0%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
         .grown-bush-container.active { display: block; }
-        .grown-bush-container:active { transform: scale(0.9) !important; animation: none; }
+        .grown-bush-container:active { transform: translate(-50%, -50%) scale(0.9) !important; animation: none; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4)); mix-blend-mode: multiply; }
-        @keyframes wind-sway { 0% { transform: skewX(-2deg) scale(1); } 100% { transform: skewX(2deg) scale(1.02); } }
+        @keyframes wind-sway { 0% { transform: translate(-50%, -50%) skewX(-2deg) scale(1); } 100% { transform: translate(-50%, -50%) skewX(2deg) scale(1.02); } }
         
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -8px); } }
 
-        /* ЛОДКА (Обновленные координаты) */
-        .boat-container { position: absolute; top: 82.6%; left: 58.0%; width: 150px; height: 100px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        /* ЛОДКА (Новые координаты) */
+        .boat-container { position: absolute; top: 82.8%; left: 56.5%; width: 150px; height: 100px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
-        @keyframes boat-rock { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(5px) rotate(2deg); } }
+        @keyframes boat-rock { 0% { transform: translate(-50%, -50%) translateY(0px) rotate(-2deg); } 100% { transform: translate(-50%, -50%) translateY(5px) rotate(2deg); } }
 
-        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ */
+        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (Опущены в район 89%) */
         .surf-wave { position: absolute; width: 60px; height: 15px; border-bottom: 4px solid rgba(255, 255, 255, 0.4); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; }
-        .surf-l1 { top: 72%; left: 38%; animation: surf-left 4s infinite ease-in-out 0s; } 
-        .surf-l2 { top: 76%; left: 43%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
-        .surf-l3 { top: 78%; left: 47%; animation: surf-left 5s infinite ease-in-out 2.5s; }
-        .surf-r1 { top: 77%; left: 54%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
-        .surf-r2 { top: 74%; left: 58%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
-        .surf-r3 { top: 71%; left: 63%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
+        .surf-l1 { top: 85%; left: 38%; animation: surf-left 4s infinite ease-in-out 0s; } 
+        .surf-l2 { top: 89%; left: 43%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
+        .surf-l3 { top: 91%; left: 47%; animation: surf-left 5s infinite ease-in-out 2.5s; }
+        .surf-r1 { top: 91%; left: 54%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
+        .surf-r2 { top: 89%; left: 58%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
+        .surf-r3 { top: 86%; left: 63%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
         @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
@@ -147,24 +149,9 @@
         
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
 
-        /* ========================================= */
-        /* --- CSS ДЛЯ РЕЖИМА РАЗРАБОТЧИКА --- */
-        /* ========================================= */
-        body.dev-mode .map-pin, 
-        body.dev-mode .boat-container, 
-        body.dev-mode .grown-bush-container, 
-        body.dev-mode .surf-wave {
-            border: 2px solid #ff0055 !important;
-            background: rgba(255, 0, 85, 0.4) !important;
-            pointer-events: auto !important;
-        }
-
-        #dev-coord-box {
-            display: none; position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.9); color: #a6ff4d; padding: 10px 20px; border: 2px solid #a6ff4d; 
-            border-radius: 8px; z-index: 1000; font-family: monospace; font-size: 16px; font-weight: bold;
-            pointer-events: none; text-align: center;
-        }
+        /* DEV MODE */
+        body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, body.dev-mode .surf-wave { border: 2px solid #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; pointer-events: auto !important; }
+        #dev-coord-box { display: none; position: absolute; top: 120px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: #a6ff4d; padding: 10px 20px; border: 2px solid #a6ff4d; border-radius: 8px; z-index: 1000; font-family: monospace; font-size: 16px; font-weight: bold; pointer-events: none; text-align: center; }
         body.dev-mode #dev-coord-box { display: block; }
     </style>
 </head>
@@ -173,7 +160,6 @@
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
 
-    <!-- Панель координат разработчика -->
     <div id="dev-coord-box">Кликните по карте...</div>
 
     <!-- ОБЕРТКА ДЛЯ КАМЕРЫ -->
@@ -237,7 +223,6 @@
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start;">
-            <!-- КНОПКА DEV (РЕЖИМ РАЗРАБОТЧИКА) -->
             <div class="square-btn" onclick="toggleDevMode()" title="Режим разработчика" style="border-color: #a6ff4d; color: #a6ff4d; font-weight: bold; font-size: 13px;">
                 DEV
             </div>
@@ -280,7 +265,6 @@
 
   </div>
 
-    <!-- ПОДКЛЮЧЕНИЕ БАЗЫ ДАННЫХ И ЛОГИКА -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
