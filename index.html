@@ -7,7 +7,8 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
-        body { background-color: #5b8e88; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
+        body { background-color: #5b8e88; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #5b8e88; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
@@ -41,7 +42,7 @@
         .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; }
         .map-container { position: absolute; width: 2560px; height: 1440px; top: 50%; left: 50%; margin-top: -720px; margin-left: -1280px; background-image: url('Viledges.png'); background-size: cover; background-position: center; transform-origin: center center; will-change: transform; }
 
-        /* === ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (НОВЫЕ КООРДИНАТЫ) === */
+        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (Ваши идеальные координаты) */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
         
@@ -142,7 +143,6 @@
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
 
         /* DEV MODE */
-        body.dev-mode .top-status-container { opacity: 0; } 
         body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, body.dev-mode .surf-wave { 
             border: 3px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
             pointer-events: auto !important; cursor: move !important; animation: none !important;
@@ -152,7 +152,7 @@
             color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; font-size: 16px; font-weight: bold; border-radius: 4px; pointer-events: none; white-space: nowrap;
         }
         #dev-coord-box { 
-            display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
+            display: none; position: absolute; top: 120px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
             background: rgba(0,0,0,0.85); color: #00ffcc; padding: 15px; border: 2px solid #00ffcc; 
             border-radius: 8px; z-index: 10000; font-family: monospace; font-size: 12px; font-weight: bold;
             pointer-events: none; text-align: left; white-space: pre-wrap; line-height: 1.5;
@@ -165,6 +165,7 @@
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
 
+    <!-- Панель координат -->
     <div id="dev-coord-box">Тащите любой красный квадрат пальцем!</div>
 
     <!-- ОБЕРТКА ДЛЯ КАМЕРЫ -->
@@ -319,20 +320,19 @@
         loadDataFromCloud();
 
         // -------------------------
-        // ЛОГИКА КАМЕРЫ (PAN & ZOOM)
+        // ЛОГИКА КАМЕРЫ (PAN & ZOOM) - ИСПРАВЛЕННЫЕ ГРАНИЦЫ
         // -------------------------
         const mapWrapper = document.getElementById('map-wrapper');
         const mapContainer = document.getElementById('map-container');
 
         let mapScale = null; 
-        const minScale = 0.5; 
         const maxScale = 3.0; 
 
         let posX = 0, posY = 0;
         let startX, startY, startDistance = 0, initialScale = 1;
         let isDraggingMap = false;
         let hasMovedMap = false; 
-        let isFirstLoad = true; // Флаг для первого старта камеры
+        let isFirstLoad = true;
 
         mapWrapper.addEventListener('touchstart', (e) => {
             if(window.activeDragEl) return; 
@@ -376,28 +376,32 @@
             const cw = mapContainer.clientWidth;
             const ch = mapContainer.clientHeight;
             
-            if (mapScale === null) mapScale = 0.8; 
-            mapScale = Math.max(minScale, Math.min(mapScale, maxScale));
+            // Жестко блокируем зум, чтобы НИКОГДА не видеть края экрана
+            const calculatedMinScale = Math.max(fw / cw, fh / ch);
+            
+            if (mapScale === null) {
+                mapScale = Math.max(calculatedMinScale, 0.9); // Стартовый масштаб
+            }
+            
+            mapScale = Math.max(calculatedMinScale, Math.min(mapScale, maxScale));
 
             const scaledW = cw * mapScale;
             const scaledH = ch * mapScale;
 
-            const maxTx = Math.max(0, (scaledW - fw) / 2);
-            const maxTy = Math.max(0, (scaledH - fh) / 2);
+            const maxTx = Math.max(0, (scaledW - fw) / 2 / mapScale);
+            const maxTy = Math.max(0, (scaledH - fh) / 2 / mapScale);
 
-            // Сдвиг камеры к верхней части карты при первом входе
             if (isFirstLoad) {
-                posY = maxTy * 0.8; 
+                // Поднимаем камеру (значения от 0 до maxTy, где maxTy - самый верх картинки)
+                posY = maxTy * 0.6; 
                 isFirstLoad = false;
             }
 
+            // Блокируем перемещение за края экрана
             posX = Math.max(-maxTx, Math.min(posX, maxTx));
             posY = Math.max(-maxTy, Math.min(posY, maxTy));
 
-            if (scaledW < fw) posX = 0;
-            if (scaledH < fh) posY = 0;
-
-            mapContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${mapScale})`;
+            mapContainer.style.transform = `scale(${mapScale}) translate(${posX}px, ${posY}px)`;
         }
         
         window.addEventListener('resize', updateTransform);
