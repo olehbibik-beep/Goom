@@ -50,67 +50,52 @@
         .boy-sand-counter svg { width: 14px; height: 14px; fill: #dcb254; } .boy-sand-counter span { color: #fcebbb; font-size: 14px; font-weight: bold; }
 
         /* КАРТА ДЕРЕВНИ НА ВЕСЬ ЭКРАН */
-        .map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('Viledges.png'); background-size: cover; background-position: center; z-index: 10; }
+        .map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('Viledges_2.jpg'); background-size: cover; background-position: center; z-index: 10; }
 
-        /* СТАРЫЕ НЕВИДИМЫЕ МЕТКИ (Врата, Палатка, Огород) */
-        .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
+        /* НЕВИДИМЫЕ ИНТЕРАКТИВНЫЕ МЕТКИ (Только прозрачные зоны клика) */
+        .map-pin { 
+            position: absolute; transform: translate(-50%, -50%); 
+            cursor: pointer; z-index: 15; border-radius: 20px; 
+            /* background: rgba(255,0,0,0.2); Раскомментируйте, чтобы увидеть зоны клика */
+        }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
-        #pin-gate { top: 60%; left: 50%; width: 80px; height: 80px; }       
-        #pin-tent { top: 56%; left: 82%; width: 70px; height: 70px; }       
-        #pin-garden { top: 68%; left: 28%; width: 80px; height: 80px; }     
+        
+        /* Координаты подогнаны под Viledges_2.jpg */
+        #pin-gate { top: 61%; left: 49%; width: 70px; height: 70px; }       /* Фонтан (Врата Времени) */
+        #pin-hall { top: 55%; left: 35%; width: 100px; height: 90px; }      /* Дом слева (Зал Царства) */
+        #pin-lib { top: 53%; left: 68%; width: 90px; height: 90px; }        /* Дом справа (Библиотека) */
+        #pin-mpso { top: 42%; left: 52%; width: 140px; height: 90px; }      /* Раскопки (МПСО) */
+        #pin-tent { top: 68%; left: 45%; width: 80px; height: 70px; }       /* Сарай снизу (Пропуск) */
+        #pin-garden { top: 63%; left: 28%; width: 70px; height: 70px; }     /* Огород (Свободное место слева внизу) */
+
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 16px; height: 16px; background: #ff4500; border: 2px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 10px #ff4500; }
         .notification-dot.active { display: block; }
 
-        /* ========================================= */
-        /* --- 9 ЗОН СТРОИТЕЛЬСТВА --- */
-        /* ========================================= */
-        .build-zone {
-            position: absolute; width: 80px; height: 60px;
-            transform: translate(-50%, -50%);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px; z-index: 14;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; justify-content: center; align-items: flex-end;
-        }
-        .build-zone:hover { border-color: #a6ff4d; background: rgba(166, 255, 77, 0.2); }
-        .build-zone.occupied { border: none; background: transparent; cursor: pointer; }
-        
-        .build-zone img {
-            position: absolute; bottom: 10%; width: 150%; height: auto;
-            object-fit: contain; pointer-events: none;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
-        }
-
-        /* Координаты 9 зон строительства */
-        #zone-1 { top: 38%; left: 50%; } /* Яма сверху */
-        #zone-2 { top: 46%; left: 30%; } 
-        #zone-3 { top: 46%; left: 70%; }
-        #zone-4 { top: 54%; left: 20%; }
-        #zone-5 { top: 54%; left: 80%; }
-        #zone-6 { top: 68%; left: 45%; }
-        #zone-7 { top: 68%; left: 72%; }
-        #zone-8 { top: 38%; left: 25%; }
-        #zone-9 { top: 38%; left: 75%; }
-
         /* ОГОРОД И ВЫРАЩЕННЫЙ КУСТИК */
-        .grown-bush-container { position: absolute; top: 61%; left: 24%; width: 80px; height: 80px; z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
+        .grown-bush-container { position: absolute; top: 59%; left: 23%; width: 70px; height: 70px; z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container:active { transform: scale(0.9) !important; animation: none; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); mix-blend-mode: multiply; }
         @keyframes wind-sway { 0% { transform: skewX(-2deg) scale(1); } 100% { transform: skewX(2deg) scale(1.02); } }
+        
         .harvest-bubble { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 14px; padding: 2px 8px; border-radius: 10px; border: 1px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -5px); } }
 
-        /* ВОЛНЫ И ЛОДКА */
+        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (ПРИБОЙ - ОПУЩЕНЫ НИЖЕ) */
         .surf-wave { position: absolute; width: 30px; height: 8px; border-bottom: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; }
-        .surf-l1 { top: 69%; left: 16%; animation: surf-left 4s infinite ease-in-out 0s; } .surf-l2 { top: 76%; left: 28%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } .surf-l3 { top: 82%; left: 40%; animation: surf-left 5s infinite ease-in-out 2.5s; }
-        .surf-r1 { top: 81%; left: 60%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } .surf-r2 { top: 73%; left: 74%; animation: surf-right 4.8s infinite ease-in-out 3s; } .surf-r3 { top: 67%; left: 86%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
+        
+        /* Левый берег */
+        .surf-l1 { top: 73%; left: 18%; animation: surf-left 4s infinite ease-in-out 0s; } 
+        .surf-l2 { top: 79%; left: 30%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
+        .surf-l3 { top: 85%; left: 45%; animation: surf-left 5s infinite ease-in-out 2.5s; }
+        
+        /* Правый берег */
+        .surf-r1 { top: 83%; left: 58%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
+        .surf-r2 { top: 78%; left: 72%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
+        .surf-r3 { top: 72%; left: 88%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
+        
         @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
-        .boat-container { position: absolute; top: 73%; left: 64%; width: 75px; height: 50px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
-        .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
-        @keyframes boat-rock { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(3px) rotate(2deg); } }
 
         /* ПТИЦЫ */
         .flock-container { position: absolute; top: 20%; left: -20%; width: 120px; height: 80px; pointer-events: none; z-index: 11; opacity: 0.5; }
@@ -119,7 +104,7 @@
         @keyframes fly-across-reverse { 0% { transform: translateX(120vw) translateY(0) scaleX(-1); } 50% { transform: translateX(50vw) translateY(15px) scaleX(-1); } 100% { transform: translateX(-40vw) translateY(-10px) scaleX(-1); } }
         @keyframes bird-wander { 0% { transform: translate(0, 0) scale(var(--scale)); } 100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale)); } }
 
-        /* ВСПЛЫВАЮЩИЕ ОКНА */
+        /* ВСПЛЫВАЮЩИЕ ОКНА НАГРАД */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.8); backdrop-filter: blur(5px); z-index: 200; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; }
         .modal-overlay.show { opacity: 1; visibility: visible; pointer-events: auto; }
         .daily-modal { background: linear-gradient(135deg, #1f2427, #121517); border: 2px solid #dcb254; border-radius: 15px; width: 90%; max-width: 380px; padding: 25px 15px; text-align: center; box-shadow: 0 10px 30px #000; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); position: relative; }
@@ -157,35 +142,38 @@
     <div id="loading-screen">Загрузка данных...</div>
 
     <div class="map-container">
-        <!-- Прибой и Лодка -->
+        <!-- Прибой (Анимация сдвинута ниже) -->
         <div class="surf-wave surf-l1"></div><div class="surf-wave surf-l2"></div><div class="surf-wave surf-l3"></div>
         <div class="surf-wave surf-r1"></div><div class="surf-wave surf-r2"></div><div class="surf-wave surf-r3"></div>
-        <div class="boat-container"><img class="boat-img" src="boat.png" alt="Лодка"></div>
 
         <div id="birds-layer"></div>
 
-        <!-- КУСТИК ОГОРОДА -->
+        <!-- КУСТИК ОГОРОДА (Сбор песка) -->
         <div class="grown-bush-container" id="grown-bush" onclick="harvestSand(event)">
             <img src="watermarked_img_13570800947414244191.jpg" alt="Выросший куст">
             <div class="harvest-bubble" id="harvest-bubble" style="display:none;">+0</div>
         </div>
 
-        <!-- === 9 ЗОН СТРОИТЕЛЬСТВА === -->
-        <div class="build-zone" id="zone-1" onclick="handleZoneClick(1)"></div>
-        <div class="build-zone" id="zone-2" onclick="handleZoneClick(2)"></div>
-        <div class="build-zone" id="zone-3" onclick="handleZoneClick(3)"></div>
-        <div class="build-zone" id="zone-4" onclick="handleZoneClick(4)"></div>
-        <div class="build-zone" id="zone-5" onclick="handleZoneClick(5)"></div>
-        <div class="build-zone" id="zone-6" onclick="handleZoneClick(6)"></div>
-        <div class="build-zone" id="zone-7" onclick="handleZoneClick(7)"></div>
-        <div class="build-zone" id="zone-8" onclick="handleZoneClick(8)"></div>
-        <div class="build-zone" id="zone-9" onclick="handleZoneClick(9)"></div>
+        <!-- === НЕВИДИМЫЕ ЗОНЫ КЛИКА ПО ЗДАНИЯМ === -->
+        
+        <!-- Зал Царства (Открывается на 2 уровне) -->
+        <div class="map-pin" id="pin-hall" onclick="handleBuildingClick('hall')"></div>
+        
+        <!-- Библиотека (Открывается на 5 уровне) -->
+        <div class="map-pin" id="pin-lib" onclick="handleBuildingClick('lib')"></div>
+        
+        <!-- МПСО (Открывается на 10 уровне) -->
+        <div class="map-pin" id="pin-mpso" onclick="handleBuildingClick('mpso')"></div>
 
-        <!-- НЕВИДИМЫЕ ЗОНЫ (Врата, Палатка, Огород) -->
+        <!-- Врата (Всегда открыты) -->
         <div class="map-pin" id="pin-gate" onclick="goToLocation('gate.html')"></div>
+        
+        <!-- Пропуск / Награды (Всегда открыт) -->
         <div class="map-pin" id="pin-tent" onclick="openDailyModal()">
             <div class="notification-dot" id="daily-dot"></div>
         </div>
+        
+        <!-- Огород (Всегда открыт - зона вокруг кустика) -->
         <div class="map-pin" id="pin-garden" onclick="goToLocation('garden.html')"></div>
     </div>
 
@@ -196,7 +184,7 @@
     </div>
 
     <div class="top-status-container">
-        <div class="level-badge" onclick="alert('Ваш уровень Хранителя. Повышайте его, собирая опыт (XP) в путешествиях!')">
+        <div class="level-badge" onclick="alert('Ваш уровень Хранителя. Повышайте его, собирая опыт (XP) в рулетке!')">
             <svg class="level-gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61L19.14,12.94z" /></svg>
             <span class="level-text" id="level-display">1</span>
         </div>
@@ -275,20 +263,16 @@
                 if (docSnap.exists()) {
                     window.gameData = docSnap.data();
                 } else {
-                    window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, buildings: {} };
+                    window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null };
                 }
             } catch (error) {
-                console.error("Ошибка загрузки данных из Firebase:", error);
-                window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, buildings: {} };
+                console.error("Ошибка загрузки:", error);
+                window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null };
             } finally {
-                // Инициализация структуры зданий, если её нет
-                if (typeof window.gameData.buildings === 'undefined') window.gameData.buildings = {};
-                
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
                 
                 updateUI();
-                renderBuildings(); // Рисуем уже построенные здания
                 checkDailyStatus();
                 checkBushVisibility(); 
                 createBirdsFlock(); 
@@ -307,39 +291,31 @@
         loadDataFromCloud();
 
         // -------------------------
-        // ЛОГИКА СТРОИТЕЛЬСТВА
+        // ЛОГИКА ОТКРЫТИЯ ЗДАНИЙ ПО УРОВНЯМ
         // -------------------------
-        
-        // Отрисовка всех зон при старте
-        function renderBuildings() {
-            for (let i = 1; i <= 9; i++) {
-                const zone = document.getElementById(`zone-${i}`);
-                const buildingType = window.gameData.buildings[`zone${i}`];
-                
-                if (buildingType === 'sal') {
-                    zone.innerHTML = `<img src="Sal.png" alt="Здание">`;
-                    zone.classList.add('occupied');
-                } else {
-                    zone.innerHTML = '';
-                    zone.classList.remove('occupied');
-                }
-            }
-        }
+        window.handleBuildingClick = function(buildingType) {
+            const level = window.gameData.epochLevel || 1;
 
-        // Клик по строительной зоне
-        window.handleZoneClick = async function(zoneId) {
-            const currentBuilding = window.gameData.buildings[`zone${zoneId}`];
-            
-            // Если зона пустая
-            if (!currentBuilding) {
-                if(confirm("Построить Дом (Sal.png) в этой зоне?")) {
-                    window.gameData.buildings[`zone${zoneId}`] = 'sal';
-                    renderBuildings();
-                    await saveDataToCloud();
+            if (buildingType === 'hall') {
+                if (level < 2) {
+                    alert("🔒 Зал Царства откроется на 2 уровне эпохи!");
+                } else {
+                    alert("Зал Царства: Место встреч и духовного обучения. В разработке!");
                 }
-            } else {
-                // Если зона занята
-                alert("Здесь уже построено здание: Дом");
+            } 
+            else if (buildingType === 'lib') {
+                if (level < 5) {
+                    alert("🔒 Библиотека откроется на 5 уровне эпохи!");
+                } else {
+                    alert("Библиотека: Архивные карточки и события. В разработке!");
+                }
+            } 
+            else if (buildingType === 'mpso') {
+                if (level < 10) {
+                    alert("🔒 МПСО откроется на 10 уровне эпохи!");
+                } else {
+                    alert("МПСО: Управление строительством. В разработке!");
+                }
             }
         };
 
