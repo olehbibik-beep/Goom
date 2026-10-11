@@ -39,35 +39,68 @@
         .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #a68b5b; z-index: 1; }
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
 
-        /* НИЖНЕЕ МЕНЮ */
-        .bottom-menu { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #0a0d10 0%, rgba(24, 28, 29, 0.95) 100%); border-top: 2px solid #3a3f42; padding: 10px 10px 20px 10px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; box-shadow: 0 -15px 30px rgba(0,0,0,0.8); }
-        .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; }
-        .menu-icon { font-size: 26px; cursor: pointer; color: #8b7968; transition: color 0.3s, transform 0.3s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); } .menu-icon:hover { color: #dcb254; transform: translateY(-3px); }
-        .settings-icon { fill: #8b7968; width: 30px; height: 30px; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: fill 0.3s, transform 0.3s; margin-right: 10px; } .settings-icon:hover { fill: #dcb254; transform: translateY(-3px) rotate(45deg); }
-        .boy-wrapper { position: relative; pointer-events: auto; cursor: pointer; margin-bottom: -15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; }
+        /* ========================================= */
+        /* --- НОВЫЙ ДИЗАЙН НИЖНЕГО МЕНЮ --- */
+        /* ========================================= */
+        .bottom-menu { 
+            position: absolute; bottom: 0; left: 0; width: 100%; 
+            /* Мягкая тень снизу вместо жесткой заливки */
+            background: linear-gradient(to top, rgba(5,5,5,0.9) 0%, transparent 100%); 
+            padding: 10px 20px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; 
+        }
+        .menu-side-group { flex: 1; display: flex; align-items: flex-end; gap: 12px; }
+        
+        /* ЦЕНТРАЛЬНЫЙ СЧЕТЧИК (Мальчик + Песчинки) */
+        .center-sand-wrapper { 
+            position: relative; pointer-events: auto; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; 
+        }
+        .center-sand-wrapper:active { transform: scale(0.95); }
         .boy-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
-        .boy-sand-counter { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); background: rgba(10, 13, 16, 0.95); border: 1px solid #dcb254; border-radius: 12px; padding: 3px 10px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; transition: transform 0.3s, color 0.3s; }
-        .boy-sand-counter svg { width: 14px; height: 14px; fill: #dcb254; } .boy-sand-counter span { color: #fcebbb; font-size: 14px; font-weight: bold; }
+        .boy-sand-counter { 
+            background: rgba(10, 13, 16, 0.95); border: 1px solid #dcb254; border-radius: 12px; 
+            padding: 4px 12px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); white-space: nowrap; 
+        }
+        .boy-sand-counter svg { width: 14px; height: 14px; fill: #dcb254; } 
+        .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
+
+        /* --- КВАДРАТНЫЕ КНОПКИ С ВЫЛЕЗАЮЩИМ PNG --- */
+        .square-btn {
+            position: relative;
+            width: 46px; height: 46px; /* Одинаковый размер квадрата */
+            background-color: #293133; /* Антрацитовый фон */
+            border: 2px solid #ffffff; /* Белая рамка */
+            border-radius: 8px; /* Легкое скругление углов */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: transform 0.1s, border-color 0.2s;
+            display: flex; justify-content: center; align-items: flex-end;
+        }
+        .square-btn:active { transform: scale(0.92); border-color: #dcb254; }
+        
+        .square-btn img {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; 
+            height: 140%; /* Вылезает за верхнюю границу квадрата! */
+            object-fit: contain;
+            object-position: bottom center;
+            pointer-events: none; /* Клики проходят сквозь картинку прямо на кнопку */
+            filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.5));
+        }
 
         /* КАРТА ДЕРЕВНИ НА ВЕСЬ ЭКРАН */
         .map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('Viledges.png'); background-size: cover; background-position: center; z-index: 10; }
 
-        /* НЕВИДИМЫЕ ИНТЕРАКТИВНЫЕ МЕТКИ (Только прозрачные зоны клика) */
-        .map-pin { 
-            position: absolute; transform: translate(-50%, -50%); 
-            cursor: pointer; z-index: 15; border-radius: 20px; 
-            /* background: rgba(255,0,0,0.2); Раскомментируйте, чтобы увидеть зоны клика */
-        }
+        /* НЕВИДИМЫЕ ИНТЕРАКТИВНЫЕ МЕТКИ */
+        .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
-        
-        /* Координаты подогнаны под Viledges_2.jpg */
-        #pin-gate { top: 61%; left: 49%; width: 70px; height: 70px; }       /* Фонтан (Врата Времени) */
-        #pin-hall { top: 55%; left: 35%; width: 100px; height: 90px; }      /* Дом слева (Зал Царства) */
-        #pin-lib { top: 53%; left: 68%; width: 90px; height: 90px; }        /* Дом справа (Библиотека) */
-        #pin-mpso { top: 42%; left: 52%; width: 140px; height: 90px; }      /* Раскопки (МПСО) */
-        #pin-tent { top: 68%; left: 45%; width: 80px; height: 70px; }       /* Сарай снизу (Пропуск) */
-        #pin-garden { top: 63%; left: 28%; width: 70px; height: 70px; }     /* Огород (Свободное место слева внизу) */
-
+        #pin-gate { top: 61%; left: 49%; width: 70px; height: 70px; }       
+        #pin-hall { top: 55%; left: 35%; width: 100px; height: 90px; }      
+        #pin-lib { top: 53%; left: 68%; width: 90px; height: 90px; }        
+        #pin-mpso { top: 42%; left: 52%; width: 140px; height: 90px; }      
+        #pin-tent { top: 68%; left: 45%; width: 80px; height: 70px; }       
+        #pin-garden { top: 63%; left: 28%; width: 70px; height: 70px; }     
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 16px; height: 16px; background: #ff4500; border: 2px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 10px #ff4500; }
         .notification-dot.active { display: block; }
 
@@ -77,23 +110,13 @@
         .grown-bush-container:active { transform: scale(0.9) !important; animation: none; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); mix-blend-mode: multiply; }
         @keyframes wind-sway { 0% { transform: skewX(-2deg) scale(1); } 100% { transform: skewX(2deg) scale(1.02); } }
-        
         .harvest-bubble { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 14px; padding: 2px 8px; border-radius: 10px; border: 1px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -5px); } }
 
-        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (ПРИБОЙ - ОПУЩЕНЫ НИЖЕ) */
+        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (ПРИБОЙ) */
         .surf-wave { position: absolute; width: 30px; height: 8px; border-bottom: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; }
-        
-        /* Левый берег */
-        .surf-l1 { top: 73%; left: 18%; animation: surf-left 4s infinite ease-in-out 0s; } 
-        .surf-l2 { top: 79%; left: 30%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
-        .surf-l3 { top: 85%; left: 45%; animation: surf-left 5s infinite ease-in-out 2.5s; }
-        
-        /* Правый берег */
-        .surf-r1 { top: 83%; left: 58%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
-        .surf-r2 { top: 78%; left: 72%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
-        .surf-r3 { top: 72%; left: 88%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
-        
+        .surf-l1 { top: 73%; left: 18%; animation: surf-left 4s infinite ease-in-out 0s; } .surf-l2 { top: 79%; left: 30%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } .surf-l3 { top: 85%; left: 45%; animation: surf-left 5s infinite ease-in-out 2.5s; }
+        .surf-r1 { top: 83%; left: 58%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } .surf-r2 { top: 78%; left: 72%; animation: surf-right 4.8s infinite ease-in-out 3s; } .surf-r3 { top: 72%; left: 88%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
         @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
@@ -142,38 +165,24 @@
     <div id="loading-screen">Загрузка данных...</div>
 
     <div class="map-container">
-        <!-- Прибой (Анимация сдвинута ниже) -->
+        <!-- Прибой (Опущен ниже к краям) -->
         <div class="surf-wave surf-l1"></div><div class="surf-wave surf-l2"></div><div class="surf-wave surf-l3"></div>
         <div class="surf-wave surf-r1"></div><div class="surf-wave surf-r2"></div><div class="surf-wave surf-r3"></div>
 
         <div id="birds-layer"></div>
 
-        <!-- КУСТИК ОГОРОДА (Сбор песка) -->
+        <!-- КУСТИК ОГОРОДА (Покажется, когда будет выращен) -->
         <div class="grown-bush-container" id="grown-bush" onclick="harvestSand(event)">
             <img src="watermarked_img_13570800947414244191.jpg" alt="Выросший куст">
             <div class="harvest-bubble" id="harvest-bubble" style="display:none;">+0</div>
         </div>
 
-        <!-- === НЕВИДИМЫЕ ЗОНЫ КЛИКА ПО ЗДАНИЯМ === -->
-        
-        <!-- Зал Царства (Открывается на 2 уровне) -->
+        <!-- === НЕВИДИМЫЕ ЗОНЫ КЛИКА ПО ЗДАНИЯМ НА НОВОЙ КАРТЕ === -->
         <div class="map-pin" id="pin-hall" onclick="handleBuildingClick('hall')"></div>
-        
-        <!-- Библиотека (Открывается на 5 уровне) -->
         <div class="map-pin" id="pin-lib" onclick="handleBuildingClick('lib')"></div>
-        
-        <!-- МПСО (Открывается на 10 уровне) -->
         <div class="map-pin" id="pin-mpso" onclick="handleBuildingClick('mpso')"></div>
-
-        <!-- Врата (Всегда открыты) -->
         <div class="map-pin" id="pin-gate" onclick="goToLocation('gate.html')"></div>
-        
-        <!-- Пропуск / Награды (Всегда открыт) -->
-        <div class="map-pin" id="pin-tent" onclick="openDailyModal()">
-            <div class="notification-dot" id="daily-dot"></div>
-        </div>
-        
-        <!-- Огород (Всегда открыт - зона вокруг кустика) -->
+        <div class="map-pin" id="pin-tent" onclick="openDailyModal()"><div class="notification-dot" id="daily-dot"></div></div>
         <div class="map-pin" id="pin-garden" onclick="goToLocation('garden.html')"></div>
     </div>
 
@@ -198,13 +207,20 @@
         </div>
     </div>
 
+    <!-- === ОБНОВЛЕННОЕ НИЖНЕЕ МЕНЮ === -->
     <div class="bottom-menu">
-        <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
-            <div class="menu-icon" onclick="alert('Ваш инвентарь')">🎒</div>
-            <div class="menu-icon" style="margin-left: 15px;" onclick="alert('Ваша коллекция')">📜</div>
+        
+        <!-- Левая часть с пустым шаблоном будущей кнопки -->
+        <div class="menu-side-group" style="justify-content: flex-start;">
+            <!-- Шаблон для будущих кнопок. Раскомментируйте, когда нарисуете картинку: 
+            <div class="square-btn" onclick="alert('Ваш инвентарь')">
+                <img src="backpack.png" alt="Инвентарь" onerror="this.style.display='none'">
+            </div>
+            -->
         </div>
         
-        <div class="boy-wrapper" onclick="alert('У вас ' + window.gameData.sandCount + ' песчинок!')">
+        <!-- Центр: Сбор песчинок -->
+        <div class="center-sand-wrapper" onclick="alert('У вас ' + window.gameData.sandCount + ' песчинок!')">
             <img src="ty.png" class="boy-avatar" alt="Мальчик" onerror="this.style.display='none'">
             <div class="boy-sand-counter">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>
@@ -212,10 +228,12 @@
             </div>
         </div>
 
-        <div class="menu-side-group" style="justify-content: flex-end; padding-right: 10px;">
-            <svg class="settings-icon" viewBox="0 0 24 24" onclick="logout()">
-                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-            </svg>
+        <!-- Правая часть: Новая квадратная кнопка (Выход из игры) -->
+        <div class="menu-side-group" style="justify-content: flex-end;">
+            <div class="square-btn" onclick="logout()" title="Выйти из аккаунта">
+                <!-- Заглушка, пока нет картинки, будет виден только стильный антрацитовый квадрат. Если картинка не найдена - скрываем её чтобы не было "битого пикселя" -->
+                <img src="logout_icon.png" alt="Выход" onerror="this.style.display='none'">
+            </div>
         </div>
     </div>
 
@@ -266,7 +284,7 @@
                     window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null };
                 }
             } catch (error) {
-                console.error("Ошибка загрузки:", error);
+                console.error("Ошибка загрузки данных из Firebase:", error);
                 window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null };
             } finally {
                 document.getElementById('loading-screen').style.opacity = '0';
@@ -442,6 +460,7 @@
             setTimeout(() => { window.location.replace(url); }, 1200);
         };
 
+        // ВЫХОД
         window.logout = function() {
             if(confirm("Выйти из аккаунта?")) {
                 localStorage.removeItem('userUid');
