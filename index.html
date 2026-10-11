@@ -7,11 +7,12 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
-        body { background-color: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
+        /* Цвет фона под картой (цвет глубокого океана), чтобы при максимальном отдалении не было черных полос */
+        body { background-color: #5b8e88; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #5b8e88; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
-        /* ВЕРХНИЙ БЛОК (Интерфейс поверх камеры) */
+        /* ВЕРХНИЙ БЛОК */
         .top-status-container { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; transition: transform 0.3s; cursor: pointer; pointer-events: auto; }
         .level-badge:active { transform: scale(0.95); }
@@ -40,7 +41,7 @@
         .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.5)); }
 
         /* ========================================= */
-        /* --- ИНТЕРАКТИВНАЯ КАРТА (АБСОЛЮТНЫЙ ХОЛСТ 2560x1440) --- */
+        /* --- ИНТЕРАКТИВНАЯ КАРТА (ХОЛСТ 2560x1440) --- */
         /* ========================================= */
         .map-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
@@ -52,14 +53,14 @@
             width: 2560px; height: 1440px; 
             top: 50%; left: 50%; 
             margin-top: -720px; margin-left: -1280px; 
-            background-image: url('Viledges.png'); 
+            background-image: url('Viledges.png'); /* ИЗМЕНЕНО НА PNG */
             background-size: cover; 
             background-position: center; 
             transform-origin: center center; 
             will-change: transform;
         }
 
-        /* НЕВИДИМЫЕ МЕТКИ ЗДАНИЙ (Размеры увеличены под огромный холст) */
+        /* НЕВИДИМЫЕ МЕТКИ ЗДАНИЙ */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: scale(0.95); }
         
@@ -83,25 +84,27 @@
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -8px); } }
 
-        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (Опущены еще ниже от суши) */
+        /* ВОЗВРАЩЕННАЯ ЛОДКА */
+        .boat-container { position: absolute; top: 65%; left: 63%; width: 150px; height: 100px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+        @keyframes boat-rock { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(5px) rotate(2deg); } }
+
+        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ */
         .surf-wave { position: absolute; width: 60px; height: 15px; border-bottom: 4px solid rgba(255, 255, 255, 0.4); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; }
-        
         .surf-l1 { top: 72%; left: 38%; animation: surf-left 4s infinite ease-in-out 0s; } 
         .surf-l2 { top: 76%; left: 43%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
         .surf-l3 { top: 78%; left: 47%; animation: surf-left 5s infinite ease-in-out 2.5s; }
-        
         .surf-r1 { top: 77%; left: 54%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
         .surf-r2 { top: 74%; left: 58%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
         .surf-r3 { top: 71%; left: 63%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
-        
         @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
-        /* ПТИЦЫ */
-        .flock-container { position: absolute; top: 15%; left: -20%; width: 250px; height: 150px; pointer-events: none; z-index: 11; opacity: 0.5; }
+        /* ИСПРАВЛЕННЫЕ ПТИЦЫ (Теперь летают в центре) */
+        .flock-container { position: absolute; left: 20%; width: 500px; height: 300px; pointer-events: none; z-index: 11; opacity: 0.5; }
         .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; animation: bird-wander 3s ease-in-out infinite alternate; }
-        @keyframes fly-across { 0% { transform: translateX(0vw) translateY(0); } 50% { transform: translateX(70vw) translateY(-40px); } 100% { transform: translateX(140vw) translateY(20px); } }
-        @keyframes fly-across-reverse { 0% { transform: translateX(120vw) translateY(0) scaleX(-1); } 50% { transform: translateX(50vw) translateY(30px) scaleX(-1); } 100% { transform: translateX(-40vw) translateY(-20px) scaleX(-1); } }
+        @keyframes fly-across { 0% { transform: translateX(0px) translateY(0); } 50% { transform: translateX(1000px) translateY(-100px); } 100% { transform: translateX(2000px) translateY(50px); } }
+        @keyframes fly-across-reverse { 0% { transform: translateX(2000px) translateY(0) scaleX(-1); } 50% { transform: translateX(1000px) translateY(100px) scaleX(-1); } 100% { transform: translateX(-500px) translateY(-50px) scaleX(-1); } }
         @keyframes bird-wander { 0% { transform: translate(0, 0) scale(var(--scale)); } 100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale)); } }
 
         /* АНИМАЦИЯ ПЕРЕХОДА (Облака) */
@@ -155,6 +158,8 @@
         .claim-btn:hover:not(:disabled) { filter: brightness(1.2); }
         .claim-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .claim-btn:disabled { background: #3a3f42; border-color: #555; color: #888; cursor: not-allowed; box-shadow: none; }
+        .close-modal-btn { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #121517; border: 2px solid #dcb254; border-radius: 50%; color: #dcb254; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px #000; z-index: 5; }
+        .close-modal-btn:active { transform: scale(0.9); }
         
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
     </style>
@@ -164,7 +169,7 @@
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
 
-    <!-- ОБЕРТКА ДЛЯ КАМЕРЫ (PAN & ZOOM) -->
+    <!-- ОБЕРТКА ДЛЯ КАМЕРЫ -->
     <div class="map-wrapper" id="map-wrapper">
         <div class="map-container" id="map-container">
             
@@ -172,15 +177,21 @@
             <div class="surf-wave surf-l1"></div><div class="surf-wave surf-l2"></div><div class="surf-wave surf-l3"></div>
             <div class="surf-wave surf-r1"></div><div class="surf-wave surf-r2"></div><div class="surf-wave surf-r3"></div>
 
+            <!-- Лодка (Вернулась) -->
+            <div class="boat-container">
+                <img class="boat-img" src="boat.png" alt="Лодка" onerror="this.style.display='none'">
+            </div>
+
+            <!-- Птицы -->
             <div id="birds-layer"></div>
 
             <!-- КУСТИК ОГОРОДА -->
             <div class="grown-bush-container" id="grown-bush" onclick="harvestSand(event)">
-                <img src="bush.png" alt="Выросший куст" onerror="this.src='watermarked_img_13570800947414244191.jpg'">
+                <img src="bush.png" alt="Выросший куст" onerror="this.style.display='none'">
                 <div class="harvest-bubble" id="harvest-bubble" style="display:none;">+0</div>
             </div>
 
-            <!-- НЕВИДИМЫЕ ЗОНЫ КЛИКА -->
+            <!-- НЕВИДИМЫЕ ЗОНЫ КЛИКА ПО ЗДАНИЯМ -->
             <div class="map-pin" id="pin-hall" onclick="handleBuildingClick(event, 'hall')"></div>
             <div class="map-pin" id="pin-lib" onclick="handleBuildingClick(event, 'lib')"></div>
             <div class="map-pin" id="pin-mpso" onclick="handleBuildingClick(event, 'mpso')"></div>
@@ -319,10 +330,13 @@
         const mapContainer = document.getElementById('map-container');
 
         let mapScale = null; 
+        const minScale = 0.5; // СНЯЛ ЖЕСТКОЕ ОГРАНИЧЕНИЕ (Можно отдалять гораздо сильнее)
+        const maxScale = 3.0; 
+
         let posX = 0, posY = 0;
         let startX, startY, startDistance = 0, initialScale = 1;
         let isDragging = false;
-        let hasMoved = false; // Блокировка клика при свайпе
+        let hasMoved = false; 
 
         mapWrapper.addEventListener('touchstart', (e) => {
             hasMoved = false;
@@ -364,28 +378,29 @@
             const cw = mapContainer.clientWidth;
             const ch = mapContainer.clientHeight;
             
-            // Гарантируем, что масштаб не позволит увидеть края холста
-            const calculatedMinScale = Math.max(fw / cw, fh / ch);
-            
+            // Если игрок отдалит слишком далеко (появится фон), фон будет цвета океана
             if (mapScale === null) {
-                mapScale = calculatedMinScale * 1.5; // Слегка приближено при старте
+                mapScale = 0.8; // При входе в игру сразу видим больше острова
             }
             
-            mapScale = Math.max(calculatedMinScale, Math.min(mapScale, 3.0));
+            mapScale = Math.max(minScale, Math.min(mapScale, maxScale));
 
             const scaledW = cw * mapScale;
             const scaledH = ch * mapScale;
 
-            const maxTx = (scaledW - fw) / 2;
-            const maxTy = (scaledH - fh) / 2;
+            const maxTx = Math.max(0, (scaledW - fw) / 2);
+            const maxTy = Math.max(0, (scaledH - fh) / 2);
 
             posX = Math.max(-maxTx, Math.min(posX, maxTx));
             posY = Math.max(-maxTy, Math.min(posY, maxTy));
 
+            // Если отдаление настолько сильное, что картинка меньше экрана — центрируем жестко
+            if (scaledW < fw) posX = 0;
+            if (scaledH < fh) posY = 0;
+
             mapContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${mapScale})`;
         }
         
-        // Обновляем камеру при загрузке и изменении размера окна
         window.addEventListener('resize', updateTransform);
         setTimeout(updateTransform, 50);
 
@@ -404,7 +419,7 @@
         };
 
         window.handleBuildingClick = function(e, buildingType) {
-            if (hasMoved) return; // Если игрок свайпал карту, клик не срабатывает
+            if (hasMoved) return; 
             
             const level = window.gameData.epochLevel || 1;
             
@@ -481,9 +496,12 @@
         function createBirdsFlock() {
             const birdsLayer = document.getElementById('birds-layer');
             for(let f = 0; f < 2; f++) {
-                let flock = document.createElement('div'); flock.className = 'flock-container'; flock.style.top = (10 + f * 15) + '%';
+                let flock = document.createElement('div'); flock.className = 'flock-container'; 
+                flock.style.top = (25 + f * 15) + '%';
+                
                 if(f === 0) flock.style.animation = `fly-across 45s linear infinite ${f * 10}s`; 
                 else flock.style.animation = `fly-across-reverse 50s linear infinite ${f * 20}s`;
+                
                 for(let i = 0; i < 15; i++) {
                     let bird = document.createElementNS("http://www.w3.org/2000/svg", "svg"); bird.setAttribute("viewBox", "0 0 30 20"); bird.classList.add("tiny-bird");
                     bird.style.left = (Math.random() * 100) + 'px'; bird.style.top = (Math.random() * 80) + 'px';
@@ -555,10 +573,8 @@
         };
 
         window.logout = function() {
-            if(confirm("Выйти из аккаунта?")) {
-                localStorage.removeItem('userUid');
-                window.location.replace('login.html');
-            }
+            localStorage.removeItem('userUid');
+            window.location.replace('login.html');
         };
     </script>
 </body>
