@@ -41,36 +41,38 @@
         .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; }
         .map-container { position: absolute; width: 2560px; height: 1440px; top: 50%; left: 50%; margin-top: -720px; margin-left: -1280px; background-image: url('Viledges.png'); background-size: cover; background-position: center; transform-origin: center center; will-change: transform; }
 
-        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ */
+        /* === ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (НОВЫЕ КООРДИНАТЫ) === */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
-        #pin-hall { top: 53.7%; left: 45.4%; width: 150px; height: 180px; }  
+        
+        #pin-hall { top: 55.5%; left: 46.2%; width: 150px; height: 180px; }  
         #pin-lib { top: 54.8%; left: 59.7%; width: 150px; height: 150px; }       
-        #pin-mpso { top: 46%; left: 51%; width: 220px; height: 140px; }      
-        #pin-gate { top: 61%; left: 50.5%; width: 100px; height: 100px; }    
-        #pin-tent { top: 65%; left: 51.5%; width: 120px; height: 100px; }    
-        #pin-garden { top: 65%; left: 44.5%; width: 120px; height: 120px; }  
+        #pin-mpso { top: 60.7%; left: 66.8%; width: 150px; height: 140px; }      
+        #pin-gate { top: 52.4%; left: 38.0%; width: 100px; height: 100px; }    
+        #pin-tent { top: 64.5%; left: 51.1%; width: 120px; height: 100px; }    
+        #pin-garden { top: 47.4%; left: 50.8%; width: 120px; height: 120px; }  
 
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: #ff4500; border: 3px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 15px #ff4500; }
         .notification-dot.active { display: block; }
 
-        .grown-bush-container { position: absolute; top: 46.7%; left: 51.0%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
+        /* ОГОРОД И ВЫРАЩЕННЫЙ КУСТИК */
+        .grown-bush-container { position: absolute; top: 47.4%; left: 50.8%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container:active { transform: translate(-50%, -50%) scale(0.9) !important; animation: none; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4)); mix-blend-mode: multiply; }
         
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         
-        .boat-container { position: absolute; top: 82.8%; left: 56.5%; width: 150px; height: 100px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        .boat-container { position: absolute; top: 77.8%; left: 60.9%; width: 150px; height: 100px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
 
         .surf-wave { position: absolute; width: 60px; height: 15px; border-bottom: 4px solid rgba(255, 255, 255, 0.4); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; transform: translate(-50%, -50%); }
-        #surf-l1 { top: 85%; left: 38%; animation: surf-left 4s infinite ease-in-out 0s; } 
-        #surf-l2 { top: 89%; left: 43%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
-        #surf-l3 { top: 91%; left: 47%; animation: surf-left 5s infinite ease-in-out 2.5s; }
-        #surf-r1 { top: 91%; left: 54%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
-        #surf-r2 { top: 89%; left: 58%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
-        #surf-r3 { top: 86%; left: 63%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
+        #surf-l1 { top: 86.0%; left: 39.0%; animation: surf-left 4s infinite ease-in-out 0s; } 
+        #surf-l2 { top: 89.0%; left: 43.0%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
+        #surf-l3 { top: 91.0%; left: 47.0%; animation: surf-left 5s infinite ease-in-out 2.5s; }
+        #surf-r1 { top: 91.0%; left: 54.0%; animation: surf-right 4.2s infinite ease-in-out 0.8s; } 
+        #surf-r2 { top: 89.0%; left: 58.0%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
+        #surf-r3 { top: 86.0%; left: 63.0%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
 
         @keyframes boat-rock { 0% { transform: translate(-50%, -50%) translateY(0px) rotate(-2deg); } 100% { transform: translate(-50%, -50%) translateY(5px) rotate(2deg); } }
         @keyframes wind-sway { 0% { transform: translate(-50%, -50%) skewX(-2deg) scale(1); } 100% { transform: translate(-50%, -50%) skewX(2deg) scale(1.02); } }
@@ -139,21 +141,16 @@
         
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
 
-        /* ========================================= */
-        /* --- СУПЕР РЕЖИМ РАЗРАБОТЧИКА (DEV) --- */
-        /* ========================================= */
-        body.dev-mode .top-status-container { opacity: 0; } /* Прячем верхнюю панель, чтобы не мешала */
+        /* DEV MODE */
+        body.dev-mode .top-status-container { opacity: 0; } 
         body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, body.dev-mode .surf-wave { 
             border: 3px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
             pointer-events: auto !important; cursor: move !important; animation: none !important;
         }
-        
-        /* Подписи объектов */
         body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, body.dev-mode .surf-wave::after {
             content: attr(id); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; font-size: 16px; font-weight: bold; border-radius: 4px; pointer-events: none; white-space: nowrap;
         }
-
         #dev-coord-box { 
             display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
             background: rgba(0,0,0,0.85); color: #00ffcc; padding: 15px; border: 2px solid #00ffcc; 
@@ -168,7 +165,6 @@
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
 
-    <!-- Обновленная Панель координат -->
     <div id="dev-coord-box">Тащите любой красный квадрат пальцем!</div>
 
     <!-- ОБЕРТКА ДЛЯ КАМЕРЫ -->
@@ -336,9 +332,10 @@
         let startX, startY, startDistance = 0, initialScale = 1;
         let isDraggingMap = false;
         let hasMovedMap = false; 
+        let isFirstLoad = true; // Флаг для первого старта камеры
 
         mapWrapper.addEventListener('touchstart', (e) => {
-            if(window.activeDragEl) return; // Блокируем камеру, если тащим объект в DEV режиме
+            if(window.activeDragEl) return; 
             hasMovedMap = false;
             if (e.touches.length === 2) {
                 isDraggingMap = false;
@@ -388,6 +385,12 @@
             const maxTx = Math.max(0, (scaledW - fw) / 2);
             const maxTy = Math.max(0, (scaledH - fh) / 2);
 
+            // Сдвиг камеры к верхней части карты при первом входе
+            if (isFirstLoad) {
+                posY = maxTy * 0.8; 
+                isFirstLoad = false;
+            }
+
             posX = Math.max(-maxTx, Math.min(posX, maxTx));
             posY = Math.max(-maxTy, Math.min(posY, maxTy));
 
@@ -416,7 +419,7 @@
 
             el.addEventListener('touchstart', (e) => {
                 if (!document.body.classList.contains('dev-mode')) return;
-                e.stopPropagation(); // Отключаем движение карты
+                e.stopPropagation(); 
                 window.activeDragEl = el;
                 const touch = e.touches[0];
                 startClientX = touch.clientX;
@@ -443,32 +446,6 @@
 
             el.addEventListener('touchend', (e) => {
                 if (window.activeDragEl === el) window.activeDragEl = null;
-            });
-            
-            // Поддержка мыши для тестов на ПК
-            el.addEventListener('mousedown', (e) => {
-                if (!document.body.classList.contains('dev-mode')) return;
-                e.stopPropagation();
-                window.activeDragEl = el;
-                startClientX = e.clientX; startClientY = e.clientY;
-                startElLeft = parseFloat(el.style.left) || (el.offsetLeft / mapContainer.clientWidth * 100);
-                startElTop = parseFloat(el.style.top) || (el.offsetTop / mapContainer.clientHeight * 100);
-                
-                const onMouseMove = (ev) => {
-                    ev.preventDefault(); ev.stopPropagation();
-                    const dx = (ev.clientX - startClientX) / mapScale;
-                    const dy = (ev.clientY - startClientY) / mapScale;
-                    el.style.left = (startElLeft + (dx / mapContainer.clientWidth) * 100).toFixed(1) + '%';
-                    el.style.top = (startElTop + (dy / mapContainer.clientHeight) * 100).toFixed(1) + '%';
-                    updateDevSummary();
-                };
-                const onMouseUp = () => {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                    window.activeDragEl = null;
-                };
-                document.addEventListener('mousemove', onMouseMove, {passive: false});
-                document.addEventListener('mouseup', onMouseUp);
             });
         });
 
