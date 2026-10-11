@@ -7,7 +7,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
-        /* Цвет фона под картой (цвет глубокого океана), чтобы при максимальном отдалении не было черных полос */
         body { background-color: #5b8e88; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #5b8e88; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
@@ -40,27 +39,15 @@
         .square-btn:active { transform: scale(0.92); border-color: #dcb254; }
         .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.5)); }
 
-        /* ========================================= */
-        /* --- ИНТЕРАКТИВНАЯ КАРТА (ХОЛСТ 2560x1440) --- */
-        /* ========================================= */
-        .map-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-            overflow: hidden; touch-action: none; 
-        }
-        
+        /* ИНТЕРАКТИВНАЯ КАРТА */
+        .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; }
         .map-container { 
-            position: absolute; 
-            width: 2560px; height: 1440px; 
-            top: 50%; left: 50%; 
+            position: absolute; width: 2560px; height: 1440px; top: 50%; left: 50%; 
             margin-top: -720px; margin-left: -1280px; 
-            background-image: url('Viledges.png'); /* ИЗМЕНЕНО НА PNG */
-            background-size: cover; 
-            background-position: center; 
-            transform-origin: center center; 
-            will-change: transform;
+            background-image: url('Viledges_3.png'); background-size: cover; background-position: center; 
+            transform-origin: center center; will-change: transform;
         }
 
-        /* НЕВИДИМЫЕ МЕТКИ ЗДАНИЙ */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: scale(0.95); }
         
@@ -74,7 +61,6 @@
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: #ff4500; border: 3px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 15px #ff4500; }
         .notification-dot.active { display: block; }
 
-        /* ОГОРОД И ВЫРАЩЕННЫЙ КУСТИК */
         .grown-bush-container { position: absolute; top: 62.5%; left: 42.5%; width: 110px; height: 110px; z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container:active { transform: scale(0.9) !important; animation: none; }
@@ -84,8 +70,8 @@
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -8px); } }
 
-        /* ВОЗВРАЩЕННАЯ ЛОДКА */
-        .boat-container { position: absolute; top: 65%; left: 63%; width: 150px; height: 100px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        /* ЛОДКА (Сдвинута правее в воду) */
+        .boat-container { position: absolute; top: 66.5%; left: 66.5%; width: 150px; height: 100px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
         @keyframes boat-rock { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(5px) rotate(2deg); } }
 
@@ -100,11 +86,11 @@
         @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
-        /* ИСПРАВЛЕННЫЕ ПТИЦЫ (Теперь летают в центре) */
-        .flock-container { position: absolute; left: 20%; width: 500px; height: 300px; pointer-events: none; z-index: 11; opacity: 0.5; }
+        /* ПТИЦЫ (Теперь генерируются далеко за экраном) */
+        .flock-container { position: absolute; left: -50%; width: 50%; height: 150px; pointer-events: none; z-index: 11; opacity: 0.5; }
         .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; animation: bird-wander 3s ease-in-out infinite alternate; }
-        @keyframes fly-across { 0% { transform: translateX(0px) translateY(0); } 50% { transform: translateX(1000px) translateY(-100px); } 100% { transform: translateX(2000px) translateY(50px); } }
-        @keyframes fly-across-reverse { 0% { transform: translateX(2000px) translateY(0) scaleX(-1); } 50% { transform: translateX(1000px) translateY(100px) scaleX(-1); } 100% { transform: translateX(-500px) translateY(-50px) scaleX(-1); } }
+        @keyframes fly-across { 0% { transform: translateX(0px) translateY(0); } 100% { transform: translateX(4000px) translateY(100px); } }
+        @keyframes fly-across-reverse { 0% { transform: translateX(4000px) translateY(0) scaleX(-1); } 100% { transform: translateX(0px) translateY(-100px) scaleX(-1); } }
         @keyframes bird-wander { 0% { transform: translate(0, 0) scale(var(--scale)); } 100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale)); } }
 
         /* АНИМАЦИЯ ПЕРЕХОДА (Облака) */
@@ -158,16 +144,45 @@
         .claim-btn:hover:not(:disabled) { filter: brightness(1.2); }
         .claim-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .claim-btn:disabled { background: #3a3f42; border-color: #555; color: #888; cursor: not-allowed; box-shadow: none; }
-        .close-modal-btn { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #121517; border: 2px solid #dcb254; border-radius: 50%; color: #dcb254; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px #000; z-index: 5; }
-        .close-modal-btn:active { transform: scale(0.9); }
         
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
+
+        /* ========================================= */
+        /* --- CSS ДЛЯ РЕЖИМА РАЗРАБОТЧИКА --- */
+        /* ========================================= */
+        body.dev-mode .map-pin, 
+        body.dev-mode .boat-container, 
+        body.dev-mode .grown-bush-container, 
+        body.dev-mode .surf-wave {
+            border: 3px solid #ff0055 !important;
+            background: rgba(255, 0, 85, 0.3) !important;
+            pointer-events: auto !important;
+        }
+        
+        body.dev-mode .map-container {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px),
+                url('Viledges_3.png') !important;
+            background-size: 5% 5%, 5% 5%, cover !important; 
+        }
+
+        #dev-coord-box {
+            display: none; position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.9); color: #a6ff4d; padding: 10px 20px; border: 2px solid #a6ff4d; 
+            border-radius: 8px; z-index: 1000; font-family: monospace; font-size: 16px; font-weight: bold;
+            pointer-events: none; text-align: center;
+        }
+        body.dev-mode #dev-coord-box { display: block; }
     </style>
 </head>
 <body>
 
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
+
+    <!-- Панель координат разработчика -->
+    <div id="dev-coord-box">Кликните по карте...</div>
 
     <!-- ОБЕРТКА ДЛЯ КАМЕРЫ -->
     <div class="map-wrapper" id="map-wrapper">
@@ -177,7 +192,7 @@
             <div class="surf-wave surf-l1"></div><div class="surf-wave surf-l2"></div><div class="surf-wave surf-l3"></div>
             <div class="surf-wave surf-r1"></div><div class="surf-wave surf-r2"></div><div class="surf-wave surf-r3"></div>
 
-            <!-- Лодка (Вернулась) -->
+            <!-- Лодка -->
             <div class="boat-container">
                 <img class="boat-img" src="boat.png" alt="Лодка" onerror="this.style.display='none'">
             </div>
@@ -230,11 +245,9 @@
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start;">
-            <div class="square-btn" onclick="showInfoModal('Инвентарь', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
-                <img src="backpack.png" alt="Инвентарь" onerror="this.style.display='none'">
-            </div>
-            <div class="square-btn" onclick="showInfoModal('Коллекция', 'Архив событий и находок.\nВ разработке.')">
-                <img src="scroll.png" alt="Свиток" onerror="this.style.display='none'">
+            <!-- КНОПКА DEV (РЕЖИМ РАЗРАБОТЧИКА) -->
+            <div class="square-btn" onclick="toggleDevMode()" title="Режим разработчика" style="border-color: #a6ff4d; color: #a6ff4d; font-weight: bold; font-size: 13px;">
+                DEV
             </div>
         </div>
         
@@ -264,7 +277,7 @@
         </div>
     </div>
 
-    <!-- === УНИВЕРСАЛЬНОЕ ИНФО-ОКНО === -->
+    <!-- УНИВЕРСАЛЬНОЕ ИНФО-ОКНО -->
     <div class="info-modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
         <div class="info-modal" id="info-modal" onclick="event.stopPropagation()">
             <div class="info-modal-header" id="info-modal-title">Внимание</div>
@@ -330,7 +343,7 @@
         const mapContainer = document.getElementById('map-container');
 
         let mapScale = null; 
-        const minScale = 0.5; // СНЯЛ ЖЕСТКОЕ ОГРАНИЧЕНИЕ (Можно отдалять гораздо сильнее)
+        const minScale = 0.5; // ТЕПЕРЬ МОЖНО ОТДАЛИТЬ НАМНОГО СИЛЬНЕЕ
         const maxScale = 3.0; 
 
         let posX = 0, posY = 0;
@@ -378,11 +391,7 @@
             const cw = mapContainer.clientWidth;
             const ch = mapContainer.clientHeight;
             
-            // Если игрок отдалит слишком далеко (появится фон), фон будет цвета океана
-            if (mapScale === null) {
-                mapScale = 0.8; // При входе в игру сразу видим больше острова
-            }
-            
+            if (mapScale === null) mapScale = 0.7; // Начальное отдаление
             mapScale = Math.max(minScale, Math.min(mapScale, maxScale));
 
             const scaledW = cw * mapScale;
@@ -394,7 +403,6 @@
             posX = Math.max(-maxTx, Math.min(posX, maxTx));
             posY = Math.max(-maxTy, Math.min(posY, maxTy));
 
-            // Если отдаление настолько сильное, что картинка меньше экрана — центрируем жестко
             if (scaledW < fw) posX = 0;
             if (scaledH < fh) posY = 0;
 
@@ -403,6 +411,29 @@
         
         window.addEventListener('resize', updateTransform);
         setTimeout(updateTransform, 50);
+
+        // -------------------------
+        // ИНСТРУМЕНТ РАЗРАБОТЧИКА (DEV MODE)
+        // -------------------------
+        window.toggleDevMode = function() {
+            document.body.classList.toggle('dev-mode');
+            if (document.body.classList.contains('dev-mode')) {
+                document.getElementById('dev-coord-box').innerText = "Кликните в любую точку карты!";
+            }
+        };
+
+        // Клик по карте для получения координат в DEV режиме
+        mapContainer.addEventListener('click', (e) => {
+            if (!document.body.classList.contains('dev-mode')) return;
+            
+            const rect = mapContainer.getBoundingClientRect();
+            // Вычисляем точные проценты клика внутри карты
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            document.getElementById('dev-coord-box').innerHTML = `Координаты клика:<br>top: ${y.toFixed(1)}%; left: ${x.toFixed(1)}%;`;
+        });
+
 
         // -------------------------
         // ИНФО-ОКНО И ЗДАНИЯ
@@ -419,6 +450,8 @@
         };
 
         window.handleBuildingClick = function(e, buildingType) {
+            // Если включен DEV режим, не вызываем окна (чтобы можно было смотреть координаты)
+            if (document.body.classList.contains('dev-mode')) return;
             if (hasMoved) return; 
             
             const level = window.gameData.epochLevel || 1;
@@ -471,6 +504,7 @@
         }
 
         window.harvestSand = async function(e) {
+            if (document.body.classList.contains('dev-mode')) return; // В DEV режиме отключаем сбор
             e.stopPropagation();
             if (hasMoved) return;
 
@@ -531,7 +565,7 @@
         }
 
         window.openDailyModal = function() { 
-            if (hasMoved) return;
+            if (hasMoved || document.body.classList.contains('dev-mode')) return;
             renderDaysGrid(); document.getElementById('daily-overlay').classList.add('show'); 
         };
         window.closeDailyModal = function() { document.getElementById('daily-overlay').classList.remove('show'); };
@@ -567,7 +601,7 @@
         };
 
         window.goToLocation = function(url) {
-            if (hasMoved) return;
+            if (hasMoved || document.body.classList.contains('dev-mode')) return;
             document.getElementById('clouds').classList.remove('open');
             setTimeout(() => { window.location.replace(url); }, 1200);
         };
