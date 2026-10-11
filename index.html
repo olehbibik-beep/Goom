@@ -70,8 +70,8 @@
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -8px); } }
 
-        /* ЛОДКА (Сдвинута правее в воду) */
-        .boat-container { position: absolute; top: 66.5%; left: 66.5%; width: 150px; height: 100px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        /* ЛОДКА (Обновленные координаты) */
+        .boat-container { position: absolute; top: 82.6%; left: 58.0%; width: 150px; height: 100px; z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
         @keyframes boat-rock { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(5px) rotate(2deg); } }
 
@@ -86,7 +86,7 @@
         @keyframes surf-left { 0% { transform: rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
-        /* ПТИЦЫ (Теперь генерируются далеко за экраном) */
+        /* ПТИЦЫ */
         .flock-container { position: absolute; left: -50%; width: 50%; height: 150px; pointer-events: none; z-index: 11; opacity: 0.5; }
         .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; animation: bird-wander 3s ease-in-out infinite alternate; }
         @keyframes fly-across { 0% { transform: translateX(0px) translateY(0); } 100% { transform: translateX(4000px) translateY(100px); } }
@@ -154,17 +154,9 @@
         body.dev-mode .boat-container, 
         body.dev-mode .grown-bush-container, 
         body.dev-mode .surf-wave {
-            border: 3px solid #ff0055 !important;
-            background: rgba(255, 0, 85, 0.3) !important;
+            border: 2px solid #ff0055 !important;
+            background: rgba(255, 0, 85, 0.4) !important;
             pointer-events: auto !important;
-        }
-        
-        body.dev-mode .map-container {
-            background-image: 
-                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px),
-                url('Viledges_3.png') !important;
-            background-size: 5% 5%, 5% 5%, cover !important; 
         }
 
         #dev-coord-box {
@@ -343,7 +335,7 @@
         const mapContainer = document.getElementById('map-container');
 
         let mapScale = null; 
-        const minScale = 0.5; // ТЕПЕРЬ МОЖНО ОТДАЛИТЬ НАМНОГО СИЛЬНЕЕ
+        const minScale = 0.5; 
         const maxScale = 3.0; 
 
         let posX = 0, posY = 0;
@@ -391,7 +383,7 @@
             const cw = mapContainer.clientWidth;
             const ch = mapContainer.clientHeight;
             
-            if (mapScale === null) mapScale = 0.7; // Начальное отдаление
+            if (mapScale === null) mapScale = 0.8; 
             mapScale = Math.max(minScale, Math.min(mapScale, maxScale));
 
             const scaledW = cw * mapScale;
@@ -422,18 +414,15 @@
             }
         };
 
-        // Клик по карте для получения координат в DEV режиме
         mapContainer.addEventListener('click', (e) => {
             if (!document.body.classList.contains('dev-mode')) return;
             
             const rect = mapContainer.getBoundingClientRect();
-            // Вычисляем точные проценты клика внутри карты
             const x = ((e.clientX - rect.left) / rect.width) * 100;
             const y = ((e.clientY - rect.top) / rect.height) * 100;
             
             document.getElementById('dev-coord-box').innerHTML = `Координаты клика:<br>top: ${y.toFixed(1)}%; left: ${x.toFixed(1)}%;`;
         });
-
 
         // -------------------------
         // ИНФО-ОКНО И ЗДАНИЯ
@@ -450,7 +439,6 @@
         };
 
         window.handleBuildingClick = function(e, buildingType) {
-            // Если включен DEV режим, не вызываем окна (чтобы можно было смотреть координаты)
             if (document.body.classList.contains('dev-mode')) return;
             if (hasMoved) return; 
             
@@ -504,7 +492,7 @@
         }
 
         window.harvestSand = async function(e) {
-            if (document.body.classList.contains('dev-mode')) return; // В DEV режиме отключаем сбор
+            if (document.body.classList.contains('dev-mode')) return; 
             e.stopPropagation();
             if (hasMoved) return;
 
