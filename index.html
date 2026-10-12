@@ -38,32 +38,27 @@
         .square-btn:active { transform: scale(0.92); border-color: #dcb254; }
         .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.5)); }
 
-        /* ИНТЕРАКТИВНАЯ КАРТА (ВЕРТИКАЛЬНАЯ: 1440x2560) */
+        /* ИНТЕРАКТИВНАЯ КАРТА */
         .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; cursor: grab; }
         .map-wrapper:active { cursor: grabbing; }
-        .map-container { 
-            position: absolute; width: 1440px; height: 2560px; top: 50%; left: 50%; 
-            margin-top: -1280px; margin-left: -720px; 
-            background-image: url('Viledges2.png'); background-size: cover; background-position: center; 
-            transform-origin: center center; will-change: transform; 
-        }
+        .map-container { position: absolute; width: 2560px; height: 1440px; top: 50%; left: 50%; margin-top: -720px; margin-left: -1280px; background-image: url('Viledges2.png'); background-size: cover; background-position: center; transform-origin: center center; will-change: transform; }
 
-        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (Приблизительные координаты для перетаскивания) */
+        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
         
-        #pin-hall { top: 55.5%; left: 46.2%; width: 150px; height: 180px; }  
-        #pin-lib { top: 54.8%; left: 59.7%; width: 150px; height: 150px; }       
-        #pin-mpso { top: 60.7%; left: 66.8%; width: 150px; height: 140px; }      
-        #pin-gate { top: 52.4%; left: 38.0%; width: 100px; height: 100px; }    
-        #pin-tent { top: 64.5%; left: 51.1%; width: 120px; height: 100px; }    
-        #pin-garden { top: 47.4%; left: 50.8%; width: 120px; height: 120px; }  
+        #pin-hall { top: 55.1%; left: 42.4%; width: 150px; height: 180px; }  
+        #pin-lib { top: 54%; left: 66.5%; width: 150px; height: 150px; }       
+        #pin-mpso { top: 61.2%; left: 61.4%; width: 150px; height: 140px; }      
+        #pin-gate { top: 51.9%; left: 30.4%; width: 100px; height: 100px; }    
+        #pin-tent { top: 58.5%; left: 51.9%; width: 120px; height: 100px; }    
+        #pin-garden { top: 50.2%; left: 51.7%; width: 120px; height: 120px; }  
 
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: #ff4500; border: 3px solid #0a0c0f; border-radius: 50%; display: none; box-shadow: 0 0 15px #ff4500; }
         .notification-dot.active { display: block; }
 
         /* ОГОРОД И ВЫРАЩЕННЫЙ КУСТИК */
-        .grown-bush-container { position: absolute; top: 47.4%; left: 50.8%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
+        .grown-bush-container { position: absolute; top: 50.2%; left: 51.7%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container:active { transform: translate(-50%, -50%) scale(0.9) !important; animation: none; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4)); mix-blend-mode: multiply; }
@@ -71,7 +66,7 @@
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         
         /* ЛОДКА */
-        .boat-container { position: absolute; top: 77.8%; left: 60.9%; width: 150px; height: 100px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
+        .boat-container { position: absolute; top: 67%; left: 65.4%; width: 150px; height: 100px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
 
         /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ */
@@ -328,7 +323,7 @@
         loadDataFromCloud();
 
         // -------------------------
-        // ИДЕАЛЬНАЯ ЛОГИКА КАМЕРЫ (МЫШЬ + СЕНСОР)
+        // ЛОГИКА КАМЕРЫ (PAN & ZOOM)
         // -------------------------
         const mapWrapper = document.getElementById('map-wrapper');
         const mapContainer = document.getElementById('map-container');
@@ -425,33 +420,32 @@
         function updateTransform() {
             const fw = mapWrapper.clientWidth;
             const fh = mapWrapper.clientHeight;
-            const cw = 1440; 
-            const ch = 2560; 
+            const cw = 2560; 
+            const ch = 1440;
             
-            const calculatedMinScale = Math.max(fw / cw, fh / ch);
+            const minScale = Math.max(fw / cw, fh / ch);
             
             if (mapScale === null) {
-                mapScale = calculatedMinScale; 
+                mapScale = Math.max(minScale, 0.8); 
             }
             
-            mapScale = Math.max(calculatedMinScale, Math.min(mapScale, maxScale));
+            mapScale = Math.max(minScale, Math.min(mapScale, maxScale));
 
             const scaledW = cw * mapScale;
             const scaledH = ch * mapScale;
 
-            const maxTx = Math.max(0, (scaledW - fw) / 2 / mapScale);
-            const maxTy = Math.max(0, (scaledH - fh) / 2 / mapScale);
+            const maxTx = Math.max(0, (scaledW - fw) / 2);
+            const maxTy = Math.max(0, (scaledH - fh) / 2);
 
-            if (isFirstLoad) {
-                posX = 0; 
-                posY = 0; 
+            if (isFirstLoad && maxTy > 0) {
+                posY = maxTy * 0.65; 
                 isFirstLoad = false;
             }
 
             posX = Math.max(-maxTx, Math.min(posX, maxTx));
             posY = Math.max(-maxTy, Math.min(posY, maxTy));
 
-            mapContainer.style.transform = `scale(${mapScale}) translate(${posX}px, ${posY}px)`;
+            mapContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${mapScale})`;
         }
         
         window.addEventListener('resize', updateTransform);
