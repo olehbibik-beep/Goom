@@ -38,12 +38,17 @@
         .square-btn:active { transform: scale(0.92); border-color: #dcb254; }
         .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.5)); }
 
-        /* ИНТЕРАКТИВНАЯ КАРТА */
+        /* ИНТЕРАКТИВНАЯ КАРТА (ВЕРТИКАЛЬНАЯ: 1440x2560) */
         .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; cursor: grab; }
         .map-wrapper:active { cursor: grabbing; }
-        .map-container { position: absolute; width: 2560px; height: 1440px; top: 50%; left: 50%; margin-top: -720px; margin-left: -1280px; background-image: url('Viledges2.png'); background-size: cover; background-position: center; transform-origin: center center; will-change: transform; }
+        .map-container { 
+            position: absolute; width: 1440px; height: 2560px; top: 50%; left: 50%; 
+            margin-top: -1280px; margin-left: -720px; 
+            background-image: url('Viledges2.png'); background-size: cover; background-position: center; 
+            transform-origin: center center; will-change: transform; 
+        }
 
-        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (Идеальные координаты) */
+        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (Приблизительные координаты для перетаскивания) */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
         
@@ -91,7 +96,7 @@
         @keyframes fly-across-reverse { 0% { transform: translateX(4000px) translateY(0) scaleX(-1); } 100% { transform: translateX(0px) translateY(-100px) scaleX(-1); } }
         @keyframes bird-wander { 0% { transform: translate(0, 0) scale(var(--scale)); } 100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale)); } }
 
-        /* АНИМАЦИЯ ПЕРЕХОДА */
+        /* АНИМАЦИЯ ПЕРЕХОДА (Облака) */
         .clouds-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; opacity: 1; transition: opacity 0.3s ease; }
         .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.8s, visibility 0s 1.3s; }
         .cloud-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: space-between; }
@@ -168,6 +173,7 @@
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
 
+    <!-- Панель координат -->
     <div id="dev-coord-box">Тащите любой красный квадрат мышкой или пальцем!</div>
 
     <!-- ОБЕРТКА ДЛЯ КАМЕРЫ -->
@@ -338,7 +344,6 @@
         let hasMovedMap = false; 
         let isFirstLoad = true;
 
-        // --- Обработка касаний (Смартфоны) ---
         mapWrapper.addEventListener('touchstart', (e) => {
             if(window.activeDragEl || document.body.classList.contains('dev-mode')) return; 
             
@@ -365,7 +370,6 @@
                 mapScale = initialScale * zoom;
                 updateTransform();
             } else if (e.touches.length === 1 && isDraggingMap) {
-                // Если сдвинули палец хотя бы на 5 пикселей, считаем это перетаскиванием (блокируем клик)
                 if (Math.hypot(e.touches[0].pageX - startX - posX, e.touches[0].pageY - startY - posY) > 5) {
                     hasMovedMap = true;
                 }
@@ -379,12 +383,10 @@
             if (e.touches.length < 2) initialScale = mapScale;
             if (e.touches.length === 0) {
                 isDraggingMap = false;
-                // Небольшая задержка перед снятием блокировки клика
                 setTimeout(() => { hasMovedMap = false; }, 50);
             }
         });
 
-        // --- Обработка мыши (ПК) ---
         mapWrapper.addEventListener('mousedown', (e) => {
             if(window.activeDragEl || document.body.classList.contains('dev-mode')) return; 
             isDraggingMap = true;
@@ -396,12 +398,9 @@
 
         window.addEventListener('mousemove', (e) => {
             if (!isDraggingMap) return;
-            
-            // Если мышь сдвинулась более чем на 5 пикселей, это перетаскивание (блокирует клик по зданиям)
             if (Math.hypot(e.clientX - startX - posX, e.clientY - startY - posY) > 5) {
                 hasMovedMap = true;
             }
-            
             posX = e.clientX - startX;
             posY = e.clientY - startY;
             updateTransform();
@@ -415,47 +414,44 @@
             }
         });
 
-        // --- Зум колесиком мыши (ПК) ---
         mapWrapper.addEventListener('wheel', (e) => {
             if(document.body.classList.contains('dev-mode')) return;
             e.preventDefault();
-            const delta = -e.deltaY * 0.0015; // Чувствительность зума
+            const delta = -e.deltaY * 0.0015; 
             mapScale *= (1 + delta);
             updateTransform();
         }, { passive: false });
 
-        // --- Ядро камеры ---
         function updateTransform() {
             const fw = mapWrapper.clientWidth;
             const fh = mapWrapper.clientHeight;
-            const cw = 2560; // Фиксированный размер холста
-            const ch = 1440;
+            const cw = 1440; 
+            const ch = 2560; 
             
-            // Умная математика: камера никогда не покажет черные края
-            const minScale = Math.max(fw / cw, fh / ch);
+            const calculatedMinScale = Math.max(fw / cw, fh / ch);
             
             if (mapScale === null) {
-                mapScale = Math.max(minScale, 0.8); 
+                mapScale = calculatedMinScale; 
             }
             
-            mapScale = Math.max(minScale, Math.min(mapScale, maxScale));
+            mapScale = Math.max(calculatedMinScale, Math.min(mapScale, maxScale));
 
             const scaledW = cw * mapScale;
             const scaledH = ch * mapScale;
 
-            const maxTx = Math.max(0, (scaledW - fw) / 2);
-            const maxTy = Math.max(0, (scaledH - fh) / 2);
+            const maxTx = Math.max(0, (scaledW - fw) / 2 / mapScale);
+            const maxTy = Math.max(0, (scaledH - fh) / 2 / mapScale);
 
-            // Сдвигаем камеру выше (к горизонту) при самом первом заходе
-            if (isFirstLoad && maxTy > 0) {
-                posY = maxTy * 0.65; 
+            if (isFirstLoad) {
+                posX = 0; 
+                posY = 0; 
                 isFirstLoad = false;
             }
 
             posX = Math.max(-maxTx, Math.min(posX, maxTx));
             posY = Math.max(-maxTy, Math.min(posY, maxTy));
 
-            mapContainer.style.transform = `translate(${posX}px, ${posY}px) scale(${mapScale})`;
+            mapContainer.style.transform = `scale(${mapScale}) translate(${posX}px, ${posY}px)`;
         }
         
         window.addEventListener('resize', updateTransform);
@@ -475,7 +471,6 @@
         draggables.forEach(el => {
             let startClientX, startClientY, startElLeft, startElTop;
 
-            // Для сенсоров
             el.addEventListener('touchstart', (e) => {
                 if (!document.body.classList.contains('dev-mode')) return;
                 e.stopPropagation(); 
@@ -507,7 +502,6 @@
                 if (window.activeDragEl === el) window.activeDragEl = null;
             });
             
-            // Для мыши в DEV режиме
             el.addEventListener('mousedown', (e) => {
                 if (!document.body.classList.contains('dev-mode')) return;
                 e.stopPropagation();
@@ -563,7 +557,7 @@
 
         window.handleBuildingClick = function(e, buildingType) {
             if (document.body.classList.contains('dev-mode')) return;
-            if (hasMovedMap) return; // Умная блокировка: если свайпали карту, клик не пройдет
+            if (hasMovedMap) return; 
             
             const level = window.gameData.epochLevel || 1;
             
