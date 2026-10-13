@@ -3,185 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Вход - Врата Времени</title>
+    <title>Вход - Лагерь Времени</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-
-        body {
-            background-color: #050505; display: flex; justify-content: center; align-items: center;
-            height: 100vh; width: 100vw; margin: 0; overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;
-        }
-
-        #game-frame {
-            position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px;
-            background: radial-gradient(circle at center, #1a2224 0%, #0a0c0f 100%);
-            overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        @media (min-width: 540px) and (min-height: 960px) {
-            #game-frame { border-radius: 12px; border: 1px solid #333; }
-        }
-
-        /* Звезды на фоне */
-        .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background-image: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 85% 30%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 50% 80%, rgba(255,255,255,0.1) 2px, transparent 2px); background-size: 100px 100px; animation: starDrift 60s linear infinite; }
-        @keyframes starDrift { from { transform: translateY(0); } to { transform: translateY(-100px); } }
-
-        /* Логотип */
-        .logo { z-index: 10; margin-bottom: 40px; text-align: center; }
-        .logo-icon { font-size: 60px; filter: drop-shadow(0 0 15px rgba(32,178,170,0.8)); animation: float 3s ease-in-out infinite alternate; }
-        .logo-text { font-size: 32px; font-weight: 900; color: #dcb254; text-shadow: 0 4px 10px rgba(0,0,0,0.8); margin-top: 10px; letter-spacing: 2px; text-transform: uppercase; }
-        @keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
-
-        /* Форма */
-        .auth-form {
-            z-index: 10; width: 85%; max-width: 320px; background: rgba(10, 12, 15, 0.8);
-            border: 2px solid #4a433a; border-radius: 15px; padding: 30px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-        }
-
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-size: 12px; color: #8ba2c2; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
-        .input-group input {
-            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #8ba2c2; color: #fff;
-            padding: 12px 15px; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.3s;
-        }
-        .input-group input:focus { border-color: #20b2aa; box-shadow: 0 0 10px rgba(32,178,170,0.3); }
-
-        .btn {
-            width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
-            cursor: pointer; transition: transform 0.2s, filter 0.2s; margin-bottom: 15px; outline: none;
-        }
-        .btn-primary { background: linear-gradient(135deg, #20b2aa, #137a75); color: #fff; box-shadow: 0 4px 15px rgba(32,178,170,0.4); border: 1px solid #fff; }
-        .btn-primary:active { transform: scale(0.95); }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        .switch-mode { text-align: center; font-size: 13px; color: #8ba2c2; cursor: pointer; text-decoration: underline; margin-top: 10px; }
-        .switch-mode:hover { color: #fff; }
+        body { background-color: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; overflow: hidden; color: #fff; }
+        #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #1a2226; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
+        @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
-        .error-msg { color: #ff4500; font-size: 13px; text-align: center; margin-bottom: 15px; display: none; }
+        /* КРАСИВЫЙ РАЗМЫТЫЙ ФОН */
+        .bg-image { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background-image: url('Viledges_3.png'); background-size: cover; background-position: center; filter: blur(8px) brightness(0.6); z-index: 1; }
+
+        /* ЭКРАНЫ */
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.5s, transform 0.5s; opacity: 0; visibility: hidden; pointer-events: none; }
+        .screen.active { opacity: 1; visibility: visible; pointer-events: auto; transform: scale(1); }
+        .screen.hidden-up { transform: translateY(-50px); opacity: 0; }
+
+        /* 1. ЗАСТАВКА (SPLASH) */
+        .logo-container { text-align: center; margin-bottom: 40px; animation: float 3s ease-in-out infinite; }
+        .company-logo { font-size: 40px; font-weight: 900; color: #dcb254; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 4px 15px rgba(220,178,84,0.5); }
+        .company-sub { font-size: 14px; color: #8ba2c2; letter-spacing: 5px; text-transform: uppercase; margin-top: 5px; }
+        
+        .loading-container { position: absolute; bottom: 50px; width: 80%; display: flex; flex-direction: column; align-items: center; }
+        .loading-text { font-size: 12px; color: #8ba2c2; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .loading-bar-bg { width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; border: 1px solid #333; }
+        .loading-bar-fill { width: 0%; height: 100%; background: #dcb254; transition: width 0.2s ease; box-shadow: 0 0 10px #dcb254; }
+
+        /* 2. АВТОРИЗАЦИЯ */
+        .auth-panel { background: rgba(15, 20, 23, 0.85); padding: 30px 20px; border-radius: 20px; border: 1px solid #3a3f42; backdrop-filter: blur(10px); width: 85%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        .auth-title { font-size: 24px; color: #fff; margin-bottom: 10px; font-weight: bold; }
+        .auth-desc { font-size: 14px; color: #8ba2c2; margin-bottom: 30px; }
+        
+        .btn { width: 100%; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; margin-bottom: 15px; transition: transform 0.1s, filter 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn:active { transform: scale(0.95); }
+        
+        .btn-guest { background: linear-gradient(135deg, #2a3439, #1a2226); color: #eef4f7; border: 1px solid #4a5459; }
+        .btn-google { background: #fff; color: #444; }
+        .btn-google img { width: 20px; height: 20px; }
+        .btn-email { background: transparent; color: #8ba2c2; border: 1px solid #3a3f42; margin-bottom: 0; }
+
+        /* 3. СОЗДАНИЕ ПЕРСОНАЖА */
+        .avatar-grid { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }
+        .avatar-card { width: 100px; height: 120px; background: rgba(0,0,0,0.4); border: 2px solid #3a3f42; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+        .avatar-card img { width: 80%; height: auto; margin-bottom: 10px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); transition: transform 0.2s; }
+        .avatar-card.selected { border-color: #dcb254; background: rgba(220,178,84,0.1); box-shadow: 0 0 15px rgba(220,178,84,0.3); }
+        .avatar-card.selected img { transform: scale(1.1); }
+        .avatar-name { font-size: 14px; font-weight: bold; color: #8ba2c2; }
+        .avatar-card.selected .avatar-name { color: #dcb254; }
+
+        .btn-start { background: linear-gradient(135deg, #dcb254, #b8860b); color: #000; display: none; }
+        .btn-start.visible { display: block; animation: popIn 0.3s ease; }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div id="game-frame">
-    <div class="stars"></div>
-    <div class="logo">
-        <div class="logo-icon">🌀</div>
-        <div class="logo-text">Врата Времени</div>
+    <div class="bg-image"></div>
+
+    <!-- ЭКРАН 1: ЗАСТАВКА И ЗАГРУЗКА -->
+    <div class="screen active" id="screen-splash">
+        <div class="logo-container">
+            <div class="company-logo">GOOM</div>
+            <div class="company-sub">STUDIO</div>
+        </div>
+        <div class="loading-container">
+            <div class="loading-text" id="loading-msg">Синхронизация эпох...</div>
+            <div class="loading-bar-bg">
+                <div class="loading-bar-fill" id="loading-fill"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="auth-form" id="login-box">
-        <div class="error-msg" id="error-msg">Ошибка</div>
-        
-        <div class="input-group">
-            <label>Email хранителя</label>
-            <input type="email" id="email" placeholder="example@mail.com" autocomplete="off">
+    <!-- ЭКРАН 2: ВЫБОР АВТОРИЗАЦИИ -->
+    <div class="screen" id="screen-auth">
+        <div class="auth-panel">
+            <h1 class="auth-title">Лагерь Времени</h1>
+            <p class="auth-desc">Войдите, чтобы сохранить прогресс</p>
+            
+            <button class="btn btn-google" onclick="loginGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G">
+                Продолжить с Google
+            </button>
+            <button class="btn btn-guest" onclick="loginGuest()">Играть как Гость</button>
+            <button class="btn btn-email" onclick="alert('Вход по Email в разработке!')">Войти по Email</button>
         </div>
-        <div class="input-group">
-            <label>Тайный пароль</label>
-            <input type="password" id="password" placeholder="••••••••" autocomplete="off">
-        </div>
+    </div>
 
-        <button class="btn btn-primary" id="action-btn">Войти в игру</button>
-        <div class="switch-mode" id="switch-btn">Нет аккаунта? Создать</div>
+    <!-- ЭКРАН 3: СОЗДАНИЕ ПЕРСОНАЖА -->
+    <div class="screen" id="screen-create">
+        <div class="auth-panel">
+            <h1 class="auth-title">Кто вы?</h1>
+            <p class="auth-desc">Выберите своего Хранителя</p>
+            
+            <div class="avatar-grid">
+                <div class="avatar-card" id="avatar-boy" onclick="selectAvatar('boy')">
+                    <img src="ty.png" alt="Мальчик" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzg4OCI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czEtLjMtNC00LTQtMS43OS00LTR0MS43OS00IDQtNHptMCAybS04IDZjMC0yLjY2IDUuMzMtNCA4LTRzOCAxLjM0IDggNHYyaC0xNnYtMnoiLz48L3N2Zz4='">
+                    <div class="avatar-name">Мальчик</div>
+                </div>
+                <div class="avatar-card" id="avatar-girl" onclick="selectAvatar('girl')">
+                    <img src="ty.png" alt="Девочка" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzg4OCI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czEtLjMtNC00LTQtMS43OS00LTR0MS43OS00IDQtNHptMCAybS04IDZjMC0yLjY2IDUuMzMtNCA4LTRzOCAxLjM0IDggNHYyaC0xNnYtMnoiLz48L3N2Zz4='">
+                    <div class="avatar-name">Девочка</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-start" id="btn-start" onclick="finishCreation()">Начать приключение</button>
+        </div>
     </div>
 </div>
 
-<!-- ПОДКЛЮЧАЕМ ФАЙРБЕЙЗ (Модульная структура для GitHub Pages) -->
+<!-- ПОДКЛЮЧЕНИЕ FIREBASE (С модулями Auth) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-    // Ваша настоящая конфигурация
     const firebaseConfig = {
-      apiKey: "AIzaSyDFCGFnL3pNfrHiwqCZkXapdhC5bKmg_SE",
-      authDomain: "time-gate-game.firebaseapp.com",
-      projectId: "time-gate-game",
-      storageBucket: "time-gate-game.firebasestorage.app",
-      messagingSenderId: "789791906588",
-      appId: "1:789791906588:web:5bf53149ff3b14de9178d9"
+        apiKey: "AIzaSyDFCGFnL3pNfrHiwqCZkXapdhC5bKmg_SE",
+        authDomain: "time-gate-game.firebaseapp.com",
+        projectId: "time-gate-game",
+        storageBucket: "time-gate-game.firebasestorage.app",
+        messagingSenderId: "789791906588",
+        appId: "1:789791906588:web:5bf53149ff3b14de9178d9"
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    let isLoginMode = true;
-    const actionBtn = document.getElementById('action-btn');
-    const switchBtn = document.getElementById('switch-btn');
-    const errorMsg = document.getElementById('error-msg');
+    let selectedAvatar = null;
+    let currentUserUid = null;
 
-    switchBtn.addEventListener('click', () => {
-        isLoginMode = !isLoginMode;
-        errorMsg.style.display = 'none';
-        if (isLoginMode) {
-            actionBtn.innerText = 'Войти в игру';
-            switchBtn.innerText = 'Нет аккаунта? Создать';
-        } else {
-            actionBtn.innerText = 'Создать аккаунт';
-            switchBtn.innerText = 'Уже есть аккаунт? Войти';
+    // --- 1. ЛОГИКА ЗАСТАВКИ (ФЕЙКОВАЯ ЗАГРУЗКА ДЛЯ КРАСОТЫ) ---
+    let progress = 0;
+    const fill = document.getElementById('loading-fill');
+    const msg = document.getElementById('loading-msg');
+    
+    const loadingInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if(progress > 100) progress = 100;
+        fill.style.width = progress + '%';
+        
+        if(progress > 30) msg.innerText = "Подготовка острова...";
+        if(progress > 70) msg.innerText = "Проверка данных...";
+        
+        if (progress >= 100) {
+            clearInterval(loadingInterval);
+            checkAuthStatus(); // Как только полоска дошла, проверяем Firebase
         }
-    });
+    }, 200);
 
-    actionBtn.addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        if(!email || !password) {
-            showError('Введите email и пароль!');
-            return;
-        }
-
-        actionBtn.innerText = "Загрузка...";
-        actionBtn.disabled = true;
-
-        try {
-            if (isLoginMode) {
-                // Вход
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                localStorage.setItem('userUid', userCredential.user.uid);
-                window.location.href = 'index.html'; 
-            } else {
-                // Регистрация
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // Базовые стартовые данные для нового игрока
-                const initialGameData = {
-                    sandCount: 150,
-                    epochLevel: 1,
-                    currentXP: 0,
-                    targetXP: 50,
-                    loginStreak: 0,
-                    lastClaimDate: null,
-                    gardenWaterUsed: 0,
-                    lastHarvestTime: null
-                };
-
-                await setDoc(doc(db, "users", user.uid), initialGameData);
-                
+    // --- 2. ПРОВЕРКА АВТОРИЗАЦИИ ---
+    function checkAuthStatus() {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Игрок уже авторизован (помнит сессию)
+                currentUserUid = user.uid;
                 localStorage.setItem('userUid', user.uid);
-                window.location.href = 'index.html';
+                
+                // Проверяем, есть ли у него сейв в базе
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if (docSnap.exists()) {
+                    // Персонаж есть -> сразу в игру
+                    window.location.replace('index.html');
+                } else {
+                    // Авторизован, но персонажа нет -> на экран создания
+                    showScreen('screen-create');
+                }
+            } else {
+                // Не авторизован -> показываем кнопки входа
+                showScreen('screen-auth');
             }
-        } catch (error) {
-            showError(translateFirebaseError(error.code));
-            actionBtn.disabled = false;
-            actionBtn.innerText = isLoginMode ? 'Войти в игру' : 'Создать аккаунт';
-        }
-    });
-
-    function showError(text) {
-        errorMsg.innerText = text;
-        errorMsg.style.display = 'block';
+        });
     }
 
-    function translateFirebaseError(code) {
-        if (code === 'auth/invalid-email') return 'Неверный формат Email (нужен @)';
-        if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') return 'Неверный логин или пароль';
-        if (code === 'auth/email-already-in-use') return 'Этот Email уже зарегистрирован';
-        if (code === 'auth/weak-password') return 'Пароль должен быть не менее 6 символов';
-        return 'Ошибка: ' + code;
+    // --- 3. ФУНКЦИИ ВХОДА ---
+    window.loginGuest = function() {
+        signInAnonymously(auth).catch(error => {
+            alert("Ошибка входа: " + error.message);
+        });
+    };
+
+    window.loginGoogle = function() {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider).catch(error => {
+            alert("Ошибка входа через Google: " + error.message);
+        });
+    };
+
+    // --- 4. СОЗДАНИЕ ПЕРСОНАЖА ---
+    window.selectAvatar = function(type) {
+        selectedAvatar = type;
+        document.getElementById('avatar-boy').classList.remove('selected');
+        document.getElementById('avatar-girl').classList.remove('selected');
+        document.getElementById('avatar-' + type).classList.add('selected');
+        document.getElementById('btn-start').classList.add('visible');
+    };
+
+    window.finishCreation = async function() {
+        if (!selectedAvatar || !currentUserUid) return;
+        
+        const btn = document.getElementById('btn-start');
+        btn.innerText = "Создание...";
+        btn.disabled = true;
+
+        // Создаем стартовый сейв в базе данных
+        const startData = {
+            avatar: selectedAvatar,
+            sandCount: 150, 
+            epochLevel: 1, 
+            currentXP: 0, 
+            targetXP: 50, 
+            loginStreak: 0, 
+            lastClaimDate: null, 
+            gardenWaterUsed: 0, 
+            lastHarvestTime: null
+        };
+
+        try {
+            await setDoc(doc(db, "users", currentUserUid), startData);
+            window.location.replace('index.html'); // Летим на остров!
+        } catch (error) {
+            console.error(error);
+            alert("Ошибка создания персонажа!");
+            btn.innerText = "Начать приключение";
+            btn.disabled = false;
+        }
+    };
+
+    // --- УТИЛИТЫ ---
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => {
+            if (s.id === screenId) {
+                s.classList.remove('hidden-up');
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+                if(s.id === 'screen-splash') s.classList.add('hidden-up'); // Заставка улетает вверх
+            }
+        });
     }
 </script>
 </body>
