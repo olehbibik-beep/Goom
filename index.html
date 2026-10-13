@@ -197,7 +197,7 @@
         body.dev-mode .surf-wave, body.dev-mode .smoke-container, body.dev-mode .night-light, body.dev-mode .flock-container { 
             border: 2px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
             pointer-events: auto !important; cursor: move !important; animation: none !important;
-            display: block !important; /* Показываем свет даже днем */
+            display: block !important; 
         }
         body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, 
         body.dev-mode .surf-wave::after, body.dev-mode .smoke-container::after, body.dev-mode .night-light::after, body.dev-mode .flock-container::after {
@@ -205,11 +205,10 @@
             color: #fff; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 4px; pointer-events: none; white-space: nowrap; z-index: 100;
         }
         
-        /* Исправленная консоль (Теперь кликабельна и скроллится) */
         #dev-coord-box { 
             display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
             background: rgba(0,0,0,0.9); border: 2px solid #00ffcc; border-radius: 8px; z-index: 10000; 
-            pointer-events: auto; /* ТЕПЕРЬ МОЖНО СКРОЛЛИТЬ */
+            pointer-events: auto; 
         }
         body.dev-mode #dev-coord-box { display: block; }
         
@@ -303,7 +302,8 @@
 
     <!-- ВЕРХНИЙ БЛОК -->
     <div class="top-status-container">
-        <div class="level-badge" onclick="showInfoModal('Уровень Эпохи', 'Ваш уровень Хранителя.\nПовышайте его, собирая опыт (XP) в рулетке!')">
+        <!-- СЕКРЕТНЫЙ DEV-РЕЖИМ (5 тапов) -->
+        <div class="level-badge" onclick="handleSecretDevTap(); showInfoModal('Уровень Эпохи', 'Ваш уровень Хранителя.\nПовышайте его, собирая опыт (XP) в рулетке!')">
             <svg class="level-gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61L19.14,12.94z" /></svg>
             <span class="level-text" id="level-display">1</span>
         </div>
@@ -320,8 +320,12 @@
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start;">
-            <div class="square-btn" onclick="toggleDevMode()" title="Режим разработчика" style="border-color: #a6ff4d; color: #a6ff4d; font-weight: bold; font-size: 13px;">
-                DEV
+            <!-- ВЕРНУЛИ КНОПКИ ИНВЕНТАРЯ И КОЛЛЕКЦИИ (Кнопка DEV удалена) -->
+            <div class="square-btn" onclick="showInfoModal('Инвентарь', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
+                <img src="backpack.png" alt="Инвентарь" onerror="this.style.display='none'">
+            </div>
+            <div class="square-btn" onclick="showInfoModal('Коллекция', 'Архив событий и находок.\nВ разработке.')">
+                <img src="scroll.png" alt="Свиток" onerror="this.style.display='none'">
             </div>
         </div>
         
@@ -414,7 +418,7 @@
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
                 
                 updateUI(); checkDailyStatus(); checkBushVisibility(); 
-                createEnvironmentEffects(); // Звезды и вода
+                createEnvironmentEffects(); 
                 createBirdsFlock(); 
                 setInterval(checkHarvest, 60000); 
                 setTimeout(() => { document.getElementById('clouds').classList.add('open'); }, 200);
@@ -426,6 +430,22 @@
         }
 
         loadDataFromCloud();
+
+        // -------------------------
+        // СЕКРЕТНЫЙ ВХОД В DEV-РЕЖИМ (5 тапов)
+        // -------------------------
+        let devTapCount = 0;
+        let devTapTimer = null;
+        window.handleSecretDevTap = function() {
+            devTapCount++;
+            clearTimeout(devTapTimer);
+            if (devTapCount >= 5) {
+                window.toggleDevMode();
+                devTapCount = 0;
+            } else {
+                devTapTimer = setTimeout(() => { devTapCount = 0; }, 400);
+            }
+        };
 
         // -------------------------
         // ГЕНЕРАЦИЯ ЗВЕЗД И СВЕЧЕНИЯ ВОДЫ
@@ -469,7 +489,6 @@
         const mapContainer = document.getElementById('map-container');
         const devBox = document.getElementById('dev-coord-box');
 
-        // Отключаем влияние камеры на панель DEV, чтобы её можно было листать
         devBox.addEventListener('wheel', e => e.stopPropagation(), {passive: false});
         devBox.addEventListener('touchmove', e => e.stopPropagation(), {passive: false});
         devBox.addEventListener('mousedown', e => e.stopPropagation());
@@ -672,7 +691,6 @@
             });
         }
 
-        // Применяем драг к текущим элементам
         document.querySelectorAll('.map-pin, .boat-container, .grown-bush-container, .surf-wave, .smoke-container, .night-light, .flock-container').forEach(makeDraggable);
 
         // ДОБАВЛЕНИЕ НОВЫХ ОБЪЕКТОВ
