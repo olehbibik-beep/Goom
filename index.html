@@ -8,8 +8,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
         html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
-        body { background-color: #5b8e88; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; }
-        #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #5b8e88; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
+        body { background-color: #2c3e50; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; transition: background-color 2s ease; }
+        
+        /* Темный фон для ночи за пределами карты */
+        body.is-night { background-color: #0b131a; }
+
+        #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: transparent; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
         /* ВЕРХНИЙ БЛОК */
@@ -36,19 +40,23 @@
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
         .square-btn { position: relative; width: 46px; height: 46px; background-color: #293133; border: 2px solid #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); cursor: pointer; transition: transform 0.1s, border-color 0.2s; display: flex; justify-content: center; align-items: flex-end; pointer-events: auto; }
         .square-btn:active { transform: scale(0.92); border-color: #dcb254; }
-        .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; filter: drop-shadow(0 -2px 5px rgba(0,0,0,0.5)); }
+        .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; } /* УБРАНА ТЕНЬ */
 
         /* ИНТЕРАКТИВНАЯ КАРТА */
         .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; cursor: grab; }
         .map-wrapper:active { cursor: grabbing; }
+        
         .map-container { 
             position: absolute; width: 1440px; height: 2560px; top: 50%; left: 50%; 
             margin-top: -1280px; margin-left: -720px; 
-            background-image: url('Viledges2.png'); background-size: cover; background-position: center; 
+            /* Фон по умолчанию (день) */
+            background-image: url('Viledges2.png'); 
+            background-size: cover; background-position: center; 
             transform-origin: center center; will-change: transform;
+            transition: background-image 2s ease;
         }
 
-        /* ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ (Ваши новые идеальные координаты) */
+        /* ЗОНЫ КЛИКА ПО ЗДАНИЯМ */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
         .map-pin:active { transform: translate(-50%, -50%) scale(0.95); }
         
@@ -66,16 +74,17 @@
         .grown-bush-container { position: absolute; top: 50.6%; left: 52.9%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; animation: wind-sway 4s ease-in-out infinite alternate; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container:active { transform: translate(-50%, -50%) scale(0.9) !important; animation: none; }
-        .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4)); mix-blend-mode: multiply; }
-        
+        /* Убрана тень filter: drop-shadow */
+        .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         
-        /* ЛОДКА (Увеличена в 2 раза) */
+        /* ЛОДКА */
         .boat-container { position: absolute; top: 66.3%; left: 65.1%; width: 300px; height: 200px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
-        .boat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+        /* Убрана тень filter: drop-shadow */
+        .boat-img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ */
-        .surf-wave { position: absolute; width: 60px; height: 15px; border-bottom: 4px solid rgba(255, 255, 255, 0.4); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; transform: translate(-50%, -50%); }
+        /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ (Шире и прозрачнее) */
+        .surf-wave { position: absolute; width: 100px; height: 20px; border-bottom: 4px solid rgba(255, 255, 255, 0.15); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; transform: translate(-50%, -50%); }
         #surf-l1 { top: 86.0%; left: 39.0%; animation: surf-left 4s infinite ease-in-out 0s; } 
         #surf-l2 { top: 89.0%; left: 43.0%; animation: surf-left 4.5s infinite ease-in-out 1.2s; } 
         #surf-l3 { top: 91.0%; left: 47.0%; animation: surf-left 5s infinite ease-in-out 2.5s; }
@@ -83,17 +92,54 @@
         #surf-r2 { top: 89.0%; left: 58.0%; animation: surf-right 4.8s infinite ease-in-out 3s; } 
         #surf-r3 { top: 86.0%; left: 63.0%; animation: surf-right 5.5s infinite ease-in-out 1.5s; }
 
+        /* ПТИЦЫ */
+        .flock-container { position: absolute; left: 30%; top: 30%; width: 200px; height: 150px; transform: translate(-50%, -50%); pointer-events: none; z-index: 11; opacity: 0.5; }
+        #flock-1 { top: 25%; left: 30%; }
+        #flock-2 { top: 40%; left: 70%; }
+        .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; animation: bird-wander 3s ease-in-out infinite alternate; }
+        
+        /* ДЫМ ИЗ ТРУБ */
+        .smoke-container { position: absolute; width: 40px; height: 100px; transform: translate(-50%, -100%); z-index: 16; pointer-events: none; }
+        /* Стартовые координаты (Вам нужно настроить их через DEV) */
+        #smoke-1 { top: 50%; left: 45%; } 
+        #smoke-2 { top: 50%; left: 55%; }
+        
+        .smoke-particle { position: absolute; bottom: 0; left: 50%; width: 15px; height: 15px; background: rgba(220, 220, 220, 0.4); border-radius: 50%; filter: blur(3px); animation: smoke-rise 4s infinite linear; opacity: 0; transform: translateX(-50%) scale(1); }
+        .smoke-particle:nth-child(2) { animation-delay: 1.3s; }
+        .smoke-particle:nth-child(3) { animation-delay: 2.6s; }
+        
+        @keyframes smoke-rise { 
+            0% { transform: translateX(-50%) translateY(0) scale(1); opacity: 0; } 
+            20% { opacity: 0.6; } 
+            100% { transform: translateX(calc(-50% + 20px)) translateY(-80px) scale(3); opacity: 0; } 
+        }
+
+        /* НОЧНОЙ СВЕТ */
+        .night-light { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); display: none; pointer-events: none; z-index: 14; }
+        /* Окна (Мерцающий оранжевый) */
+        .window-light { width: 40px; height: 40px; background: radial-gradient(circle, rgba(255, 140, 0, 0.8) 0%, rgba(255, 140, 0, 0) 70%); animation: flicker 2s infinite alternate; }
+        /* Часы (Слабое теплое свечение) */
+        .clock-light { width: 60px; height: 60px; background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0) 70%); animation: pulse 4s infinite alternate; }
+        
+        /* Включаем свет ночью */
+        body.is-night .night-light { display: block; }
+        
+        /* Стартовые координаты для света (Настройте в DEV) */
+        #light-win1 { top: 55%; left: 45%; }
+        #light-win2 { top: 55%; left: 55%; }
+        #light-clock { top: 45%; left: 50%; }
+
+        @keyframes flicker { 0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.9); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); } }
+        @keyframes pulse { 0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } }
+
+        /* ОБЩИЕ АНИМАЦИИ */
         @keyframes boat-rock { 0% { transform: translate(-50%, -50%) translateY(0px) rotate(-2deg); } 100% { transform: translate(-50%, -50%) translateY(5px) rotate(2deg); } }
         @keyframes wind-sway { 0% { transform: translate(-50%, -50%) skewX(-2deg) scale(1); } 100% { transform: translate(-50%, -50%) skewX(2deg) scale(1.02); } }
         @keyframes surf-left { 0% { transform: translate(-50%, -50%) rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: translate(-50%, -50%) rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes float-bubble { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -8px); } }
-
-        /* ПТИЦЫ */
-        .flock-container { position: absolute; left: -50%; width: 50%; height: 150px; pointer-events: none; z-index: 11; opacity: 0.5; }
-        .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; animation: bird-wander 3s ease-in-out infinite alternate; }
-        @keyframes fly-across { 0% { transform: translateX(0px) translateY(0); } 100% { transform: translateX(4000px) translateY(100px); } }
-        @keyframes fly-across-reverse { 0% { transform: translateX(4000px) translateY(0) scaleX(-1); } 100% { transform: translateX(0px) translateY(-100px) scaleX(-1); } }
+        @keyframes fly-across { 0% { transform: translateX(0px) translateY(0); } 100% { transform: translateX(3000px) translateY(100px); } }
+        @keyframes fly-across-reverse { 0% { transform: translateX(3000px) translateY(0) scaleX(-1); } 100% { transform: translateX(-1000px) translateY(-100px) scaleX(-1); } }
         @keyframes bird-wander { 0% { transform: translate(0, 0) scale(var(--scale)); } 100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale)); } }
 
         /* АНИМАЦИЯ ПЕРЕХОДА (Облака) */
@@ -150,18 +196,21 @@
         
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
 
-        /* DEV MODE */
+        /* СУПЕР DEV MODE (Включает всё для перетаскивания) */
         body.dev-mode .top-status-container { opacity: 0; } 
-        body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, body.dev-mode .surf-wave { 
+        body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, 
+        body.dev-mode .surf-wave, body.dev-mode .smoke-container, body.dev-mode .night-light, body.dev-mode .flock-container { 
             border: 3px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
             pointer-events: auto !important; cursor: move !important; animation: none !important;
+            display: block !important; /* Показываем ночной свет даже днем */
         }
-        body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, body.dev-mode .surf-wave::after {
+        body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, 
+        body.dev-mode .surf-wave::after, body.dev-mode .smoke-container::after, body.dev-mode .night-light::after, body.dev-mode .flock-container::after {
             content: attr(id); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; font-size: 16px; font-weight: bold; border-radius: 4px; pointer-events: none; white-space: nowrap;
         }
         #dev-coord-box { 
-            display: none; position: absolute; top: 120px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
+            display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
             background: rgba(0,0,0,0.85); color: #00ffcc; padding: 15px; border: 2px solid #00ffcc; 
             border-radius: 8px; z-index: 10000; font-family: monospace; font-size: 12px; font-weight: bold;
             pointer-events: none; text-align: left; white-space: pre-wrap; line-height: 1.5;
@@ -185,18 +234,31 @@
             <div class="surf-wave" id="surf-l1"></div><div class="surf-wave" id="surf-l2"></div><div class="surf-wave" id="surf-l3"></div>
             <div class="surf-wave" id="surf-r1"></div><div class="surf-wave" id="surf-r2"></div><div class="surf-wave" id="surf-r3"></div>
 
-            <!-- Лодка -->
+            <!-- Лодка (X2 размер) -->
             <div class="boat-container" id="boat">
                 <img class="boat-img" src="boat3.png" alt="Лодка" onerror="this.style.display='none'">
             </div>
 
             <!-- Птицы -->
-            <div id="birds-layer"></div>
+            <div class="flock-container" id="flock-1"></div>
+            <div class="flock-container" id="flock-2"></div>
 
-            <!-- КУСТИК ОГОРОДА -->
+            <!-- Дым из труб -->
+            <div class="smoke-container" id="smoke-1">
+                <div class="smoke-particle"></div><div class="smoke-particle"></div><div class="smoke-particle"></div>
+            </div>
+            <div class="smoke-container" id="smoke-2">
+                <div class="smoke-particle"></div><div class="smoke-particle"></div><div class="smoke-particle"></div>
+            </div>
+
+            <!-- Источники ночного света -->
+            <div class="night-light window-light" id="light-win1"></div>
+            <div class="night-light window-light" id="light-win2"></div>
+            <div class="night-light clock-light" id="light-clock"></div>
+
+            <!-- КУСТИК ОГОРОДА (bush.jpg) -->
             <div class="grown-bush-container" id="grown-bush" onclick="harvestSand(event)">
-                <!-- Обновлено на bush.jpg -->
-                <img src="bush.png" alt="Выросший куст" onerror="this.style.display='none'">
+                <img src="bush.jpg" alt="Выросший куст" onerror="this.style.display='none'">
                 <div class="harvest-bubble" id="harvest-bubble" style="display:none;">+0</div>
             </div>
 
@@ -281,7 +343,6 @@
 
   </div>
 
-    <!-- ПОДКЛЮЧЕНИЕ БАЗЫ ДАННЫХ И ЛОГИКА -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -304,6 +365,22 @@
 
         window.gameData = {};
         const dailyRewards = [10, 15, 20, 25, 30, 50, 100];
+
+        // --- ЛОГИКА ДНЯ И НОЧИ ---
+        function applyTimeOfDay() {
+            const currentHour = new Date().getHours();
+            // Считаем ночь с 20:00 до 06:00
+            const isNight = currentHour >= 20 || currentHour < 6;
+            
+            if (isNight) {
+                document.body.classList.add('is-night');
+                document.getElementById('map-container').style.backgroundImage = "url('Viledges2_night.png')";
+            } else {
+                document.body.classList.remove('is-night');
+                document.getElementById('map-container').style.backgroundImage = "url('Viledges2_2.jpg')";
+            }
+        }
+        applyTimeOfDay(); // Проверяем время при запуске
 
         async function loadDataFromCloud() {
             try {
@@ -330,7 +407,7 @@
         loadDataFromCloud();
 
         // -------------------------
-        // ИДЕАЛЬНАЯ ЛОГИКА КАМЕРЫ 
+        // ЛОГИКА КАМЕРЫ (PAN & ZOOM)
         // -------------------------
         const mapWrapper = document.getElementById('map-wrapper');
         const mapContainer = document.getElementById('map-container');
@@ -468,7 +545,8 @@
         };
 
         window.activeDragEl = null;
-        const draggables = document.querySelectorAll('.map-pin, .boat-container, .grown-bush-container, .surf-wave');
+        // Теперь в DEV режиме можно перетаскивать дым, свет и птиц тоже!
+        const draggables = document.querySelectorAll('.map-pin, .boat-container, .grown-bush-container, .surf-wave, .smoke-container, .night-light, .flock-container');
         
         draggables.forEach(el => {
             let startClientX, startClientY, startElLeft, startElTop;
@@ -635,15 +713,12 @@
         }
 
         function createBirdsFlock() {
-            const birdsLayer = document.getElementById('birds-layer');
-            for(let f = 0; f < 2; f++) {
-                let flock = document.createElement('div'); flock.className = 'flock-container'; 
-                flock.style.top = (25 + f * 15) + '%';
-                
+            const flocks = [document.getElementById('flock-1'), document.getElementById('flock-2')];
+            flocks.forEach((flock, f) => {
                 if(f === 0) flock.style.animation = `fly-across 45s linear infinite ${f * 10}s`; 
                 else flock.style.animation = `fly-across-reverse 50s linear infinite ${f * 20}s`;
                 
-                for(let i = 0; i < 15; i++) {
+                for(let i = 0; i < 10; i++) {
                     let bird = document.createElementNS("http://www.w3.org/2000/svg", "svg"); bird.setAttribute("viewBox", "0 0 30 20"); bird.classList.add("tiny-bird");
                     bird.style.left = (Math.random() * 100) + 'px'; bird.style.top = (Math.random() * 80) + 'px';
                     let randomScale = 0.3 + Math.random() * 0.7;
@@ -652,8 +727,7 @@
                     let path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", "M0,10 Q5,0 15,10 Q25,0 30,10 Q25,5 15,15 Q5,5 0,10 Z");
                     bird.appendChild(path); flock.appendChild(bird);
                 }
-                birdsLayer.appendChild(flock);
-            }
+            });
         }
 
         function updateUI() {
