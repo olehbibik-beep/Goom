@@ -21,7 +21,7 @@
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; transition: transform 0.3s; cursor: pointer; pointer-events: auto; }
         .level-badge:active { transform: scale(0.95); }
         
-        /* НОВАЯ ШЕСТЕРЕНКА PNG */
+        /* ШЕСТЕРЕНКА PNG */
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); transform: translateY(-2px); line-height: 1; }
         
@@ -36,7 +36,6 @@
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
         .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); pointer-events: auto; }
         
-        /* НОВАЯ ШЕСТЕРЕНКА PNG ДЛЯ УРОВНЯ */
         .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
 
@@ -163,23 +162,17 @@
         .layer-1 .cloud-left, .cloud-layer.layer-1 .cloud-right { background: #f0f4f8; transition-duration: 0.8s; }
         .clouds-transition.open .cloud-left { transform: translateX(-150%); } .clouds-transition.open .cloud-right { transform: translateX(150%); }
 
-        /* УНИВЕРСАЛЬНОЕ ИНФО-ОКНО */
-        .info-modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 300; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-        .info-modal-overlay.show { opacity: 1; visibility: visible; pointer-events: auto; }
-        .info-modal { width: 80%; max-width: 320px; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.8); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); display: flex; flex-direction: column; }
-        .info-modal-overlay.show .info-modal { transform: scale(1); }
-        .info-modal-header { background: #23292b; color: #dcb254; padding: 15px; font-weight: bold; text-align: center; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .info-modal-body { background: rgba(35, 41, 43, 0.85); color: #eef4f7; padding: 20px 15px; text-align: center; font-size: 15px; line-height: 1.4; backdrop-filter: blur(5px); white-space: pre-wrap; }
-        .info-modal-footer { background: linear-gradient(135deg, #00bfff, #008ecc); padding: 12px; text-align: center; cursor: pointer; color: #fff; font-weight: bold; font-size: 16px; transition: filter 0.2s, background 0.2s; text-transform: uppercase; letter-spacing: 1px; }
-        .info-modal-footer:active { filter: brightness(0.8); }
-
-        /* ОКНО НАГРАД */
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.8); backdrop-filter: blur(5px); z-index: 200; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; }
+        /* ВСПЛЫВАЮЩИЕ ОКНА (НАСТРОЙКИ, ИНФО, ЕЖЕДНЕВКИ) */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.8); backdrop-filter: blur(5px); z-index: 300; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; }
         .modal-overlay.show { opacity: 1; visibility: visible; pointer-events: auto; }
+        
         .daily-modal { background: linear-gradient(135deg, #1f2427, #121517); border: 2px solid #dcb254; border-radius: 15px; width: 90%; max-width: 380px; padding: 25px 15px; text-align: center; box-shadow: 0 10px 30px #000; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); position: relative; }
         .modal-overlay.show .daily-modal { transform: scale(1); }
         .daily-title { color: #dcb254; font-size: 22px; font-weight: bold; margin-bottom: 5px; text-shadow: 0 2px 4px #000; }
         .daily-subtitle { color: #8ba2c2; font-size: 14px; margin-bottom: 20px; }
+        .close-modal-btn { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #121517; border: 2px solid #dcb254; border-radius: 50%; color: #dcb254; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px #000; z-index: 5; }
+        .close-modal-btn:active { transform: scale(0.9); }
+
         .days-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
         .day-card { background: rgba(0,0,0,0.5); border: 1px solid #4a433a; border-radius: 8px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: transform 0.2s, box-shadow 0.2s; }
         .day-title { font-size: 12px; color: #8ba2c2; }
@@ -195,41 +188,41 @@
         .day-card:last-child .day-title { font-size: 14px; color: #dcb254; font-weight: bold; }
         .day-card:last-child .day-reward { font-size: 20px; color: #ffdf00; }
         .day-card:last-child .day-reward svg { width: 18px; height: 18px; fill: #ffdf00; }
+        
         .claim-btn { background: linear-gradient(135deg, #20b2aa, #137a75); border: 1px solid #fff; color: #fff; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: filter 0.2s, transform 0.2s; width: 100%; outline: none;}
         .claim-btn:hover:not(:disabled) { filter: brightness(1.2); }
         .claim-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         .claim-btn:disabled { background: #3a3f42; border-color: #555; color: #888; cursor: not-allowed; box-shadow: none; }
-        
+
+        /* УНИВЕРСАЛЬНОЕ ИНФО-ОКНО */
+        .info-modal { width: 80%; max-width: 320px; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.8); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); display: flex; flex-direction: column; }
+        .modal-overlay.show .info-modal { transform: scale(1); }
+        .info-modal-header { background: #23292b; color: #dcb254; padding: 15px; font-weight: bold; text-align: center; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .info-modal-body { background: rgba(35, 41, 43, 0.85); color: #eef4f7; padding: 20px 15px; text-align: center; font-size: 15px; line-height: 1.4; white-space: pre-wrap; }
+        .info-modal-footer { background: linear-gradient(135deg, #00bfff, #008ecc); padding: 12px; text-align: center; cursor: pointer; color: #fff; font-weight: bold; font-size: 16px; transition: filter 0.2s, background 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .info-modal-footer:active { filter: brightness(0.8); }
+
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#0a0c0f; z-index:99999; display:flex; justify-content:center; align-items:center; color:#dcb254; font-weight:bold; font-size:20px; transition:opacity 0.5s; }
 
-        /* СУПЕР DEV MODE (Включает всё для перетаскивания) */
+        /* СУПЕР DEV MODE */
         body.dev-mode .top-status-container { opacity: 0; } 
         body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, 
         body.dev-mode .surf-wave, body.dev-mode .smoke-container, body.dev-mode .night-light, body.dev-mode .flock-container { 
             border: 2px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
             pointer-events: auto !important; cursor: move !important; animation: none !important;
-            display: block !important; /* Показываем свет даже днем */
+            display: block !important; 
         }
         body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, 
         body.dev-mode .surf-wave::after, body.dev-mode .smoke-container::after, body.dev-mode .night-light::after, body.dev-mode .flock-container::after {
             content: attr(id) !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #fff; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 4px; pointer-events: none; white-space: nowrap; z-index: 100;
         }
-        
-        /* Исправленная консоль (Теперь кликабельна и скроллится) */
-        #dev-coord-box { 
-            display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
-            background: rgba(0,0,0,0.9); border: 2px solid #00ffcc; border-radius: 8px; z-index: 10000; 
-            pointer-events: auto; /* ТЕПЕРЬ МОЖНО СКРОЛЛИТЬ */
-        }
+        #dev-coord-box { display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto; background: rgba(0,0,0,0.9); border: 2px solid #00ffcc; border-radius: 8px; z-index: 10000; pointer-events: auto; }
         body.dev-mode #dev-coord-box { display: block; }
-        
-        /* Кнопки управления DEV */
         #dev-controls { padding: 10px; border-bottom: 1px solid #00ffcc; display: flex; flex-wrap: wrap; gap: 5px; }
         #dev-controls button { background: #333; color: #a6ff4d; border: 1px solid #a6ff4d; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-weight: bold; }
         #dev-controls button:active { background: #a6ff4d; color: #000; }
         .dev-tip { width: 100%; font-size: 11px; color: #bbb; margin-top: 5px; text-align: center; }
-        
         #dev-coord-text { padding: 10px; color: #00ffcc; font-family: monospace; font-size: 13px; white-space: pre-wrap; margin: 0; }
     </style>
 </head>
@@ -238,7 +231,7 @@
   <div id="game-frame">
     <div id="loading-screen">Загрузка данных...</div>
 
-    <!-- Интерактивная Панель координат и кнопок -->
+    <!-- Интерактивная Панель координат и кнопок (DEV) -->
     <div id="dev-coord-box">
         <div id="dev-controls">
             <button onclick="addDevObject('map-pin', 'pin-new')">+ Метка</button>
@@ -266,7 +259,7 @@
 
             <!-- Лодка -->
             <div class="boat-container" id="boat" onclick="handleSecretDevTap(event)">
-                <img class="boat-img" src="boat3.png" alt="Лодка" onerror="this.style.display='none'">
+                <img class="boat-img" src="boat.png" alt="Лодка" onerror="this.style.display='none'">
             </div>
 
             <!-- Птицы -->
@@ -314,8 +307,9 @@
 
     <!-- ВЕРХНИЙ БЛОК -->
     <div class="top-status-container">
-        <!-- Клик по уровню теперь вызывает красивое всплывающее облачко (tooltip) -->
+        <!-- Клик по уровню вызывает красивое всплывающее облачко -->
         <div class="level-badge" onclick="showEpochTooltip(event)">
+            <!-- Заменено на PNG-шестеренку -->
             <img src="gear.png" class="level-gear-icon" alt="Уровень" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
             <!-- Само облачко -->
@@ -351,7 +345,23 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end;">
-            <!-- Здесь пока пусто, позже добавим кнопку Настроек (где будет Выход) -->
+            <!-- НОВАЯ КНОПКА НАСТРОЕК (ВЫЗЫВАЕТ МОДАЛЬНОЕ ОКНО) -->
+            <div class="square-btn" onclick="openSettingsModal()" title="Настройки">
+                <img src="settings.png" alt="Настройки" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </div>
+
+    <!-- ОКНО НАСТРОЕК И ВЫХОДА -->
+    <div class="modal-overlay" id="settings-overlay">
+        <div class="daily-modal">
+            <div class="close-modal-btn" onclick="closeSettingsModal()">×</div>
+            <h2 class="daily-title">Настройки</h2>
+            <p class="daily-subtitle">Управление профилем и игрой</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <button style="background: rgba(255, 0, 85, 0.1); border: 1px solid #ff0055; color: #ff0055; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;" onclick="logout()">Сменить пользователя / Выход</button>
+            </div>
         </div>
     </div>
 
@@ -367,7 +377,7 @@
     </div>
 
     <!-- УНИВЕРСАЛЬНОЕ ИНФО-ОКНО -->
-    <div class="info-modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
+    <div class="modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
         <div class="info-modal" id="info-modal" onclick="event.stopPropagation()">
             <div class="info-modal-header" id="info-modal-title">Внимание</div>
             <div class="info-modal-body" id="info-modal-text">Текст сообщения</div>
@@ -411,7 +421,7 @@
                 document.getElementById('map-container').style.backgroundImage = "url('Viledges2_night.png')";
             } else {
                 document.body.classList.remove('is-night');
-                document.getElementById('map-container').style.backgroundImage = "url('Viledges2.png')";
+                document.getElementById('map-container').style.backgroundImage = "url('Viledges2_2.png')";
             }
         }
         applyTimeOfDay(); 
@@ -443,7 +453,7 @@
         loadDataFromCloud();
 
         // -------------------------
-        // СЕКРЕТНЫЙ ВХОД В DEV-РЕЖИМ И ОБЛАЧКО УРОВНЯ
+        // СЕКРЕТНЫЙ ВХОД В DEV-РЕЖИМ (ПО ЛОДКЕ)
         // -------------------------
         let devTapCount = 0;
         let devTapTimer = null;
@@ -462,6 +472,7 @@
             }
         };
 
+        // Всплывающее облачко (Эпоха)
         let tooltipTimeout;
         window.showEpochTooltip = function(e) {
             if(e) e.stopPropagation();
@@ -769,6 +780,16 @@
         window.closeInfoModal = function(e) {
             if (e && e.target !== document.getElementById('info-modal-overlay')) return;
             document.getElementById('info-modal-overlay').classList.remove('show');
+        };
+
+        // Открытие и закрытие окна настроек (там где Выход)
+        window.openSettingsModal = function() {
+            if (hasMovedMap || document.body.classList.contains('dev-mode')) return;
+            document.getElementById('settings-overlay').classList.add('show');
+        };
+
+        window.closeSettingsModal = function() {
+            document.getElementById('settings-overlay').classList.remove('show');
         };
 
         window.handleBuildingClick = function(e, buildingType) {
