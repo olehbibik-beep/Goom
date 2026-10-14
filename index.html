@@ -20,13 +20,24 @@
         .top-status-container { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; transition: opacity 0.3s; }
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; transition: transform 0.3s; cursor: pointer; pointer-events: auto; }
         .level-badge:active { transform: scale(0.95); }
-        .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #ffd700; z-index: 1;}
+        
+        /* НОВАЯ ШЕСТЕРЕНКА PNG */
+        .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); transform: translateY(-2px); line-height: 1; }
+        
+        /* Всплывающее облачко для Эпохи */
+        .epoch-tooltip { position: absolute; top: 110%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(20, 25, 28, 0.95); border: 2px solid #dcb254; color: #fff; padding: 10px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); box-shadow: 0 5px 15px rgba(0,0,0,0.8); z-index: 100; }
+        .epoch-tooltip.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .epoch-tooltip::after { content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 8px; border-style: solid; border-color: transparent transparent #dcb254 transparent; }
+        .epoch-tooltip::before { content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: transparent transparent rgba(20, 25, 28, 0.95) transparent; z-index: 1; margin-bottom: -2px; }
+
         .top-progress-bar { flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
         .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
         .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); pointer-events: auto; }
-        .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #a68b5b; z-index: 1; }
+        
+        /* НОВАЯ ШЕСТЕРЕНКА PNG ДЛЯ УРОВНЯ */
+        .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
 
         /* НИЖНЕЕ МЕНЮ */
@@ -55,7 +66,7 @@
             transition: background-image 2s ease;
         }
 
-        /* ЗВЕЗДЫ И СВЕЧЕНИЕ ВОДЫ (ТОЛЬКО НОЧЬЮ) */
+        /* ЗВЕЗДЫ И СВЕЧЕНИЕ ВОДЫ */
         #stars-layer { position: absolute; top: 0; left: 0; width: 100%; height: 35%; pointer-events: none; z-index: 1; display: none; }
         .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0; animation: twinkle ease-in-out infinite alternate; }
         @keyframes twinkle { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: var(--max-op); transform: scale(1.5); } }
@@ -88,8 +99,8 @@
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ffdf00; color: #000; font-weight: bold; font-size: 20px; padding: 4px 12px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 25; animation: float-bubble 1.5s infinite alternate; pointer-events: none; }
         
         /* ЛОДКА */
-        .boat-container { position: absolute; top: 66.3%; left: 65.1%; width: 300px; height: 200px; transform: translate(-50%, -50%); z-index: 14; pointer-events: none; animation: boat-rock 3s ease-in-out infinite alternate; }
-        .boat-img { width: 100%; height: 100%; object-fit: contain; }
+        .boat-container { position: absolute; top: 66.3%; left: 65.1%; width: 300px; height: 200px; transform: translate(-50%, -50%); z-index: 14; pointer-events: auto; cursor: pointer; animation: boat-rock 3s ease-in-out infinite alternate; }
+        .boat-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
         /* ИЗОМЕТРИЧЕСКИЕ ВОЛНЫ */
         .surf-wave { position: absolute; width: 100px; height: 20px; border-bottom: 4px solid rgba(255, 255, 255, 0.15); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; transform: translate(-50%, -50%); }
@@ -197,7 +208,7 @@
         body.dev-mode .surf-wave, body.dev-mode .smoke-container, body.dev-mode .night-light, body.dev-mode .flock-container { 
             border: 2px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
             pointer-events: auto !important; cursor: move !important; animation: none !important;
-            display: block !important; 
+            display: block !important; /* Показываем свет даже днем */
         }
         body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, 
         body.dev-mode .surf-wave::after, body.dev-mode .smoke-container::after, body.dev-mode .night-light::after, body.dev-mode .flock-container::after {
@@ -205,10 +216,11 @@
             color: #fff; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 4px; pointer-events: none; white-space: nowrap; z-index: 100;
         }
         
+        /* Исправленная консоль (Теперь кликабельна и скроллится) */
         #dev-coord-box { 
             display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 45vh; overflow-y: auto;
             background: rgba(0,0,0,0.9); border: 2px solid #00ffcc; border-radius: 8px; z-index: 10000; 
-            pointer-events: auto; 
+            pointer-events: auto; /* ТЕПЕРЬ МОЖНО СКРОЛЛИТЬ */
         }
         body.dev-mode #dev-coord-box { display: block; }
         
@@ -253,7 +265,7 @@
             <div class="surf-wave" id="surf-r1"></div><div class="surf-wave" id="surf-r2"></div><div class="surf-wave" id="surf-r3"></div>
 
             <!-- Лодка -->
-            <div class="boat-container" id="boat">
+            <div class="boat-container" id="boat" onclick="handleSecretDevTap(event)">
                 <img class="boat-img" src="boat3.png" alt="Лодка" onerror="this.style.display='none'">
             </div>
 
@@ -274,9 +286,9 @@
             <div class="night-light window-light" id="light-win2"></div>
             <div class="night-light clock-light" id="light-clock"></div>
 
-            <!-- КУСТИК ОГОРОДА (bush.jpg) -->
+            <!-- КУСТИК ОГОРОДА (bush.png) -->
             <div class="grown-bush-container" id="grown-bush" onclick="harvestSand(event)">
-                <img src="bush.jpg" alt="Выросший куст" onerror="this.style.display='none'">
+                <img src="bush.png" alt="Выросший куст" onerror="this.style.display='none'">
                 <div class="harvest-bubble" id="harvest-bubble" style="display:none;">+0</div>
             </div>
 
@@ -302,17 +314,19 @@
 
     <!-- ВЕРХНИЙ БЛОК -->
     <div class="top-status-container">
-        <!-- СЕКРЕТНЫЙ DEV-РЕЖИМ (5 тапов) -->
-        <div class="level-badge" onclick="handleSecretDevTap(); showInfoModal('Уровень Эпохи', 'Ваш уровень Хранителя.\nПовышайте его, собирая опыт (XP) в рулетке!')">
-            <svg class="level-gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61L19.14,12.94z" /></svg>
+        <!-- Клик по уровню теперь вызывает красивое всплывающее облачко (tooltip) -->
+        <div class="level-badge" onclick="showEpochTooltip(event)">
+            <img src="gear.png" class="level-gear-icon" alt="Уровень" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
+            <!-- Само облачко -->
+            <div class="epoch-tooltip" id="epoch-tooltip">Ваш уровень Хранителя.<br>Копите опыт (XP) для повышения!</div>
         </div>
         <div class="top-progress-bar">
             <div class="progress-fill" id="progress-fill"></div>
             <span class="xp-text" id="xp-text">0 / 50</span>
         </div>
         <div class="level-up-badge">
-            <svg class="level-up-gear" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61L19.14,12.94z" /></svg>
+            <img src="gear.png" class="level-up-gear" alt="Ап" onerror="this.style.display='none'">
             <span class="level-up-arrow">↑</span>
         </div>
     </div>
@@ -320,7 +334,6 @@
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start;">
-            <!-- ВЕРНУЛИ КНОПКИ ИНВЕНТАРЯ И КОЛЛЕКЦИИ (Кнопка DEV удалена) -->
             <div class="square-btn" onclick="showInfoModal('Инвентарь', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
                 <img src="backpack.png" alt="Инвентарь" onerror="this.style.display='none'">
             </div>
@@ -338,9 +351,7 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end;">
-            <div class="square-btn" onclick="logout()" title="Выйти из игры">
-                <img src="logout_icon.png" alt="Выход" onerror="this.style.display='none'">
-            </div>
+            <!-- Здесь пока пусто, позже добавим кнопку Настроек (где будет Выход) -->
         </div>
     </div>
 
@@ -432,11 +443,15 @@
         loadDataFromCloud();
 
         // -------------------------
-        // СЕКРЕТНЫЙ ВХОД В DEV-РЕЖИМ (5 тапов)
+        // СЕКРЕТНЫЙ ВХОД В DEV-РЕЖИМ И ОБЛАЧКО УРОВНЯ
         // -------------------------
         let devTapCount = 0;
         let devTapTimer = null;
-        window.handleSecretDevTap = function() {
+        
+        window.handleSecretDevTap = function(e) {
+            if(e) e.stopPropagation();
+            if(hasMovedMap) return; 
+            
             devTapCount++;
             clearTimeout(devTapTimer);
             if (devTapCount >= 5) {
@@ -445,6 +460,19 @@
             } else {
                 devTapTimer = setTimeout(() => { devTapCount = 0; }, 400);
             }
+        };
+
+        let tooltipTimeout;
+        window.showEpochTooltip = function(e) {
+            if(e) e.stopPropagation();
+            if(hasMovedMap) return;
+            
+            const tt = document.getElementById('epoch-tooltip');
+            tt.classList.add('show');
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tt.classList.remove('show');
+            }, 3000);
         };
 
         // -------------------------
