@@ -21,7 +21,6 @@
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; transition: transform 0.3s; cursor: pointer; pointer-events: auto; }
         .level-badge:active { transform: scale(0.95); }
         
-        /* ШЕСТЕРЕНКА PNG */
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); transform: translateY(-2px); line-height: 1; }
         
@@ -48,9 +47,23 @@
         .boy-sand-counter { background: rgba(10, 13, 16, 0.95); border: 1px solid #dcb254; border-radius: 12px; padding: 4px 12px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); white-space: nowrap; }
         .boy-sand-counter svg { width: 14px; height: 14px; fill: #dcb254; } 
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
+        
         .square-btn { position: relative; width: 46px; height: 46px; background-color: #293133; border: 2px solid #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); cursor: pointer; transition: transform 0.1s, border-color 0.2s; display: flex; justify-content: center; align-items: flex-end; pointer-events: auto; }
         .square-btn:active { transform: scale(0.92); border-color: #dcb254; }
-        .square-btn img { position: absolute; bottom: 0; left: 0; width: 100%; height: 140%; object-fit: contain; object-position: bottom center; pointer-events: none; }
+        
+        /* ИСПРАВЛЕННЫЕ КАРТИНКИ КНОПОК (Теперь выглядывают за пределы) */
+        .square-btn img { 
+            position: absolute; 
+            bottom: 0px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: auto; 
+            height: 135%; /* Картинка будет выше самой кнопки на 35% */
+            max-width: none; 
+            object-fit: contain; 
+            object-position: bottom center; 
+            pointer-events: none; 
+        }
 
         /* ИНТЕРАКТИВНАЯ КАРТА */
         .map-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; overflow: hidden; touch-action: none; cursor: grab; }
@@ -188,7 +201,6 @@
         .day-card:last-child .day-title { font-size: 14px; color: #dcb254; font-weight: bold; }
         .day-card:last-child .day-reward { font-size: 20px; color: #ffdf00; }
         .day-card:last-child .day-reward svg { width: 18px; height: 18px; fill: #ffdf00; }
-        
         .claim-btn { background: linear-gradient(135deg, #20b2aa, #137a75); border: 1px solid #fff; color: #fff; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: filter 0.2s, transform 0.2s; width: 100%; outline: none;}
         .claim-btn:hover:not(:disabled) { filter: brightness(1.2); }
         .claim-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
@@ -309,7 +321,7 @@
     <div class="top-status-container">
         <!-- Клик по уровню вызывает красивое всплывающее облачко -->
         <div class="level-badge" onclick="showEpochTooltip(event)">
-            <!-- Заменено на PNG-шестеренку -->
+            <!-- Ваша шестеренка PNG -->
             <img src="gear.png" class="level-gear-icon" alt="Уровень" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
             <!-- Само облачко -->
@@ -345,7 +357,7 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end;">
-            <!-- НОВАЯ КНОПКА НАСТРОЕК (ВЫЗЫВАЕТ МОДАЛЬНОЕ ОКНО) -->
+            <!-- НОВАЯ КНОПКА НАСТРОЕК (Открывает меню для выхода) -->
             <div class="square-btn" onclick="openSettingsModal()" title="Настройки">
                 <img src="settings.png" alt="Настройки" onerror="this.style.display='none'">
             </div>
@@ -360,7 +372,7 @@
             <p class="daily-subtitle">Управление профилем и игрой</p>
             
             <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                <button style="background: rgba(255, 0, 85, 0.1); border: 1px solid #ff0055; color: #ff0055; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;" onclick="logout()">Сменить пользователя / Выход</button>
+                <button style="background: rgba(255, 0, 85, 0.1); border: 1px solid #ff0055; color: #ff0055; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;" onclick="window.logout()">Сменить пользователя / Выход</button>
             </div>
         </div>
     </div>
@@ -391,6 +403,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+        // ИМПОРТ ДЛЯ ПРАВИЛЬНОГО ВЫХОДА ИЗ СЕССИИ
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
         const userUid = localStorage.getItem('userUid');
         if (!userUid) { window.location.replace('login.html'); }
@@ -406,6 +420,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app); // ИНИЦИАЛИЗАЦИЯ AUTH
         const userDocRef = doc(db, "users", userUid);
 
         window.gameData = {};
@@ -421,7 +436,7 @@
                 document.getElementById('map-container').style.backgroundImage = "url('Viledges2_night.png')";
             } else {
                 document.body.classList.remove('is-night');
-                document.getElementById('map-container').style.backgroundImage = "url('Viledges2_2.png')";
+                document.getElementById('map-container').style.backgroundImage = "url('Viledges2.png')";
             }
         }
         applyTimeOfDay(); 
@@ -611,6 +626,7 @@
         });
 
         mapWrapper.addEventListener('wheel', (e) => {
+            if(document.body.classList.contains('dev-mode')) return;
             e.preventDefault();
             const delta = -e.deltaY * 0.0015; 
             mapScale *= (1 + delta);
@@ -782,13 +798,14 @@
             document.getElementById('info-modal-overlay').classList.remove('show');
         };
 
-        // Открытие и закрытие окна настроек (там где Выход)
+        // Открытие и закрытие окна настроек
         window.openSettingsModal = function() {
             if (hasMovedMap || document.body.classList.contains('dev-mode')) return;
             document.getElementById('settings-overlay').classList.add('show');
         };
 
-        window.closeSettingsModal = function() {
+        window.closeSettingsModal = function(e) {
+            if (e && e.target !== document.getElementById('settings-overlay') && e.target.className !== 'close-modal-btn') return;
             document.getElementById('settings-overlay').classList.remove('show');
         };
 
@@ -944,9 +961,18 @@
             setTimeout(() => { window.location.replace(url); }, 1200);
         };
 
+        // ПРАВИЛЬНЫЙ ВЫХОД (РАЗРЫВ СЕССИИ FIREBASE)
         window.logout = function() {
-            localStorage.removeItem('userUid');
-            window.location.replace('login.html');
+            if(confirm("Выйти из аккаунта?")) {
+                signOut(auth).then(() => {
+                    localStorage.removeItem('userUid');
+                    window.location.replace('login.html');
+                }).catch((error) => {
+                    console.error("Ошибка при выходе:", error);
+                    localStorage.removeItem('userUid');
+                    window.location.replace('login.html');
+                });
+            }
         };
     </script>
 </body>
