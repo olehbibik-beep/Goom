@@ -16,7 +16,7 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #000; overflow: hidden; }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
-        /* ВЕРХНИЙ БАННЕР (TN.png) */
+        /* ВЕРХНИЙ БАННЕР */
         .top-banner { position: absolute; top: 0; left: 0; width: 100%; height: auto; z-index: 20; border-bottom: 2px solid #1c1d1e; pointer-events: none; }
 
         /* ВЕРХНИЙ БЛОК */
@@ -27,7 +27,7 @@
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        /* ЛИНИЯ ЭПОХИ (ВЕРНУЛИ ПОЛОСАТЫЙ СТИЛЬ) */
+        /* ЛИНИЯ ЭПОХИ */
         .top-progress-bar { 
             flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); 
             border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; 
@@ -41,8 +41,8 @@
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
 
         /* ПРАВЫЙ ТУЛБАР (НАСТРОЙКИ) */
-        .right-side-menu { position: absolute; top: 100px; right: 15px; display: flex; flex-direction: column; gap: 15px; z-index: 30; }
-        .side-img-btn { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; pointer-events: auto; }
+        .right-side-menu { position: absolute; top: 85px; right: 15px; display: flex; flex-direction: column; gap: 15px; z-index: 30; pointer-events: none; }
+        .side-img-btn { width: 45px; height: auto; cursor: pointer; pointer-events: auto; transition: transform 0.2s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
         .side-img-btn:active { transform: scale(0.95); }
 
         /* НИЖНЕЕ МЕНЮ */
@@ -52,7 +52,6 @@
         .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         .center-sand-wrapper:active { transform: scale(0.95); }
         
-        /* ВЕРНУЛИ КРУПНУЮ ty.png НАЗАД */
         .boy-avatar { width: 60px; height: auto; display: block; margin-bottom: 5px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); }
         
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
@@ -78,7 +77,6 @@
 
         /* ЗОНЫ КЛИКА */
         .map-pin { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 15; border-radius: 20px; }
-        
         #pin-hall { top: 54.3%; left: 42.6%; width: 150px; height: 180px; }  
         #pin-lib { top: 54.6%; left: 67.1%; width: 150px; height: 150px; }       
         #pin-mpso { top: 61.2%; left: 61.1%; width: 150px; height: 140px; }      
@@ -87,26 +85,19 @@
         #pin-garden { top: 50.6%; left: 52.9%; width: 120px; height: 120px; }  
 
         /* ИНДИКАТОР УВЕДОМЛЕНИЙ */
-        .notification-dot { 
-            position: absolute; top: 0px; right: 0px; width: 28px; height: 28px; 
-            background: #ff0055; border: 2px solid #fff; border-radius: 50%; 
-            display: none; justify-content: center; align-items: center;
-            color: #fff; font-weight: 900; font-size: 16px;
-        }
+        .notification-dot { position: absolute; top: 0px; right: 0px; width: 28px; height: 28px; background: #ff0055; border: 2px solid #fff; border-radius: 50%; display: none; justify-content: center; align-items: center; color: #fff; font-weight: 900; font-size: 16px; }
         .notification-dot::after { content: '!'; }
         .notification-dot.active { display: flex; }
 
-        /* ОГОРОД И КУСТИК */
+        /* ОГОРОД И ЛОДКА */
         .grown-bush-container { position: absolute; top: 50.6%; left: 52.9%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; }
         .harvest-bubble { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #dcb254; color: #000; font-weight: bold; font-size: 18px; padding: 4px 12px; border-radius: 8px; z-index: 25; pointer-events: none; }
-        
-        /* ЛОДКА */
         .boat-container { position: absolute; top: 66%; left: 69.5%; width: 300px; height: 200px; transform: translate(-50%, -50%); z-index: 14; pointer-events: auto; cursor: pointer; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* ВОЛНЫ */
+        /* ВОЛНЫ И ДЫМ */
         .surf-wave { position: absolute; width: 100px; height: 20px; border-bottom: 3px solid rgba(255, 255, 255, 0.2); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; transform: translate(-50%, -50%); }
         #surf-l1 { top: 86.0%; left: 39.0%; animation: surf-left 4s infinite linear 0s; } 
         #surf-l2 { top: 89.0%; left: 43.0%; animation: surf-left 4.5s infinite linear 1.2s; } 
@@ -114,46 +105,48 @@
         #surf-r1 { top: 91.0%; left: 54.0%; animation: surf-right 4.2s infinite linear 0.8s; } 
         #surf-r2 { top: 89.0%; left: 58.0%; animation: surf-right 4.8s infinite linear 3s; } 
         #surf-r3 { top: 86.0%; left: 63.0%; animation: surf-right 5.5s infinite linear 1.5s; }
-
-        /* ПТИЦЫ */
         .flock-container { position: absolute; width: 200px; height: 150px; transform: translate(-50%, -50%); pointer-events: none; z-index: 11; opacity: 0.5; }
-        #flock-1 { top: 25.0%; left: 30.0%; }
-        #flock-2 { top: 23.2%; left: 72.6%; }
+        #flock-1 { top: 25.0%; left: 30.0%; } #flock-2 { top: 23.2%; left: 72.6%; }
         .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; }
-        
-        /* ДЫМ */
         .smoke-container { position: absolute; width: 40px; height: 100px; transform: translate(-50%, -100%); z-index: 16; pointer-events: none; }
-        #smoke-1 { top: 49.4%; left: 40%; } 
-        #smoke-2 { top: 50%; left: 67.2%; }
+        #smoke-1 { top: 49.4%; left: 40%; } #smoke-2 { top: 50%; left: 67.2%; }
         .smoke-particle { position: absolute; bottom: 0; left: 50%; width: 15px; height: 15px; background: rgba(220, 220, 220, 0.5); border-radius: 50%; animation: smoke-rise 4s infinite linear; opacity: 0; transform: translateX(-50%); }
-        .smoke-particle:nth-child(2) { animation-delay: 1.3s; }
-        .smoke-particle:nth-child(3) { animation-delay: 2.6s; }
+        .smoke-particle:nth-child(2) { animation-delay: 1.3s; } .smoke-particle:nth-child(3) { animation-delay: 2.6s; }
 
         /* НОЧНОЙ СВЕТ */
         .night-light { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); display: none; pointer-events: none; z-index: 14; }
         .window-light { width: 40px; height: 40px; background: radial-gradient(circle, rgba(255, 140, 0, 0.8) 0%, rgba(255, 140, 0, 0) 70%); }
         .clock-light { width: 60px; height: 60px; background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0) 70%); }
         body.is-night .night-light { display: block; }
-        #light-win1 { top: 55%; left: 45%; }
-        #light-win2 { top: 55%; left: 55%; }
-        #light-clock { top: 51%; left: 42%; }
+        #light-win1 { top: 55%; left: 45%; } #light-win2 { top: 55%; left: 55%; } #light-clock { top: 51%; left: 42%; }
 
         @keyframes smoke-rise { 0% { transform: translateX(-50%) translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateX(calc(-50% + 20px)) translateY(-80px) scale(3); opacity: 0; } }
         @keyframes surf-left { 0% { transform: translate(-50%, -50%) rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: translate(-50%, -50%) rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
-        /* ВСПЛЫВАЮЩИЕ ОКНА (БЕЗ РАМОК, ЧИСТЫЙ АНТРАЦИТ) */
+        /* ========================================= */
+        /* ДИНАМИЧЕСКИЕ ПОДСКАЗКИ (TOOLTIPS) */
+        /* ========================================= */
+        .floating-tooltip {
+            position: fixed; background: #252628; color: #fff; padding: 12px 16px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; line-height: 1.4; pointer-events: none;
+            opacity: 0; visibility: hidden; transition: opacity 0.15s ease; z-index: 1000;
+            max-width: 250px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        }
+        .floating-tooltip.show { opacity: 1; visibility: visible; }
+        .floating-tooltip-title { color: #dcb254; font-weight: 800; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
+
+        /* МОДАЛЬНЫЕ ОКНА (БЕЗ РАМОК, ЧИСТЫЙ АНТРАЦИТ) */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-overlay.show { display: flex; }
         
         .daily-modal { background: #252628; border-radius: 16px; width: 85%; max-width: 360px; padding: 25px; text-align: center; display: flex; flex-direction: column; gap: 15px; border: none; }
-        .daily-title { color: #fff; font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .daily-title { color: #fff; font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px;}
         
         .days-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 10px; }
         .day-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 5px; border-radius: 8px; }
         .day-title { font-size: 16px; color: #888; font-weight: bold; }
         .day-reward { font-size: 18px; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 4px; }
-        
         .day-card.claimed { opacity: 0.3; }
         .day-card.active { background: #dcb254; }
         .day-card.active .day-title { color: #000; }
@@ -162,34 +155,21 @@
         .day-card:last-child { grid-column: span 3; flex-direction: row; justify-content: center; gap: 20px; padding: 15px; background: #1c1d1e; }
         .day-card.active:last-child { background: #dcb254; }
         
-        .settings-btn { background: #1c1d1e; border: none; color: #fff; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; width: 100%; }
+        .settings-btn { background: #1c1d1e; border: none; color: #fff; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; width: 100%; outline: none;}
         .settings-btn:active { filter: brightness(0.8); }
 
         .claim-btn { background: #1dc5b4; color: #000; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; width: 100%; outline: none; }
         .claim-btn:active:not(:disabled) { filter: brightness(0.8); }
         .claim-btn:disabled { background: #3a3c40; color: #666; cursor: not-allowed; }
 
-        /* УНИВЕРСАЛЬНОЕ ИНФО-ОКНО */
-        .info-modal { background: #252628; border: none; width: 80%; max-width: 320px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-align: center; }
-        .info-modal-header { background: #1c1d1e; color: #fff; padding: 15px; font-weight: 800; font-size: 16px; letter-spacing: 1px; }
-        .info-modal-body { color: #ccc; padding: 25px 15px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
-        .info-modal-footer { background: #1dc5b4; color: #000; padding: 15px; cursor: pointer; font-weight: bold; font-size: 15px; }
-        .info-modal-footer:active { filter: brightness(0.8); }
-
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; display:flex; justify-content:center; align-items:center; color:#888; font-weight:bold; font-size:14px; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* СУПЕР DEV MODE */
+        /* DEV MODE */
         body.dev-mode .top-status-container { display: none; } 
         body.dev-mode .map-pin, body.dev-mode .boat-container, body.dev-mode .grown-bush-container, 
-        body.dev-mode .surf-wave, body.dev-mode .smoke-container, body.dev-mode .night-light, body.dev-mode .flock-container { 
-            border: 2px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; 
-            pointer-events: auto !important; cursor: move !important; animation: none !important; display: block !important; 
-        }
+        body.dev-mode .surf-wave, body.dev-mode .smoke-container, body.dev-mode .night-light, body.dev-mode .flock-container { border: 2px dashed #ff0055 !important; background: rgba(255, 0, 85, 0.4) !important; pointer-events: auto !important; cursor: move !important; animation: none !important; display: block !important; }
         body.dev-mode .map-pin::after, body.dev-mode .boat-container::after, body.dev-mode .grown-bush-container::after, 
-        body.dev-mode .surf-wave::after, body.dev-mode .smoke-container::after, body.dev-mode .night-light::after, body.dev-mode .flock-container::after {
-            content: attr(id) !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #fff; background: #000; padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 4px; pointer-events: none; z-index: 100;
-        }
+        body.dev-mode .surf-wave::after, body.dev-mode .smoke-container::after, body.dev-mode .night-light::after, body.dev-mode .flock-container::after { content: attr(id) !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; background: #000; padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 4px; pointer-events: none; z-index: 100; }
         #dev-coord-box { display: none; position: absolute; top: 10px; left: 10px; right: 10px; max-height: 40vh; overflow-y: auto; background: #1c1d1e; border: 1px solid #00ffcc; border-radius: 8px; z-index: 10000; pointer-events: auto; }
         body.dev-mode #dev-coord-box { display: block; }
         #dev-controls { padding: 10px; border-bottom: 1px solid #333; display: flex; flex-wrap: wrap; gap: 5px; }
@@ -246,6 +226,7 @@
                 <img src="bush.png" alt="Куст" onerror="this.style.display='none'">
             </div>
 
+            <!-- ЗДАНИЯ: ВМЕСТО МОДАЛОК ВЫЗЫВАЕМ ПОДСКАЗКИ РЯДОМ -->
             <div class="map-pin" id="pin-hall" onclick="handleBuildingClick(event, 'hall')"></div>
             <div class="map-pin" id="pin-lib" onclick="handleBuildingClick(event, 'lib')"></div>
             <div class="map-pin" id="pin-mpso" onclick="handleBuildingClick(event, 'mpso')"></div>
@@ -259,8 +240,8 @@
 
     <!-- ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ -->
     <div class="top-status-container">
-        <!-- По клику открываем модалку вместо баганого тултипа -->
-        <div class="level-badge" onclick="showInfoModal('УРОВЕНЬ ХРАНИТЕЛЯ', 'Ваш уровень эпохи.\nКопите опыт (XP) для повышения!')">
+        <!-- По клику вызываем новую систему подсказок -->
+        <div class="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения!')">
             <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
         </div>
@@ -282,15 +263,15 @@
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start;">
-            <div class="square-btn" onclick="showInfoModal('ИНВЕНТАРЬ', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
+            <div class="square-btn" onclick="showTooltip(event, 'ИНВЕНТАРЬ', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
                 <img src="backpack.png" alt="" onerror="this.style.display='none'">
             </div>
-            <div class="square-btn" onclick="showInfoModal('КОЛЛЕКЦИЯ', 'Архив событий и находок.\nВ разработке.')">
+            <div class="square-btn" onclick="showTooltip(event, 'КОЛЛЕКЦИЯ', 'Архив событий и находок.\nВ разработке.')">
                 <img src="scroll.png" alt="" onerror="this.style.display='none'">
             </div>
         </div>
         
-        <div class="center-sand-wrapper" onclick="showInfoModal('ПЕСЧИНКИ ВРЕМЕНИ', 'У вас ' + window.gameData.sandCount + ' песчинок!\nТратьте их во Вратах.')">
+        <div class="center-sand-wrapper" onclick="showTooltip(event, 'ПЕСЧИНКИ ВРЕМЕНИ', 'У вас ' + window.gameData.sandCount + ' песчинок!\nТратьте их во Вратах.')">
             <img src="ty.png" class="boy-avatar" alt="Песчинки" onerror="this.style.display='none'">
             <div class="boy-sand-counter">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
@@ -299,23 +280,27 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end;">
-            <!-- Пусто, настройки ушли наверх -->
+            <!-- Пусто -->
         </div>
     </div>
 
-    <!-- ОКНО НАСТРОЕК С АВАТАРОМ И ДАННЫМИ -->
+    <!-- ОКНО НАСТРОЕК (ПРОФИЛЬ) -->
     <div class="modal-overlay" id="settings-overlay" onclick="closeSettingsModal(event)">
         <div class="daily-modal" onclick="event.stopPropagation()">
-            
             <div style="display:flex; align-items:center; gap: 15px; margin-bottom: 10px; text-align: left;">
                 <img id="settings-avatar" src="boy1.png" style="width: 70px; height: 70px; border-radius: 12px; background: #1c1d1e; object-fit: cover;" onerror="this.style.display='none'">
-                <div>
-                    <div style="color: #fff; font-size: 18px; font-weight: bold;">Хранитель</div>
+                <div style="flex-grow: 1;">
+                    <!-- БЛОК ИМЕНИ И РЕДАКТИРОВАНИЯ -->
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="settings-username" style="color: #fff; font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">Игрок</span>
+                        <img src="pencil.png" onclick="editUserName()" style="width: 16px; height: 16px; cursor: pointer; filter: brightness(0.8);" onerror="this.style.display='none'" alt="✎">
+                    </div>
                     <div style="color: #dcb254; font-size: 14px; margin-top: 4px;">Уровень Эпохи: <span id="settings-level" style="font-weight:bold;">1</span></div>
                 </div>
             </div>
 
-            <button class="settings-btn" onclick="showInfoModal('ЗВУК', 'Настройки звука в разработке.')">Звук: Вкл</button>
+            <button class="settings-btn" onclick="showTooltip(event, 'ЗВУК', 'Настройки звука в разработке.')">Звук: Вкл</button>
+            <button class="settings-btn" id="link-google-btn" style="background: #fff; color: #000; display: none;" onclick="linkGoogleAccount()">Привязать аккаунт Google</button>
             <button class="settings-btn" style="color: #ff0055;" onclick="window.logout()">Сменить пользователя / Выход</button>
         </div>
     </div>
@@ -329,13 +314,10 @@
         </div>
     </div>
 
-    <!-- УНИВЕРСАЛЬНОЕ ИНФО-ОКНО -->
-    <div class="modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
-        <div class="info-modal" onclick="event.stopPropagation()">
-            <div class="info-modal-header" id="info-modal-title">Внимание</div>
-            <div class="info-modal-body" id="info-modal-text">Текст сообщения</div>
-            <div class="info-modal-footer" onclick="closeInfoModal()">ОК</div>
-        </div>
+    <!-- УМНАЯ ВСПЛЫВАЮЩАЯ ПОДСКАЗКА (TOOLTIP) -->
+    <div id="floating-tooltip" class="floating-tooltip">
+        <div id="ft-title" class="floating-tooltip-title"></div>
+        <div id="ft-text"></div>
     </div>
 
   </div>
@@ -344,7 +326,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+        import { getAuth, signOut, GoogleAuthProvider, linkWithPopup } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
         const userUid = localStorage.getItem('userUid');
         if (!userUid) { window.location.replace('login.html'); }
@@ -381,10 +363,20 @@
         async function loadDataFromCloud() {
             try {
                 const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) window.gameData = docSnap.data();
-                else window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, avatar: 'boy1.png' };
+                if (docSnap.exists()) {
+                    window.gameData = docSnap.data();
+                } else {
+                    window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, avatar: 'boy1.png' };
+                }
+
+                // Генерируем имя, если его нет
+                if (!window.gameData.userName) {
+                    window.gameData.userName = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
+                    await saveDataToCloud();
+                }
+
             } catch (error) {
-                window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, avatar: 'boy1.png' };
+                window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, avatar: 'boy1.png', userName: 'Игрок' };
             } finally {
                 document.getElementById('loading-screen').style.display = 'none';
                 updateUI(); checkDailyStatus(); checkBushVisibility(); 
@@ -398,7 +390,7 @@
             try { await updateDoc(userDocRef, window.gameData); } catch (error) {}
         }
 
-        // DEV МЕНЮ И ТУЛТИПЫ
+        // DEV МЕНЮ
         let devTapCount = 0; let devTapTimer = null;
         window.handleSecretDevTap = function(e) {
             if(e) e.stopPropagation(); if(hasMovedMap) return; 
@@ -406,6 +398,39 @@
             if (devTapCount >= 5) { window.toggleDevMode(); devTapCount = 0; } 
             else { devTapTimer = setTimeout(() => { devTapCount = 0; }, 400); }
         };
+
+        // --- УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ---
+        window.showTooltip = function(e, title, text) {
+            if(e) e.stopPropagation();
+            if (document.body.classList.contains('dev-mode') || hasMovedMap) return;
+            
+            const tt = document.getElementById('floating-tooltip');
+            document.getElementById('ft-title').innerText = title;
+            document.getElementById('ft-text').innerText = text;
+            document.getElementById('ft-title').style.display = title ? 'block' : 'none';
+
+            tt.style.display = 'block'; 
+            const rect = tt.getBoundingClientRect();
+            
+            let x = e.clientX - rect.width / 2;
+            let y = e.clientY - rect.height - 15;
+
+            // Контроль выхода за экран
+            if (x < 10) x = 10;
+            if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
+            if (y < 10) y = e.clientY + 25; 
+
+            tt.style.left = x + 'px';
+            tt.style.top = y + 'px';
+            
+            setTimeout(() => tt.classList.add('show'), 10);
+        };
+
+        // Закрытие тултипа при любом клике
+        window.addEventListener('click', () => {
+            document.getElementById('floating-tooltip').classList.remove('show');
+            setTimeout(() => { document.getElementById('floating-tooltip').style.display = 'none'; }, 200);
+        });
 
         // ЭФФЕКТЫ
         function createEnvironmentEffects() {
@@ -531,30 +556,30 @@
             document.getElementById('dev-coord-text').innerText = txt;
         }
 
-        // МОДАЛКИ (МГНОВЕННЫЕ)
-        window.showInfoModal = function(title, text) {
-            document.getElementById('info-modal-title').innerText = title; document.getElementById('info-modal-text').innerText = text;
-            document.getElementById('info-modal-overlay').classList.add('show');
-        };
-        window.closeInfoModal = function(e) {
-            if (e && e.target !== document.getElementById('info-modal-overlay') && e.target.className !== 'info-modal-footer') return;
-            document.getElementById('info-modal-overlay').classList.remove('show');
-        };
+        // МОДАЛКИ (НАСТРОЙКИ)
         window.openSettingsModal = function() {
             if (hasMovedMap || document.body.classList.contains('dev-mode')) return;
             document.getElementById('settings-overlay').classList.add('show');
+            
+            // Проверка на Гостя для привязки Google
+            if (auth.currentUser && auth.currentUser.isAnonymous) {
+                document.getElementById('link-google-btn').style.display = 'block';
+            } else {
+                document.getElementById('link-google-btn').style.display = 'none';
+            }
         };
         window.closeSettingsModal = function(e) {
             if (e && e.target !== document.getElementById('settings-overlay')) return;
             document.getElementById('settings-overlay').classList.remove('show');
         };
 
+        // КЛИКИ ПО ЗДАНИЯМ (ТЕПЕРЬ ЧЕРЕЗ ТУЛТИПЫ)
         window.handleBuildingClick = function(e, buildingType) {
             if (document.body.classList.contains('dev-mode') || hasMovedMap) return; 
             const level = window.gameData.epochLevel || 1;
-            if (buildingType === 'hall') { if (level < 2) window.showInfoModal("БЛОКИРОВКА", "Зал Царства откроется на 2 уровне эпохи."); else window.showInfoModal("ЗАЛ ЦАРСТВА", "Место встреч и обучения.\nВ разработке."); } 
-            else if (buildingType === 'lib') { if (level < 5) window.showInfoModal("БЛОКИРОВКА", "Библиотека откроется на 5 уровне эпохи."); else window.showInfoModal("БИБЛИОТЕКА", "Архивные события.\nВ разработке."); } 
-            else if (buildingType === 'mpso') { if (level < 10) window.showInfoModal("БЛОКИРОВКА", "МПСО откроется на 10 уровне эпохи."); else window.showInfoModal("МПСО", "Управление строительством.\nВ разработке."); }
+            if (buildingType === 'hall') { if (level < 2) window.showTooltip(e, "БЛОКИРОВКА", "Зал Царства откроется на 2 уровне эпохи."); else window.showTooltip(e, "ЗАЛ ЦАРСТВА", "Место встреч и обучения.\nВ разработке."); } 
+            else if (buildingType === 'lib') { if (level < 5) window.showTooltip(e, "БЛОКИРОВКА", "Библиотека откроется на 5 уровне эпохи."); else window.showTooltip(e, "БИБЛИОТЕКА", "Архивные события.\nВ разработке."); } 
+            else if (buildingType === 'mpso') { if (level < 10) window.showTooltip(e, "БЛОКИРОВКА", "МПСО откроется на 10 уровне эпохи."); else window.showTooltip(e, "МПСО", "Управление строительством.\nВ разработке."); }
             else if (buildingType === 'gate') goToLocation('gate.html');
             else if (buildingType === 'tent') openDailyModal();
             else if (buildingType === 'garden') goToLocation('garden.html');
@@ -577,20 +602,41 @@
             let t = Math.floor((window.gameData.gardenWaterUsed||0) / 7); if (t < 1) return;
             let p = 86400000 / (60 * t); let acc = Math.floor((Date.now() - window.gameData.lastHarvestTime) / p);
             if (acc > 0) { window.gameData.sandCount += acc; window.gameData.lastHarvestTime += acc * p; updateUI(); checkHarvest(); await saveDataToCloud(); } 
-            else window.showInfoModal("ОЖИДАНИЕ", `Ваши кусты дают ${60 * t} шт. в сутки.`);
+            else window.showTooltip(e, "ОЖИДАНИЕ", `Ваши кусты дают ${60 * t} шт. в сутки.`);
         };
         
         function updateUI() {
-            // Подтягиваем аватар в Настройки
-            if (window.gameData.avatar) {
-                document.getElementById('settings-avatar').src = window.gameData.avatar;
-            }
+            if (window.gameData.avatar) document.getElementById('settings-avatar').src = window.gameData.avatar;
+            if (window.gameData.userName) document.getElementById('settings-username').innerText = window.gameData.userName;
+            
             document.getElementById('settings-level').innerText = window.gameData.epochLevel || 1;
             document.getElementById('level-display').innerText = window.gameData.epochLevel || 1;
             document.getElementById('sand-display').innerText = window.gameData.sandCount || 0;
             document.getElementById('xp-text').innerText = `${Math.floor(window.gameData.currentXP)} / ${window.gameData.targetXP}`;
             document.getElementById('progress-fill').style.width = ((window.gameData.currentXP / window.gameData.targetXP) * 100) + '%';
         }
+
+        // РЕДАКТИРОВАНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ
+        window.editUserName = async function() {
+            let newName = prompt("Введите новое имя:", window.gameData.userName);
+            if (newName && newName.trim().length > 0) {
+                window.gameData.userName = newName.trim();
+                updateUI();
+                await saveDataToCloud();
+            }
+        };
+
+        // ПРИВЯЗКА GOOGLE
+        window.linkGoogleAccount = function() {
+            if (!auth.currentUser) return;
+            const provider = new GoogleAuthProvider();
+            linkWithPopup(auth.currentUser, provider).then(() => {
+                alert("Аккаунт успешно привязан к Google!");
+                document.getElementById('link-google-btn').style.display = 'none';
+            }).catch((error) => {
+                alert("Ошибка привязки: " + error.message);
+            });
+        };
 
         // ДЕЙЛИКИ
         function checkDailyStatus() {
