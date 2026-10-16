@@ -16,10 +16,7 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #000; overflow: hidden; }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
-        /* ВЕРХНИЙ БАННЕР */
-        .top-banner { position: absolute; top: 0; left: 0; width: 100%; height: auto; z-index: 20; border-bottom: 2px solid #1c1d1e; pointer-events: none; }
-
-        /* ВЕРХНИЙ БЛОК (ЦЕНТРИРОВАНИЕ) */
+        /* ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ */
         .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
@@ -27,7 +24,6 @@
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        /* ПОЛОСАТАЯ ЛИНИЯ ЭПОХИ */
         .top-progress-bar { 
             flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); 
             border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; 
@@ -52,13 +48,12 @@
         .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         .center-sand-wrapper:active { transform: scale(0.95); }
         
-        /* КЛАССИЧЕСКАЯ ИКОНКА ПЕСЧИНОК */
         .boy-avatar { width: 60px; height: auto; display: block; margin-bottom: 5px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); }
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
         
-        .square-btn { position: relative; width: 46px; height: 46px; background-color: #252628; border: 2px solid #333; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .square-btn:active { background-color: #333; transform: scale(0.92); border-color: #dcb254; }
+        .square-btn { position: relative; width: 46px; height: 46px; background: #252628; border: 2px solid #333; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+        .square-btn:active { background: #333; transform: scale(0.92); border-color: #dcb254; }
         .square-btn img { position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); width: auto; height: 135%; max-width: none; object-fit: contain; object-position: bottom center; pointer-events: none; }
 
         /* ИНТЕРАКТИВНАЯ КАРТА */
@@ -126,6 +121,16 @@
         .cloud-right::before { width: 80%; aspect-ratio: 1; left: -25%; top: 5%; } .cloud-right::after { width: 100%; aspect-ratio: 1; left: -45%; top: 35%; }
         .clouds-transition.open .cloud-left { transform: translateX(-150%); } .clouds-transition.open .cloud-right { transform: translateX(150%); }
 
+        /* УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ДЛЯ ГЛАВНОГО ЭКРАНА */
+        .floating-tooltip {
+            position: fixed; background: #252628; color: #fff; padding: 12px 16px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; line-height: 1.4; pointer-events: none;
+            opacity: 0; visibility: hidden; transition: opacity 0.15s ease; z-index: 1000;
+            max-width: 250px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.8); border: 1px solid #333;
+        }
+        .floating-tooltip.show { opacity: 1; visibility: visible; }
+        .floating-tooltip-title { color: #dcb254; font-weight: 800; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
+
         /* МОДАЛЬНЫЕ ОКНА (БЕЗ РАМОК, ЧИСТЫЙ АНТРАЦИТ) */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-overlay.show { display: flex; }
@@ -167,13 +172,6 @@
         .rating-name { flex-grow: 1; font-size: 15px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rating-level { font-size: 14px; font-weight: bold; color: #dcb254; white-space: nowrap; }
 
-        /* УНИВЕРСАЛЬНОЕ ИНФО-ОКНО (СТРОГОЕ, АНТРАЦИТ) */
-        .info-modal { background: #252628; border: none; width: 80%; max-width: 320px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-align: center; }
-        .info-modal-header { background: #1c1d1e; color: #dcb254; padding: 15px; font-weight: 800; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; }
-        .info-modal-body { color: #fff; padding: 25px 15px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
-        .info-modal-footer { background: #1dc5b4; color: #000; padding: 15px; cursor: pointer; font-weight: bold; font-size: 15px; }
-        .info-modal-footer:active { filter: brightness(0.8); }
-
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; display:flex; justify-content:center; align-items:center; color:#888; font-weight:bold; font-size:14px; text-transform: uppercase; letter-spacing: 2px; }
 
         /* DEV MODE */
@@ -193,9 +191,6 @@
 
   <div id="game-frame">
     <div id="loading-screen">ЗАГРУЗКА...</div>
-
-    <!-- ВЕРХНИЙ БАННЕР -->
-    <img src="TN.png" class="top-banner" alt="" onerror="this.style.display='none'">
 
     <!-- ПАНЕЛЬ РАЗРАБОТЧИКА (DEV) -->
     <div id="dev-coord-box">
@@ -251,7 +246,7 @@
         </div>
     </div>
 
-    <!-- ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) -->
+    <!-- ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ -->
     <div class="clouds-transition" id="clouds">
         <div class="cloud-left"></div>
         <div class="cloud-right"></div>
@@ -259,8 +254,8 @@
 
     <!-- ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ -->
     <div class="top-status-container">
-        <!-- Клик вызывает центральное модальное окно -->
-        <div class="level-badge" onclick="showInfoModal('УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
+        <!-- Клик вызывает умную подсказку -->
+        <div class="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
             <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
         </div>
@@ -283,15 +278,15 @@
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start;">
-            <div class="square-btn" onclick="showInfoModal('ИНВЕНТАРЬ', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
+            <div class="square-btn" onclick="showTooltip(event, 'ИНВЕНТАРЬ', 'Ваш инвентарь пуст.\nЭта функция в разработке.')">
                 <img src="backpack.png" alt="" onerror="this.style.display='none'">
             </div>
-            <div class="square-btn" onclick="showInfoModal('КОЛЛЕКЦИЯ', 'Архив событий и находок.\nВ разработке.')">
+            <div class="square-btn" onclick="showTooltip(event, 'КОЛЛЕКЦИЯ', 'Архив событий и находок.\nВ разработке.')">
                 <img src="scroll.png" alt="" onerror="this.style.display='none'">
             </div>
         </div>
         
-        <div class="center-sand-wrapper" onclick="showInfoModal('ПЕСЧИНКИ ВРЕМЕНИ', 'У вас ' + window.gameData.sandCount + ' песчинок!\nТратьте их во Вратах.')">
+        <div class="center-sand-wrapper" onclick="showTooltip(event, 'ПЕСЧИНКИ ВРЕМЕНИ', 'У вас ' + window.gameData.sandCount + ' песчинок!\nТратьте их во Вратах.')">
             <img src="ty.png" class="boy-avatar" alt="Песчинки" onerror="this.style.display='none'">
             <div class="boy-sand-counter">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
@@ -333,7 +328,7 @@
                 </div>
             </div>
 
-            <button class="settings-btn" onclick="showInfoModal('ЗВУК', 'Настройки звука в разработке.')">Звук: Вкл</button>
+            <button class="settings-btn" onclick="showTooltip(event, 'ЗВУК', 'Настройки звука в разработке.')">Звук: Вкл</button>
             <button class="settings-btn" id="link-google-btn" style="background: #fff; color: #000; display: none;" onclick="linkGoogleAccount()">Привязать аккаунт Google</button>
             <button class="settings-btn" style="color: #ff0055;" onclick="window.logout()">Сменить пользователя / Выход</button>
         </div>
@@ -353,13 +348,10 @@
         </div>
     </div>
 
-    <!-- УНИВЕРСАЛЬНОЕ ИНФО-ОКНО -->
-    <div class="modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
-        <div class="info-modal" onclick="event.stopPropagation()">
-            <div class="info-modal-header" id="info-modal-title">Внимание</div>
-            <div class="info-modal-body" id="info-modal-text">Текст сообщения</div>
-            <div class="info-modal-footer" onclick="closeInfoModal()">ОК</div>
-        </div>
+    <!-- УМНАЯ ВСПЛЫВАЮЩАЯ ПОДСКАЗКА (TOOLTIP) -->
+    <div id="floating-tooltip" class="floating-tooltip">
+        <div id="ft-title" class="floating-tooltip-title"></div>
+        <div id="ft-text"></div>
     </div>
 
   </div>
@@ -441,16 +433,39 @@
             else { devTapTimer = setTimeout(() => { devTapCount = 0; }, 400); }
         };
 
-        // МОДАЛКИ (ИНФО)
-        window.showInfoModal = function(title, text) {
-            document.getElementById('info-modal-title').innerText = title; 
-            document.getElementById('info-modal-text').innerText = text;
-            document.getElementById('info-modal-overlay').classList.add('show');
+        // --- УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ---
+        window.showTooltip = function(e, title, text) {
+            if(e) e.stopPropagation();
+            if (document.body.classList.contains('dev-mode') || hasMovedMap) return;
+            
+            const tt = document.getElementById('floating-tooltip');
+            document.getElementById('ft-title').innerText = title;
+            document.getElementById('ft-text').innerText = text;
+            document.getElementById('ft-title').style.display = title ? 'block' : 'none';
+
+            tt.style.display = 'block'; 
+            const rect = tt.getBoundingClientRect();
+            
+            let x = e.clientX - rect.width / 2;
+            let y = e.clientY - rect.height - 15;
+
+            if (x < 10) x = 10;
+            if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
+            if (y < 10) y = e.clientY + 25; 
+
+            tt.style.left = x + 'px';
+            tt.style.top = y + 'px';
+            
+            setTimeout(() => tt.classList.add('show'), 10);
         };
-        window.closeInfoModal = function(e) {
-            if (e && e.target !== document.getElementById('info-modal-overlay') && e.target.className !== 'info-modal-footer') return;
-            document.getElementById('info-modal-overlay').classList.remove('show');
-        };
+
+        window.addEventListener('click', () => {
+            const tt = document.getElementById('floating-tooltip');
+            if(tt) {
+                tt.classList.remove('show');
+                setTimeout(() => { tt.style.display = 'none'; }, 200);
+            }
+        });
 
         // ЭФФЕКТЫ
         function createEnvironmentEffects() {
@@ -669,9 +684,9 @@
         window.handleBuildingClick = function(e, buildingType) {
             if (document.body.classList.contains('dev-mode') || hasMovedMap) return; 
             const level = window.gameData.epochLevel || 1;
-            if (buildingType === 'hall') { if (level < 2) window.showInfoModal("БЛОКИРОВКА", "Зал Царства откроется на 2 уровне эпохи."); else window.showInfoModal("ЗАЛ ЦАРСТВА", "Место встреч и обучения.\nВ разработке."); } 
-            else if (buildingType === 'lib') { if (level < 5) window.showInfoModal("БЛОКИРОВКА", "Библиотека откроется на 5 уровне эпохи."); else window.showInfoModal("БИБЛИОТЕКА", "Архивные события.\nВ разработке."); } 
-            else if (buildingType === 'mpso') { if (level < 10) window.showInfoModal("БЛОКИРОВКА", "МПСО откроется на 10 уровне эпохи."); else window.showInfoModal("МПСО", "Управление строительством.\nВ разработке."); }
+            if (buildingType === 'hall') { if (level < 2) window.showTooltip(e, "БЛОКИРОВКА", "Зал Царства откроется на 2 уровне эпохи."); else window.showTooltip(e, "ЗАЛ ЦАРСТВА", "Место встреч и обучения.\nВ разработке."); } 
+            else if (buildingType === 'lib') { if (level < 5) window.showTooltip(e, "БЛОКИРОВКА", "Библиотека откроется на 5 уровне эпохи."); else window.showTooltip(e, "БИБЛИОТЕКА", "Архивные события.\nВ разработке."); } 
+            else if (buildingType === 'mpso') { if (level < 10) window.showTooltip(e, "БЛОКИРОВКА", "МПСО откроется на 10 уровне эпохи."); else window.showTooltip(e, "МПСО", "Управление строительством.\nВ разработке."); }
             else if (buildingType === 'gate') goToLocation('gate.html');
             else if (buildingType === 'tent') openDailyModal();
             else if (buildingType === 'garden') goToLocation('garden.html');
@@ -693,7 +708,7 @@
             let t = Math.floor((window.gameData.gardenWaterUsed||0) / 7); if (t < 1) return;
             let p = 86400000 / (60 * t); let acc = Math.floor((Date.now() - window.gameData.lastHarvestTime) / p);
             if (acc > 0) { window.gameData.sandCount += acc; window.gameData.lastHarvestTime += acc * p; updateUI(); checkHarvest(); await saveDataToCloud(); } 
-            else window.showInfoModal("ОЖИДАНИЕ", `Ваши кусты дают ${60 * t} шт. в сутки.`);
+            else window.showTooltip(e, "ОЖИДАНИЕ", `Ваши кусты дают ${60 * t} шт. в сутки.`);
         };
         
         function updateUI() {
