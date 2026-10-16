@@ -2,120 +2,45 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Врата Времени</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
-        /* --- ЧЕРНЫЙ ФОН БРАУЗЕРА (ДЛЯ ПК) --- */
-        body {
-            background-color: #050505;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; width: 100vw; margin: 0; overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;
-        }
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
+        body { background-color: #050505; display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff; }
 
-        /* --- ИГРОВОЙ КАДР (ПРИВЯЗКА МАКСИМУМ 540x960) --- */
-        #game-frame {
-            position: relative;
-            width: 100%; height: 100%;
-            max-width: 540px; max-height: 960px;
-            background-color: #181c1d; overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.9);
-        }
-        @media (min-width: 540px) and (min-height: 960px) {
-            #game-frame { border-radius: 12px; border: 1px solid #333; }
-        }
+        #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #181c1d; overflow: hidden; }
+        @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.9); } }
 
-        /* --- ЗАДНИЙ ФОН ВНУТРИ КАДРА --- */
-        .full-screen-bg {
-            position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
-            background-image: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 12, 14, 0.8) 100%), url('casy_2.jpg'); 
-            background-size: cover; background-position: center; z-index: 0; pointer-events: none;
-        }
+        .full-screen-bg { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background-image: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 12, 14, 0.8) 100%), url('casy_2.jpg'); background-size: cover; background-position: center; z-index: 0; pointer-events: none; }
 
-        /* --- АНИМАЦИЯ ПЕРЕХОДА (ОБЛАКА) --- */
-        .clouds-transition {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; pointer-events: none; opacity: 1; visibility: visible;
-            transition: opacity 0.3s ease; 
-        }
-        .clouds-transition.open {
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.5s ease 1.2s, visibility 0s 1.7s; 
-        }
-        .cloud-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: space-between;
-        }
-        .cloud-left, .cloud-right {
-            position: relative; width: 60%; height: 100%;
-            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
-        }
-        .cloud-left { left: 0; } .cloud-right { right: 0; }
-        .cloud-left::before, .cloud-left::after, .cloud-right::before, .cloud-right::after, .cloud-right .fluff {
-            content: ''; position: absolute; border-radius: 50%; background: inherit;
-        }
-        .cloud-left::before { width: 90%; aspect-ratio: 1; right: -25%; top: 15%; }
-        .cloud-left::after { width: 110%; aspect-ratio: 1; right: -35%; top: 50%; }
-        .cloud-right::before { width: 80%; aspect-ratio: 1; left: -25%; top: 5%; }
-        .cloud-right::after { width: 100%; aspect-ratio: 1; left: -45%; top: 35%; }
-        .cloud-right .fluff { width: 70%; aspect-ratio: 1; left: -20%; top: 75%; }
+        /* --- ВЕРХНИЙ БЛОК --- */
+        .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
-        .layer-3 .cloud-left, .layer-3 .cloud-right { background: #8ba2c2; transition-duration: 1.6s; }
-        .layer-2 .cloud-left, .layer-2 .cloud-right { background: #b8c5d1; transition-duration: 1.3s; }
-        .layer-1 .cloud-left, .layer-1 .cloud-right { background: #f0f4f8; transition-duration: 1.0s; }
-        .clouds-transition.open .cloud-left { transform: translateX(-150%); }
-        .clouds-transition.open .cloud-right { transform: translateX(150%); }
+        .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
+        .level-badge:active { transform: scale(0.95); }
+        .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
+        .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        /* --- ВЕРХНИЙ БЛОК (ИДЕАЛЬНОЕ ЦЕНТРИРОВАНИЕ) --- */
-        .top-status-container { 
-            position: absolute; top: 20px; 
-            left: 50%; transform: translateX(-50%); 
-            width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; 
-        }
-        .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; transition: transform 0.3s; }
-        .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #ffd700; z-index: 1;}
-        .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); transform: translateY(-2px); line-height: 1; }
-
-        .top-progress-bar {
-            flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px);
-            border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center;
-        }
+        .top-progress-bar { flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
         .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
-        .progress-fill {
-            position: absolute; left: 0; top: 0; height: 100%; width: 0%; 
-            background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px);
-            background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); 
-        }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
 
-        .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
-        .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #a68b5b; z-index: 1; }
+        .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+        .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
 
         /* --- БОКОВОЕ МЕНЮ СПРАВА --- */
-        .right-side-menu {
-            position: absolute; top: 100px; right: 15px;
-            display: flex; flex-direction: column; gap: 15px; z-index: 30;
-        }
-        .side-img-btn {
-            width: 45px; height: auto; cursor: pointer;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s;
-        }
-        .side-img-btn:hover { transform: scale(1.1); }
+        .right-side-menu { position: absolute; top: 85px; right: 15px; display: flex; flex-direction: column; gap: 15px; z-index: 30; }
+        .side-img-btn { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
         .side-img-btn:active { transform: scale(0.95); }
 
-        /* --- КОРПУС ЧАСОВ (ОБНОВЛЕННЫЕ КОЛЬЦА) --- */
-        .clock-wrapper { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 90%; max-width: 400px; aspect-ratio: 1 / 1; 
-        }
+        /* --- КОРПУС ЧАСОВ --- */
+        .clock-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; aspect-ratio: 1 / 1; }
         .heat-ring { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; z-index: 5; transition: opacity 0.1s; }
-        /* Белое кольцо (внутреннее) */
         .ring-inner { top: 28%; left: 28%; right: 28%; bottom: 28%; box-shadow: inset 0 0 30px 10px rgba(255,255,255,0.9), 0 0 30px 10px rgba(255,255,255,0.7); }
-        /* Синее кольцо (среднее) */
         .ring-middle { top: 15%; left: 15%; right: 15%; bottom: 15%; box-shadow: inset 0 0 35px 10px rgba(0,150,255,0.9), 0 0 30px 10px rgba(0,150,255,0.6); }
-        /* Красное кольцо (внешнее) */
         .ring-outer { top: 2%; left: 2%; right: 2%; bottom: 2%; box-shadow: inset 0 0 40px 12px rgba(255,60,60,0.9), 0 0 35px 10px rgba(32,178,170,0.8); }
 
         .sparks-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 14; pointer-events: none; }
@@ -137,117 +62,100 @@
         .hand-thin { width: 6px; height: 44%; background: #8b7968; z-index: 11; transition: transform 15s cubic-bezier(0.5, 0, 0.1, 1) 1.8s; }
         .hand-thin::after { width: 4px; height: 98%; }
 
-        .center-gear-btn {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 85px; height: 85px; 
-            background: transparent; border: none; outline: none; cursor: pointer; z-index: 20; 
-            transition: transform 0.2s ease; animation: gear-pulse 2s infinite alternate;
-        }
+        .center-gear-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85px; height: 85px; background: transparent; border: none; outline: none; cursor: pointer; z-index: 20; transition: transform 0.2s ease; animation: gear-pulse 2s infinite alternate; }
         @keyframes gear-pulse { 0% { filter: drop-shadow(0 0 10px rgba(220, 178, 84, 0.4)); } 100% { filter: drop-shadow(0 0 25px rgba(252, 235, 187, 0.8)); } }
         .gear-bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transition: filter 0.3s ease; z-index: 1; }
-        .cost-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; display: flex; align-items: center; justify-content: center; gap: 2px; pointer-events: none; width: 100%; }
+        .cost-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; display: flex; align-items: center; justify-content: center; gap: 4px; pointer-events: none; width: 100%; }
         .cost-text { color: #ffffff; font-size: 24px; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 0px 5px rgba(0,0,0,0.8); line-height: 1;}
-        .mini-hourglass { width: 18px; height: 18px; fill: #ffffff; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.8)); margin-top: 2px;}
+        .mini-hourglass { width: 20px; height: 20px; object-fit: contain; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.8)); }
         
         .center-gear-btn:hover:not(:disabled) .gear-bg-img { filter: brightness(1.2); }
         .center-gear-btn:active:not(:disabled) { transform: translate(-50%, -50%) scale(0.95); }
         .center-gear-btn:disabled { animation: none; filter: none; }
         .center-gear-btn:disabled .gear-bg-img { filter: grayscale(50%) brightness(0.6); }
         .center-gear-btn:disabled .cost-text { color: #aaaaaa; text-shadow: none; }
-        .center-gear-btn:disabled .mini-hourglass { fill: #aaaaaa; filter: none; }
+        .center-gear-btn:disabled .mini-hourglass { filter: grayscale(100%); }
 
         /* --- НИЖНЕЕ МЕНЮ --- */
-        .bottom-menu {
-            position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #0a0d10 0%, rgba(24, 28, 29, 0.95) 100%);
-            border-top: 2px solid #3a3f42; padding: 10px 10px 20px 10px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; box-shadow: 0 -15px 30px rgba(0,0,0,0.8);
-        }
-        .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; }
+        .bottom-menu { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px 20px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; pointer-events: none; }
+        .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; pointer-events: auto; }
         
-        .menu-icon { font-size: 26px; cursor: pointer; color: #8b7968; transition: color 0.3s, transform 0.3s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
-        .menu-icon:hover { color: #dcb254; transform: translateY(-3px); }
-        
-        .menu-icon-img {
-            width: 40px; height: auto; cursor: pointer;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.3s;
-        }
-        .menu-icon-img:hover { transform: translateY(-3px) scale(1.05); }
+        .menu-icon-img { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
+        .menu-icon-img:active { transform: scale(0.95); }
 
-        .boy-wrapper { 
-            position: relative; pointer-events: auto; cursor: pointer; 
-            margin-bottom: -15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
-            transition: transform 0.2s;
-        }
-        .boy-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
+        .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; }
+        .center-sand-wrapper:active { transform: scale(0.95); }
+        .player-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
 
-        .boy-sand-counter {
-            position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); background: rgba(10, 13, 16, 0.95); border: 1px solid #dcb254; border-radius: 12px;
-            padding: 3px 10px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; transition: transform 0.3s, color 0.3s;
-        }
-        .boy-sand-counter svg { width: 14px; height: 14px; fill: #dcb254; }
-        .boy-sand-counter span { color: #fcebbb; font-size: 14px; font-weight: bold; }
+        .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; }
+        .boy-sand-counter img { width: 16px; height: 16px; object-fit: contain; }
+        .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
 
         /* --- ВСПЛЫВАЮЩИЕ ОКНА (OVERLAY) --- */
-        .event-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(10, 13, 16, 0.7); backdrop-filter: blur(10px); 
-            z-index: 100; display: flex; justify-content: center; align-items: center; 
-            visibility: hidden; opacity: 0; transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
+        .event-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.7); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .event-overlay.show { opacity: 1; pointer-events: auto; visibility: visible; cursor: pointer; }
         .event-overlay.flying { background: transparent !important; backdrop-filter: none !important; }
 
-        .event-modal { 
-            background: transparent; border: none; padding: 10px; width: 90%; max-width: 500px; text-align: center; 
-            transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.2, 1); 
-            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .event-modal { background: transparent; border: none; padding: 10px; width: 90%; max-width: 500px; text-align: center; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .event-overlay.show .event-modal { transform: scale(1); }
         .text-panel { width: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.3s; pointer-events: none; }
-        .event-img { width: 100%; max-height: 40%; object-fit: contain; border: none; margin-bottom: 10px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.9)); z-index: 1; position: relative;}
+        .event-img { width: 100%; max-height: 40vh; object-fit: contain; border: none; margin-bottom: 10px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.9)); z-index: 1; position: relative;}
         .event-title { font-size: 26px; margin-bottom: 5px; transition: color 0.3s, text-shadow 0.3s; }
         .event-desc { color: #fcebbb; font-size: 17px; line-height: 1.4; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px #000; }
         
-        /* --- ЛИНИЯ ВРЕМЕНИ (ТАЙМЛАЙН) --- */
+        /* --- ЛИНИЯ ВРЕМЕНИ --- */
         .timeline-container { position: relative; width: 90%; height: 50px; margin: 5px auto 15px auto; }
         .timeline-line { position: absolute; top: 20px; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
         .timeline-marker { position: absolute; top: 15px; width: 2px; height: 14px; background: rgba(255,255,255,0.5); }
         .timeline-marker span { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); font-size: 10px; color: #8ba2c2; white-space: nowrap; }
-        .marker-start { left: 0%; }
-        .marker-zero { left: 66.5%; } 
-        .marker-end { left: 100%; }
-        
-        .marker-current {
-            position: absolute; top: 8px; width: 3px; height: 28px; 
-            background: #20b2aa; box-shadow: 0 0 10px #20b2aa; z-index: 5;
-            transition: left 1s cubic-bezier(0.2, 0.9, 0.2, 1);
-        }
+        .marker-start { left: 0%; } .marker-zero { left: 66.5%; } .marker-end { left: 100%; }
+        .marker-current { position: absolute; top: 8px; width: 3px; height: 28px; background: #20b2aa; box-shadow: 0 0 10px #20b2aa; z-index: 5; transition: left 1s cubic-bezier(0.2, 0.9, 0.2, 1); }
 
         /* --- СТИЛЬ ЗАСТАВКИ (ДЛЯ МИНИ-ИГР) --- */
-        .event-modal.splash-mode { width: 95%; max-width: 600px; padding: 0; display: block; }
-        .event-modal.splash-mode .event-img { width: 100%; height: auto; max-height: 80%; object-fit: contain; margin: 0; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8)); }
-        .event-modal.splash-mode .text-panel { position: absolute; bottom: 8%; left: 5%; width: 90%; display: flex; flex-direction: row; justify-content: space-around; align-items: center; background: transparent; padding: 0; z-index: 2; }
+        .event-modal.splash-mode { width: 100%; max-width: 600px; padding: 0; display: block; }
+        .event-modal.splash-mode .event-img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; margin: 0; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8)); }
+        .event-modal.splash-mode .text-panel { position: absolute; bottom: 10%; left: 5%; width: 90%; display: flex; flex-direction: row; justify-content: space-around; align-items: center; background: transparent; padding: 0; z-index: 2; }
         .event-modal.splash-mode .event-title { color: #ffffff !important; font-size: 24px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.9) !important; margin: 0; width: 35%; text-align: center; }
         .event-modal.splash-mode .event-desc { color: #ffffff; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); margin: 0; width: 55%; text-align: center; line-height: 1.2; }
         .event-modal.splash-mode .timeline-container { display: none; }
 
+        /* ИНФО-ОКНО */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 300; display: none; justify-content: center; align-items: center; }
+        .modal-overlay.show { display: flex; }
+        .info-modal { background: #252628; border: none; width: 80%; max-width: 320px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-align: center; }
+        .info-modal-header { background: #1c1d1e; color: #dcb254; padding: 15px; font-weight: 800; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; }
+        .info-modal-body { color: #fff; padding: 25px 15px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
+        .info-modal-footer { background: #1dc5b4; color: #000; padding: 15px; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .info-modal-footer:active { filter: brightness(0.8); }
+
+        #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; display:flex; justify-content:center; align-items:center; color:#888; font-weight:bold; font-size:14px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) */
+        .clouds-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; display: flex; justify-content: space-between; opacity: 1; transition: opacity 0.5s ease; overflow: hidden; }
+        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.8s, visibility 0s 1.3s; }
+        .cloud-left, .cloud-right { position: relative; width: 60%; height: 100%; background: #2c3e50; transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1); }
+        .cloud-left::before, .cloud-left::after, .cloud-right::before, .cloud-right::after { content: ''; position: absolute; border-radius: 50%; background: inherit; }
+        .cloud-left::before { width: 90%; aspect-ratio: 1; right: -25%; top: 15%; } .cloud-left::after { width: 110%; aspect-ratio: 1; right: -35%; top: 50%; }
+        .cloud-right::before { width: 80%; aspect-ratio: 1; left: -25%; top: 5%; } .cloud-right::after { width: 100%; aspect-ratio: 1; left: -45%; top: 35%; }
+        .clouds-transition.open .cloud-left { transform: translateX(-150%); } .clouds-transition.open .cloud-right { transform: translateX(150%); }
     </style>
 </head>
 <body>
 
-  <!-- ГЛАВНЫЙ ИГРОВОЙ КАДР -->
   <div id="game-frame">
 
+    <div id="loading-screen">ЗАГРУЗКА...</div>
+
     <div class="clouds-transition" id="clouds">
-        <div class="cloud-layer layer-3"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
-        <div class="cloud-layer layer-2"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
-        <div class="cloud-layer layer-1"><div class="cloud-left"></div><div class="cloud-right"><div class="fluff"></div></div></div>
+        <div class="cloud-left"></div>
+        <div class="cloud-right"></div>
     </div>
 
     <div class="full-screen-bg"></div>
 
     <div class="top-status-container">
-        <div class="level-badge" id="level-badge">
-            <svg class="level-gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58z" /></svg>
+        <div class="level-badge" onclick="showInfoModal('УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
+            <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-text">1</span>
         </div>
         <div class="top-progress-bar" id="progress-bar-container">
@@ -255,14 +163,14 @@
             <span class="xp-text" id="xp-text">0 / 50</span>
         </div>
         <div class="level-up-badge">
-            <svg class="level-up-gear" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.05-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62-.94l-2.39-.96c-.22-.08-.47 0-.59.22l-1.92 3.32c-.12.22-.07.49.12.61l2.03 1.58c-.04.3-.06.61-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.03-1.58z" /></svg>
+            <img src="gear.png" class="level-up-gear" alt="" onerror="this.style.display='none'">
             <span class="level-up-arrow">↑</span>
         </div>
     </div>
 
     <div class="right-side-menu">
-        <img src="castle.png" class="side-img-btn" onclick="alert('Зал Славы. В разработке!')" alt="Топ Игроков">
-        <img src="mail.png" class="side-img-btn" alt="Сообщения">
+        <img src="castle.png" class="side-img-btn" onclick="showInfoModal('ЗАЛ СЛАВЫ', 'В разработке!')" alt="Топ Игроков" onerror="this.style.display='none'">
+        <img src="mail.png" class="side-img-btn" onclick="showInfoModal('ПОЧТА', 'В разработке!')" alt="Сообщения" onerror="this.style.display='none'">
     </div>
 
     <div class="clock-wrapper" id="wrapper">
@@ -276,30 +184,30 @@
         <div class="sparks-layer" id="sparks-layer"></div>
 
         <button class="center-gear-btn" id="spinButton" onclick="payAndSpin()">
-            <img src="buttom.png" class="gear-bg-img" alt="Запуск">
+            <img src="buttom.png" class="gear-bg-img" alt="Запуск" onerror="this.style.display='none'">
             <div class="cost-overlay">
                 <span class="cost-text">15</span>
-                <svg class="mini-hourglass" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>
+                <img src="ty.png" class="mini-hourglass" alt="" onerror="this.style.display='none'">
             </div>
         </button>
     </div>
 
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
-            <div class="menu-icon">🎒</div>
-            <div class="menu-icon" id="collection-icon" style="margin-left: 15px;">📜</div>
+            <!-- Левая часть пустая, чтобы сбалансировать Назад справа -->
         </div>
         
-        <div class="boy-wrapper" id="boy-wrapper" onclick="addTestSand()">
-            <img src="ty.png" class="boy-avatar" alt="Мальчик">
+        <div class="center-sand-wrapper" id="boy-wrapper" onclick="addTestSand()">
+            <img id="player-avatar" src="boy1.png" class="player-avatar" alt="Персонаж" onerror="this.style.display='none'">
             <div class="boy-sand-counter" id="sand-counter-ui">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 2H6v4.46l4.08 5.54L6 17.54V22h12v-4.46l-4.08-5.54L18 6.46V2zm-2 18H8v-1.46l4-5.43 4 5.43V20zM8 4h8v1.46l-4 5.43-4-5.43V4z"/></svg>
+                <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
                 <span id="sand-display">150</span>
             </div>
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end; padding-right: 10px;">
-            <img src="back.png" class="menu-icon-img" alt="Назад" onclick="goToLocation('village.html')">
+            <!-- Кнопка Назад (возврат на Остров) -->
+            <img src="back.png" class="menu-icon-img" alt="Назад" onclick="goToLocation('index.html')" onerror="this.style.display='none'">
         </div>
     </div>
 
@@ -323,9 +231,66 @@
         </div>
     </div>
 
-  </div> <!-- КОНЕЦ ИГРОВОГО КАДРА -->
+    <!-- УНИВЕРСАЛЬНОЕ ИНФО-ОКНО -->
+    <div class="modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
+        <div class="info-modal" onclick="event.stopPropagation()">
+            <div class="info-modal-header" id="info-modal-title">Внимание</div>
+            <div class="info-modal-body" id="info-modal-text">Текст сообщения</div>
+            <div class="info-modal-footer" onclick="closeInfoModal()">ОК</div>
+        </div>
+    </div>
 
-    <script>
+  </div>
+
+    <!-- ПОДКЛЮЧЕНИЕ БАЗЫ ДАННЫХ И ЛОГИКА -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+        const userUid = localStorage.getItem('userUid');
+        if (!userUid) { window.location.replace('login.html'); }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFCGFnL3pNfrHiwqCZkXapdhC5bKmg_SE",
+            authDomain: "time-gate-game.firebaseapp.com",
+            projectId: "time-gate-game",
+            storageBucket: "time-gate-game.firebasestorage.app",
+            messagingSenderId: "789791906588",
+            appId: "1:789791906588:web:5bf53149ff3b14de9178d9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const userDocRef = doc(db, "users", userUid);
+
+        window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, pendingPoints: 0, pendingEventObj: null, avatar: 'boy1.png' };
+
+        const SPIN_COST = 15; 
+        let isMinigamePending = false;
+        let pendingUrl = '';
+        let isClickable = false;
+
+        let currentRotation1 = 0; let currentRotation2 = 0; let currentRotation3 = 0;
+        let prevRot1 = 0; let prevRot2 = 0; let prevRot3 = 0;
+        let startTime = 0; let animationFrameId; let isSpinning = false; let currentActiveRings = 1;
+
+        const hand1 = document.getElementById('hand1'); const hand2 = document.getElementById('hand2'); 
+        const hand3 = document.getElementById('hand3'); const sparksLayer = document.getElementById('sparks-layer');
+        const ringInner = document.getElementById('ring-inner'); 
+        const ringMiddle = document.getElementById('ring-middle'); 
+        const ringOuter = document.getElementById('ring-outer');
+        const wrapper = document.getElementById('wrapper'); const btn = document.getElementById('spinButton'); 
+        const sandDisplay = document.getElementById('sand-display'); const progressFill = document.getElementById('progress-fill'); 
+        const levelText = document.getElementById('level-text'); const levelBadge = document.getElementById('level-badge');
+        const xpTextDisplay = document.getElementById('xp-text');
+        
+        const eventOverlay = document.getElementById('event-overlay'); const eventImg = document.getElementById('event-img');
+        const eventTitle = document.getElementById('event-title'); const eventDesc = document.getElementById('event-desc');
+        const eventModal = document.getElementById('event-modal');
+        const textPanel = document.getElementById('text-panel');
+        const clouds = document.getElementById('clouds');
+        const gameFrame = document.getElementById('game-frame');
+
         const eventsDatabase = {
             "-3791": "Рождение Еноса", "-3566": "Рождение Яреда", "-3404": "Рождение Еноха", 
             "-3339": "Рождение Мафусала", "-3152": "Рождение Ламеха", "-3039": "Енох перенесен", 
@@ -408,121 +373,95 @@
             1950: "Выпуск Христианских Греческих Писаний в переводе «Новый мир»", 2014: "Начинает работать JW Broadcasting"
         };
 
-        let gameData = JSON.parse(localStorage.getItem('timeGateData')) || {
-            sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, pendingPoints: 0, pendingEventObj: null
-        };
-
-        let sandCount = gameData.sandCount; 
-        const SPIN_COST = 15; 
-        let epochLevel = gameData.epochLevel;
-        let currentXP = gameData.currentXP;
-        let targetXP = gameData.targetXP;
-        let pendingPoints = gameData.pendingPoints || 0;
-        let pendingEventObj = gameData.pendingEventObj || null;
-
-        let isMinigamePending = false;
-        let pendingUrl = '';
-        let isClickable = false;
-
-        let currentRotation1 = 0; let currentRotation2 = 0; let currentRotation3 = 0;
-        let prevRot1 = 0; let prevRot2 = 0; let prevRot3 = 0;
-        let startTime = 0; let animationFrameId; let isSpinning = false; let currentActiveRings = 1;
-
-        const hand1 = document.getElementById('hand1'); const hand2 = document.getElementById('hand2'); 
-        const hand3 = document.getElementById('hand3'); const sparksLayer = document.getElementById('sparks-layer');
-        const ringInner = document.getElementById('ring-inner'); 
-        const ringMiddle = document.getElementById('ring-middle'); 
-        const ringOuter = document.getElementById('ring-outer');
-        const wrapper = document.getElementById('wrapper'); const btn = document.getElementById('spinButton'); 
-        const sandDisplay = document.getElementById('sand-display'); const progressFill = document.getElementById('progress-fill'); 
-        const levelText = document.getElementById('level-text'); const levelBadge = document.getElementById('level-badge');
-        const xpTextDisplay = document.getElementById('xp-text');
-        
-        const eventOverlay = document.getElementById('event-overlay'); const eventImg = document.getElementById('event-img');
-        const eventTitle = document.getElementById('event-title'); const eventDesc = document.getElementById('event-desc');
-        const eventModal = document.getElementById('event-modal'); const collectionIcon = document.getElementById('collection-icon');
-        const textPanel = document.getElementById('text-panel');
-        const clouds = document.getElementById('clouds');
-        const gameFrame = document.getElementById('game-frame');
-
-        window.onload = () => {
-            sandDisplay.innerText = sandCount;
-            levelText.innerText = epochLevel;
-            xpTextDisplay.innerText = `${Math.floor(currentXP)} / ${targetXP}`;
-            progressFill.style.width = `${(currentXP / targetXP) * 100}%`;
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const isFromMinigame = urlParams.get('fromMinigame') === 'true';
-            
-            if (isFromMinigame) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
-            setTimeout(() => { 
-                clouds.classList.add('open'); 
-                
-                if (isFromMinigame && pendingPoints > 0) {
-                    setTimeout(() => {
-                        eventModal.classList.remove('splash-mode');
-                        document.getElementById('timeline-container').style.display = 'block';
-
-                        if (pendingEventObj) {
-                            eventImg.src = pendingEventObj.img;
-                            eventTitle.innerText = pendingEventObj.title;
-                            applyRarityStyle(eventTitle, pendingEventObj.rarity);
-                            
-                            if (pendingEventObj.timelinePercent !== undefined) {
-                                document.getElementById('timeline-current').style.left = pendingEventObj.timelinePercent + '%';
-                            }
-                            
-                            if (pendingEventObj.rarity === 'common') {
-                                eventDesc.style.display = 'none';
-                            } else {
-                                eventDesc.style.display = 'block';
-                                eventDesc.innerText = pendingEventObj.desc;
-                            }
-                        }
-
-                        isMinigamePending = false;
-                        isClickable = false;
-                        eventOverlay.classList.add('show');
-                        setTimeout(() => isClickable = true, 500);
-                    }, 800); 
+        async function loadDataFromCloud() {
+            try {
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    window.gameData = docSnap.data();
                 }
-            }, 200);
-        };
+            } catch (error) {
+                console.error("Ошибка загрузки:", error);
+            } finally {
+                document.getElementById('loading-screen').style.display = 'none';
+                updateUI();
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const isFromMinigame = urlParams.get('fromMinigame') === 'true';
+                if (isFromMinigame) window.history.replaceState({}, document.title, window.location.pathname);
 
-        function addTestSand() {
-            sandCount += 500;
-            sandDisplay.innerText = sandCount;
-            saveGameData();
+                setTimeout(() => { 
+                    clouds.classList.add('open'); 
+                    if (isFromMinigame && window.gameData.pendingPoints > 0) {
+                        setTimeout(() => {
+                            eventModal.classList.remove('splash-mode');
+                            document.getElementById('timeline-container').style.display = 'block';
+
+                            if (window.gameData.pendingEventObj) {
+                                eventImg.src = window.gameData.pendingEventObj.img;
+                                eventTitle.innerText = window.gameData.pendingEventObj.title;
+                                applyRarityStyle(eventTitle, window.gameData.pendingEventObj.rarity);
+                                
+                                if (window.gameData.pendingEventObj.timelinePercent !== undefined) {
+                                    document.getElementById('timeline-current').style.left = window.gameData.pendingEventObj.timelinePercent + '%';
+                                }
+                                
+                                if (window.gameData.pendingEventObj.rarity === 'common') {
+                                    eventDesc.style.display = 'none';
+                                } else {
+                                    eventDesc.style.display = 'block';
+                                    eventDesc.innerText = window.gameData.pendingEventObj.desc;
+                                }
+                            }
+                            isMinigamePending = false;
+                            isClickable = false;
+                            eventOverlay.classList.add('show');
+                            setTimeout(() => isClickable = true, 500);
+                        }, 800); 
+                    }
+                }, 200);
+            }
+        }
+
+        async function saveDataToCloud() {
+            try { await updateDoc(userDocRef, window.gameData); } catch (error) {}
+        }
+
+        loadDataFromCloud();
+
+        function updateUI() {
+            if(window.gameData.avatar) document.getElementById('player-avatar').src = window.gameData.avatar;
+            sandDisplay.innerText = window.gameData.sandCount;
+            levelText.innerText = window.gameData.epochLevel;
+            xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP)} / ${window.gameData.targetXP}`;
+            progressFill.style.width = `${(window.gameData.currentXP / window.gameData.targetXP) * 100}%`;
+        }
+
+        window.addTestSand = function() {
+            window.gameData.sandCount += 500;
+            sandDisplay.innerText = window.gameData.sandCount;
+            saveDataToCloud();
             
             let boy = document.getElementById('boy-wrapper');
             boy.style.transform = 'scale(1.2) translateY(-10px)';
             setTimeout(() => { boy.style.transform = 'scale(1) translateY(0)'; }, 200);
         }
 
-        function saveGameData() {
-            gameData = { sandCount, epochLevel, currentXP, targetXP, pendingPoints, pendingEventObj };
-            localStorage.setItem('timeGateData', JSON.stringify(gameData));
-        }
-
-        function goToLocation(url) {
-            saveGameData(); 
+        window.goToLocation = function(url) {
+            saveDataToCloud(); 
             clouds.classList.remove('open'); 
-            setTimeout(() => { window.location.replace(url); }, 1200); 
+            setTimeout(() => { window.location.replace(url); }, 600); 
         }
 
         function processLevelUp() {
-            if (currentXP >= targetXP) {
-                currentXP -= targetXP;
-                epochLevel++;
-                levelText.innerText = epochLevel;
+            if (window.gameData.currentXP >= window.gameData.targetXP) {
+                window.gameData.currentXP -= window.gameData.targetXP;
+                window.gameData.epochLevel++;
+                levelText.innerText = window.gameData.epochLevel;
                 levelBadge.style.transform = "scale(1.3)"; setTimeout(() => levelBadge.style.transform = "scale(1)", 300);
-                targetXP = getRequiredXP(epochLevel);
+                window.gameData.targetXP = 50 * window.gameData.epochLevel; // Простая формула уровня
                 
-                sandCount += 50;
-                sandDisplay.innerText = sandCount;
+                window.gameData.sandCount += 50;
+                sandDisplay.innerText = window.gameData.sandCount;
                 let sandCounterUI = document.getElementById('sand-counter-ui');
                 sandCounterUI.style.transform = 'translateX(-50%) scale(1.3)';
                 sandCounterUI.style.color = '#ffdf00';
@@ -536,27 +475,27 @@
                 setTimeout(() => { checkXP(); }, 100); 
             } else {
                 progressFill.style.transition = 'width 0.5s ease-out';
-                progressFill.style.width = `${(currentXP / targetXP) * 100}%`;
-                xpTextDisplay.innerText = `${Math.floor(currentXP)} / ${targetXP}`;
-                saveGameData();
+                progressFill.style.width = `${(window.gameData.currentXP / window.gameData.targetXP) * 100}%`;
+                xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP)} / ${window.gameData.targetXP}`;
+                saveDataToCloud();
             }
         }
         
         function checkXP() {
-            if (currentXP >= targetXP) {
+            if (window.gameData.currentXP >= window.gameData.targetXP) {
                 progressFill.style.transition = 'width 0.3s ease-out'; progressFill.style.width = `100%`;
-                xpTextDisplay.innerText = `${targetXP} / ${targetXP}`;
+                xpTextDisplay.innerText = `${window.gameData.targetXP} / ${window.gameData.targetXP}`;
                 setTimeout(processLevelUp, 350); 
             } else {
                 progressFill.style.transition = 'width 0.5s ease-out';
-                progressFill.style.width = `${(currentXP / targetXP) * 100}%`;
-                xpTextDisplay.innerText = `${Math.floor(currentXP)} / ${targetXP}`;
-                saveGameData();
+                progressFill.style.width = `${(window.gameData.currentXP / window.gameData.targetXP) * 100}%`;
+                xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP)} / ${window.gameData.targetXP}`;
+                saveDataToCloud();
             }
         }
         
         function addXP(amount) {
-            currentXP += amount;
+            window.gameData.currentXP += amount;
             checkXP();
         }
 
@@ -615,6 +554,17 @@
             }
         }
 
+        window.showInfoModal = function(title, text) {
+            document.getElementById('info-modal-title').innerText = title;
+            document.getElementById('info-modal-text').innerText = text;
+            document.getElementById('info-modal-overlay').classList.add('show');
+        };
+
+        window.closeInfoModal = function(e) {
+            if (e && e.target !== document.getElementById('info-modal-overlay') && e.target.className !== 'info-modal-footer') return;
+            document.getElementById('info-modal-overlay').classList.remove('show');
+        };
+
         function showEventModal(year, description, rarity) {
             let isConstruction = description.toLowerCase().includes("строительств");
             let isEnthronement = description.toLowerCase().includes("воцарени") || description.toLowerCase().includes("цар");
@@ -646,7 +596,7 @@
             
             document.getElementById('timeline-current').style.left = percent + '%';
 
-            pendingEventObj = {
+            window.gameData.pendingEventObj = {
                 title: displayYearStr,
                 img: finalImgSrc,
                 rarity: rarity,
@@ -666,11 +616,12 @@
             
             isClickable = false;
             eventOverlay.classList.add('show');
+            saveDataToCloud();
             
             setTimeout(() => { isClickable = true; }, 500);
         }
 
-        function handleOverlayClick() {
+        window.handleOverlayClick = function() {
             if (!isClickable) return;
             isClickable = false; 
             
@@ -683,39 +634,30 @@
         }
 
         function flyCollectionCard() {
+            /* Функция полета карточки в архив - пока оставим заглушку как в оригинале */
             eventOverlay.classList.add('flying');
             eventOverlay.classList.add('show'); 
             textPanel.style.opacity = '0'; 
             
-            const modalRect = eventModal.getBoundingClientRect();
-            const targetRect = collectionIcon.getBoundingClientRect();
-            const frameRect = gameFrame.getBoundingClientRect();
-            
-            const dx = targetRect.left - frameRect.left + targetRect.width / 2 - (modalRect.left - frameRect.left + modalRect.width / 2);
-            const dy = targetRect.top - frameRect.top + targetRect.height / 2 - (modalRect.top - frameRect.top + modalRect.height / 2);
-            
             eventModal.style.transition = 'transform 0.6s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.6s ease';
-            eventModal.style.transform = `translate(${dx}px, ${dy}px) scale(0.05)`;
+            eventModal.style.transform = `translate(0, -200px) scale(0.05)`;
             eventModal.style.opacity = '0';
             
             setTimeout(() => {
                 eventOverlay.classList.remove('show');
                 eventOverlay.classList.remove('flying'); 
                 textPanel.style.opacity = '1'; 
-                collectionIcon.style.color = '#ffd700'; collectionIcon.style.transform = 'scale(1.4)';
-                
                 setTimeout(() => {
-                    collectionIcon.style.color = ''; collectionIcon.style.transform = '';
                     eventModal.style.transition = ''; eventModal.style.transform = ''; eventModal.style.opacity = '';
                 }, 300);
             }, 600);
         }
 
         function closeEventModalOnly() {
-            let pts = pendingPoints;
-            pendingPoints = 0;
-            let isCommon = pendingEventObj && pendingEventObj.rarity === 'common';
-            saveGameData();
+            let pts = window.gameData.pendingPoints;
+            window.gameData.pendingPoints = 0;
+            let isCommon = window.gameData.pendingEventObj && window.gameData.pendingEventObj.rarity === 'common';
+            saveDataToCloud();
 
             if (isCommon) {
                 eventOverlay.classList.remove('show');
@@ -733,10 +675,10 @@
             return Math.atan2(parseFloat(values[1]), parseFloat(values[0])) * (180 / Math.PI);
         }
 
-        function payAndSpin() {
+        window.payAndSpin = function() {
             if (isSpinning) return;
-            if (sandCount < SPIN_COST) { alert("Недостаточно песчинок времени!"); return; }
-            sandCount -= SPIN_COST; sandDisplay.innerText = sandCount; saveGameData();
+            if (window.gameData.sandCount < SPIN_COST) { window.showInfoModal("ВНИМАНИЕ", "Недостаточно песчинок времени!"); return; }
+            window.gameData.sandCount -= SPIN_COST; sandDisplay.innerText = window.gameData.sandCount; saveDataToCloud();
             isSpinning = true; btn.disabled = true; 
             
             const boy = document.getElementById('boy-wrapper'); const target = btn;
@@ -819,35 +761,35 @@
                 if (randomYear === 0) randomYear = 1;
                 description = "";
                 rarity = 'common';
-                pendingPoints = 10;
+                window.gameData.pendingPoints = 10;
                 currentActiveRings = 1;
             } else if (roll < 0.90) {
                 let keys = Object.keys(eventsDatabase);
                 randomYear = parseInt(keys[Math.floor(Math.random() * keys.length)]);
                 description = eventsDatabase[randomYear];
                 rarity = 'rare';
-                pendingPoints = 30;
+                window.gameData.pendingPoints = 30;
                 currentActiveRings = 2;
             } else if (roll < 0.99) {
                 let keys = Object.keys(specialEventsDatabase);
                 randomYear = parseInt(keys[Math.floor(Math.random() * keys.length)]);
                 description = specialEventsDatabase[randomYear];
                 rarity = 'epic';
-                pendingPoints = 100;
-                sandCount += 30;
-                sandDisplay.innerText = sandCount;
+                window.gameData.pendingPoints = 100;
+                window.gameData.sandCount += 30;
+                sandDisplay.innerText = window.gameData.sandCount;
                 currentActiveRings = 3;
             } else {
                 randomYear = 7777; 
                 description = "Тайное послание Хранителя Времени найдено!";
                 rarity = 'legendary';
-                pendingPoints = 500;
-                sandCount += 100;
-                sandDisplay.innerText = sandCount;
+                window.gameData.pendingPoints = 500;
+                window.gameData.sandCount += 100;
+                sandDisplay.innerText = window.gameData.sandCount;
                 currentActiveRings = 3;
             }
 
-            saveGameData(); 
+            saveDataToCloud(); 
 
             currentRotation3 += (360 * 6) + Math.floor(Math.random() * 360); 
             currentRotation2 += (360 * 10) + Math.floor(Math.random() * 360); 
