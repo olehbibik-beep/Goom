@@ -40,35 +40,35 @@
         /* ПАНЕЛИ МЕНЮ */
         .auth-panel { 
             position: relative;
-            background: rgba(20, 25, 30, 0.45); 
-            padding: 35px 25px; 
+            background: rgba(30, 35, 40, 0.6); 
+            padding: 40px 30px; 
             border-radius: 24px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            width: 85%; max-width: 340px; 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px); 
+            width: 85%; max-width: 380px; /* Чуть расширено для 4-х крупных аватарок */
             text-align: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.02); 
             display: flex; flex-direction: column; gap: 15px; 
         }
-        .auth-title { font-size: 32px; color: #fff; margin-bottom: 5px; font-weight: 900; letter-spacing: 4px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); cursor: pointer; }
+        .auth-title { font-size: 26px; color: #fff; margin-bottom: 5px; font-weight: 900; letter-spacing: 2px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); cursor: pointer; }
         
         /* СТРЕЛКА НАЗАД */
-        .back-btn { position: absolute; top: 20px; left: 20px; width: 30px; height: 30px; fill: rgba(255,255,255,0.6); cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; z-index: 10; }
+        .back-btn { position: absolute; top: 25px; left: 25px; width: 24px; height: 24px; fill: rgba(255,255,255,0.6); cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; z-index: 10; }
         .back-btn:active { transform: scale(0.9); fill: #fff; }
 
         /* КНОПКИ */
-        .btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; transition: transform 0.1s, filter 0.2s, background 0.2s, opacity 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; outline: none; }
+        .btn { width: 100%; padding: 15px; border-radius: 14px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; transition: transform 0.1s, filter 0.2s, background 0.2s, opacity 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; outline: none; }
         .btn:active:not(:disabled) { transform: scale(0.95); filter: brightness(0.9); }
         .btn:disabled { opacity: 0.3; cursor: not-allowed; }
         
-        .btn-guest { background: rgba(0, 0, 0, 0.5); color: #eef4f7; border: 1px solid rgba(255,255,255,0.2); }
-        .btn-guest:hover { background: rgba(0, 0, 0, 0.7); border-color: rgba(255,255,255,0.4); }
+        .btn-guest { background: rgba(0, 0, 0, 0.6); color: #eef4f7; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-guest:hover { background: rgba(0, 0, 0, 0.8); border-color: rgba(255,255,255,0.3); }
         .btn-google { background: #fff; color: #333; border: 1px solid #ddd; }
         .btn-google img { width: 20px; height: 20px; }
         .btn-email { background: transparent; color: #dcb254; border: 1px solid rgba(220, 178, 84, 0.5); }
         .btn-email:hover { background: rgba(220, 178, 84, 0.1); border-color: #dcb254; }
-        .btn-primary { background: linear-gradient(135deg, #dcb254, #b8860b); color: #000; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
+        .btn-primary { background: linear-gradient(135deg, #dcb254, #b8860b); color: #000; text-shadow: 0 1px 2px rgba(255,255,255,0.2); margin-top: 10px; }
 
         /* ВВОД ДАННЫХ (EMAIL) */
         .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
@@ -76,23 +76,64 @@
         .auth-input:focus { border-color: #dcb254; background: rgba(0,0,0,0.6); }
         .auth-input::placeholder { color: rgba(255,255,255,0.4); }
 
-        /* СОЗДАНИЕ ПЕРСОНАЖА (НОВЫЙ ДИЗАЙН) */
-        .gender-grid { display: flex; gap: 20px; justify-content: center; margin-bottom: 15px; margin-top: 5px; }
-        .gender-card { width: 100px; height: 110px; background: rgba(20, 25, 30, 0.8); border: 2px solid transparent; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; overflow: hidden; position: relative; }
-        .gender-card img { width: 60%; height: auto; margin-bottom: 8px; transition: transform 0.2s; }
-        .gender-name { font-size: 13px; font-weight: bold; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+        /* ========================================= */
+        /* НОВЫЙ ДИЗАЙН: СОЗДАНИЕ ПЕРСОНАЖА */
+        /* ========================================= */
         
-        .gender-card.selected { border-color: #dcb254; background: rgba(220,178,84,0.15); box-shadow: 0 0 20px rgba(220,178,84,0.2); }
-        .gender-card.selected img { transform: scale(1.1); }
-        .gender-card.selected .gender-name { color: #dcb254; }
+        /* Значки пола (Символы Марса и Венеры) */
+        .gender-toggle { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; margin-top: 5px; }
+        .gender-btn { 
+            width: 60px; height: 60px; 
+            border-radius: 16px; 
+            background: rgba(0, 0, 0, 0.3); 
+            border: 2px solid transparent; 
+            display: flex; justify-content: center; align-items: center; 
+            cursor: pointer; transition: all 0.2s ease;
+            color: rgba(255,255,255,0.3);
+        }
+        .gender-btn svg { width: 34px; height: 34px; fill: currentColor; transition: 0.2s; }
+        
+        /* Выбранный пол (Бирюзовый квадрат + белый значок) */
+        .gender-btn.selected { 
+            background: #1dc5b4; 
+            color: #ffffff; 
+            box-shadow: 0 5px 20px rgba(29, 197, 180, 0.4);
+            transform: translateY(-3px);
+        }
 
-        /* ВЫБОР КОНКРЕТНОЙ АВАТАРКИ */
-        .sub-avatars-container { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; min-height: 60px; }
-        .sub-avatar { width: 55px; height: 55px; background: rgba(20, 25, 30, 0.8); border: 2px solid transparent; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .sub-avatar img { width: 90%; height: 90%; object-fit: cover; border-radius: 8px; transition: transform 0.2s; }
+        /* Слоты аватарок (4 в ряд) */
+        .sub-avatars-container { display: flex; gap: 12px; justify-content: center; margin-bottom: 25px; min-height: 75px; }
+        .sub-avatar { 
+            width: 70px; height: 70px; /* Увеличили размер */
+            background: rgba(15, 20, 25, 0.8); 
+            border: 2px solid transparent; 
+            border-radius: 14px; 
+            cursor: pointer; transition: all 0.2s ease; 
+            display: flex; justify-content: center; align-items: center; 
+            overflow: hidden; 
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); 
+        }
         
-        .sub-avatar.selected { border-color: #dcb254; box-shadow: 0 0 15px rgba(220,178,84,0.5); transform: translateY(-3px); }
-        .sub-avatar.selected img { transform: scale(1.1); }
+        /* Качество картинки: object-fit + rendering, без фильтров тени */
+        .sub-avatar img { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.2s; 
+            image-rendering: high-quality;
+        }
+        
+        /* Выбранная аватарка */
+        .sub-avatar.selected { 
+            border-color: #1dc5b4; /* Тот же бирюзовый цвет для гармонии */
+            box-shadow: 0 0 15px rgba(29, 197, 180, 0.5); 
+            transform: translateY(-3px);
+        }
+        .sub-avatar.selected img { transform: scale(1.08); }
+
+        #btn-start-game { display: none; margin-top: 5px; }
+        #btn-start-game.visible { display: flex; animation: popIn 0.3s ease; }
+
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* DEV ПАНЕЛЬ */
         .btn-dev { background: rgba(0, 255, 204, 0.1); color: #00ffcc; border: 1px solid rgba(0, 255, 204, 0.5); }
@@ -138,7 +179,7 @@
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </div>
             
-            <h1 class="auth-title" style="font-size: 24px; letter-spacing: 2px;">АККАУНТ</h1>
+            <h1 class="auth-title" style="font-size: 24px;">АККАУНТ</h1>
             
             <div class="input-group">
                 <input type="email" id="email-input" class="auth-input" placeholder="Ваша почта">
@@ -151,29 +192,27 @@
 
     <!-- ЭКРАН 4: СОЗДАНИЕ ПЕРСОНАЖА -->
     <div class="screen" id="screen-create">
-        <div class="auth-panel">
-            <!-- Стрелка Назад (Выход из сессии, если передумали создавать) -->
+        <div class="auth-panel" style="padding-top: 35px;">
+            <!-- Стрелка Назад -->
             <div class="back-btn" onclick="logoutFromCreate()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </div>
-
-            <h1 class="auth-title" style="font-size: 24px; letter-spacing: 2px;">КТО ВЫ?</h1>
             
-            <!-- Выбор Пола -->
-            <div class="gender-grid">
-                <div class="gender-card" id="gender-boy" onclick="selectGender('boy')">
-                    <img src="boy_icon.png" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2RjYjI1NCI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czEtLjMtNC00LTQtMS43OS00LTR0MS43OS00IDQtNHptMCAybS04IDZjMC0yLjY2IDUuMzMtNCA4LTRzOCAxLjM0IDggNHYyaC0xNnYtMnoiLz48L3N2Zz4='">
-                    <div class="gender-name">Мальчик</div>
+            <!-- Выбор Пола (Значки Марса и Венеры) -->
+            <div class="gender-toggle">
+                <!-- Мальчик -->
+                <div class="gender-btn selected" id="gender-boy" onclick="selectGender('boy')">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 3v2h4.59l-4.71 4.71C13.67 8.64 12.38 8 11 8c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7c0-1.38-.64-2.67-1.71-3.88L21 6.41V11h2V3h-8zm-4 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
                 </div>
-                <div class="gender-card" id="gender-girl" onclick="selectGender('girl')">
-                    <img src="girl_icon.png" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzg4OCI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czEtLjMtNC00LTQtMS43OS00LTR0MS43OS00IDQtNHptMCAybS04IDZjMC0yLjY2IDUuMzMtNCA4LTRzOCAxLjM0IDggNHYyaC0xNnYtMnoiLz48L3N2Zz4='">
-                    <div class="gender-name">Девочка</div>
+                <!-- Девочка -->
+                <div class="gender-btn" id="gender-girl" onclick="selectGender('girl')">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-3.86 0-7 3.14-7 7 0 3.39 2.42 6.22 5.61 6.86V19H8v2h2.61v2h2.78v-2H16v-2h-2.61v-2.14C16.58 16.22 19 13.39 19 10c0-3.86-3.14-7-7-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
                 </div>
             </div>
 
-            <!-- Динамический ряд из 4 аватарок -->
+            <!-- Динамический ряд из 4 крупных аватарок -->
             <div class="sub-avatars-container" id="avatar-row">
-                <!-- Заполняется через JS -->
+                <!-- Заполняется через JS (boy1.png - boy4.png) -->
             </div>
             
             <button class="btn btn-primary" id="btn-start-game" onclick="finishCreation()" disabled>Начать приключение</button>
@@ -277,7 +316,7 @@
                 if (docSnap.exists()) {
                     window.location.replace('index.html'); 
                 } else {
-                    // Активируем экран создания и сразу выбираем "Мальчика" по умолчанию
+                    // Активируем экран создания и сразу выбираем Мальчика
                     window.switchScreen('screen-create'); 
                     window.selectGender('boy');
                 }
@@ -317,7 +356,6 @@
         }
     };
 
-    // Выход со страницы создания (стрелка назад)
     window.logoutFromCreate = function() {
         signOut(auth).then(() => {
             localStorage.removeItem('userUid');
@@ -339,39 +377,42 @@
         }
     };
 
-    // --- 4. СОЗДАНИЕ ПЕРСОНАЖА (ЛОГИКА ПО ВАШЕМУ ДИЗАЙНУ) ---
+    // --- 4. СОЗДАНИЕ ПЕРСОНАЖА (НОВЫЙ ЧИСТЫЙ ДИЗАЙН) ---
     window.selectGender = function(gender) {
         currentGender = gender;
         
-        // Переключаем стили для больших кнопок пола
+        // Подсвечиваем бирюзовым нужную кнопку
         document.getElementById('gender-boy').classList.toggle('selected', gender === 'boy');
         document.getElementById('gender-girl').classList.toggle('selected', gender === 'girl');
 
-        // Генерируем 4 квадратика аватарок в зависимости от пола (boy1.png - boy4.png)
         const row = document.getElementById('avatar-row');
         row.innerHTML = ''; 
         for(let i = 1; i <= 4; i++) {
-            let fileName = `${gender}${i}.png`;
+            let fileName = `${gender}${i}.png`; // Генерируем boy1.png и т.д.
             let div = document.createElement('div');
             div.className = 'sub-avatar';
             div.onclick = () => window.selectFinalAvatar(fileName, div);
-            div.innerHTML = `<img src="${fileName}" onerror="this.style.display='none'">`;
+            
+            // Если картинки нет, фон будет просто темно-серым квадратом
+            div.innerHTML = `<img src="${fileName}" onerror="this.style.opacity='0'">`;
             row.appendChild(div);
         }
         
-        // Сбрасываем выбор конкретного аватара, блокируем кнопку старта
-        finalAvatarFile = null;
-        document.getElementById('btn-start-game').disabled = true;
+        // Автоматически выбираем первую картинку из 4
+        setTimeout(() => {
+            const firstAvatar = row.querySelector('.sub-avatar');
+            if(firstAvatar) {
+                window.selectFinalAvatar(`${gender}1.png`, firstAvatar);
+            }
+        }, 50);
     };
 
     window.selectFinalAvatar = function(fileName, element) {
         finalAvatarFile = fileName;
         
-        // Убираем рамку у всех и ставим только на выбранную
         document.querySelectorAll('.sub-avatar').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
-
-        // Активируем желтую кнопку старта
+        
         document.getElementById('btn-start-game').disabled = false;
     };
 
@@ -383,7 +424,7 @@
         btn.disabled = true;
 
         const startData = {
-            avatar: finalAvatarFile,
+            avatar: finalAvatarFile, // Сохраняем 'boy1.png' и т.д.
             sandCount: 150, 
             epochLevel: 1, 
             currentXP: 0, 
@@ -417,7 +458,7 @@
                 await deleteDoc(doc(db, "users", currentUserUid));
                 alert("Сохранение удалено. Вы можете создать персонажа заново.");
                 window.switchScreen('screen-create');
-                window.selectGender('boy'); // Сразу открываем создание по дефолту
+                window.selectGender('boy'); 
             } catch (e) {
                 alert("Ошибка удаления: " + e.message);
             }
