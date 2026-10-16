@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Врата Времени</title>
     <style>
+        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ (ЕДИНЫЙ СТИЛЬ) */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
         html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
@@ -13,9 +14,10 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #181c1d; overflow: hidden; }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.9); } }
 
+        /* ЗАДНИЙ ФОН */
         .full-screen-bg { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background-image: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 12, 14, 0.8) 100%), url('casy_2.jpg'); background-size: cover; background-position: center; z-index: 0; pointer-events: none; }
 
-        /* --- ВЕРХНИЙ БЛОК --- */
+        /* ВЕРХНИЙ БЛОК (СИНХРОНИЗИРОВАН С ДЕРЕВНЕЙ) */
         .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
@@ -23,7 +25,11 @@
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        .top-progress-bar { flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
+        .top-progress-bar { 
+            flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); 
+            border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; 
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; 
+        }
         .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
 
@@ -83,8 +89,7 @@
         .menu-icon-img { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
         .menu-icon-img:active { transform: scale(0.95); }
 
-        .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; }
-        .center-sand-wrapper:active { transform: scale(0.95); }
+        .center-sand-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         .player-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
 
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; }
@@ -92,19 +97,19 @@
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
 
         /* --- ВСПЛЫВАЮЩИЕ ОКНА (OVERLAY) --- */
-        .event-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.7); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .event-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 100; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .event-overlay.show { opacity: 1; pointer-events: auto; visibility: visible; cursor: pointer; }
         .event-overlay.flying { background: transparent !important; backdrop-filter: none !important; }
 
-        .event-modal { background: transparent; border: none; padding: 10px; width: 90%; max-width: 500px; text-align: center; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .event-modal { background: #252628; border: none; border-radius: 16px; padding: 20px; width: 90%; max-width: 400px; text-align: center; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .event-overlay.show .event-modal { transform: scale(1); }
         .text-panel { width: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.3s; pointer-events: none; }
-        .event-img { width: 100%; max-height: 40vh; object-fit: contain; border: none; margin-bottom: 10px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.9)); z-index: 1; position: relative;}
-        .event-title { font-size: 26px; margin-bottom: 5px; transition: color 0.3s, text-shadow 0.3s; }
-        .event-desc { color: #fcebbb; font-size: 17px; line-height: 1.4; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px #000; }
+        .event-img { width: 100%; max-height: 40vh; object-fit: contain; border: none; margin-bottom: 15px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.9)); z-index: 1; position: relative;}
+        .event-title { font-size: 26px; margin-bottom: 10px; transition: color 0.3s, text-shadow 0.3s; }
+        .event-desc { color: #ccc; font-size: 16px; line-height: 1.4; margin-bottom: 15px; }
         
         /* --- ЛИНИЯ ВРЕМЕНИ --- */
-        .timeline-container { position: relative; width: 90%; height: 50px; margin: 5px auto 15px auto; }
+        .timeline-container { position: relative; width: 90%; height: 50px; margin: 10px auto 15px auto; }
         .timeline-line { position: absolute; top: 20px; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
         .timeline-marker { position: absolute; top: 15px; width: 2px; height: 14px; background: rgba(255,255,255,0.5); }
         .timeline-marker span { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); font-size: 10px; color: #8ba2c2; white-space: nowrap; }
@@ -112,7 +117,7 @@
         .marker-current { position: absolute; top: 8px; width: 3px; height: 28px; background: #20b2aa; box-shadow: 0 0 10px #20b2aa; z-index: 5; transition: left 1s cubic-bezier(0.2, 0.9, 0.2, 1); }
 
         /* --- СТИЛЬ ЗАСТАВКИ (ДЛЯ МИНИ-ИГР) --- */
-        .event-modal.splash-mode { width: 100%; max-width: 600px; padding: 0; display: block; }
+        .event-modal.splash-mode { width: 100%; max-width: 600px; padding: 0; display: block; background: transparent; border-radius: 0; }
         .event-modal.splash-mode .event-img { width: 100%; height: auto; max-height: 80vh; object-fit: contain; margin: 0; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8)); }
         .event-modal.splash-mode .text-panel { position: absolute; bottom: 10%; left: 5%; width: 90%; display: flex; flex-direction: row; justify-content: space-around; align-items: center; background: transparent; padding: 0; z-index: 2; }
         .event-modal.splash-mode .event-title { color: #ffffff !important; font-size: 24px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.9) !important; margin: 0; width: 35%; text-align: center; }
@@ -132,7 +137,7 @@
         
         /* ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) */
         .clouds-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; display: flex; justify-content: space-between; opacity: 1; transition: opacity 0.5s ease; overflow: hidden; }
-        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.8s, visibility 0s 1.3s; }
+        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.6s, visibility 0s 1.2s; }
         .cloud-left, .cloud-right { position: relative; width: 60%; height: 100%; background: #2c3e50; transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1); }
         .cloud-left::before, .cloud-left::after, .cloud-right::before, .cloud-right::after { content: ''; position: absolute; border-radius: 50%; background: inherit; }
         .cloud-left::before { width: 90%; aspect-ratio: 1; right: -25%; top: 15%; } .cloud-left::after { width: 110%; aspect-ratio: 1; right: -35%; top: 50%; }
@@ -197,11 +202,11 @@
             <!-- Левая часть пустая, чтобы сбалансировать Назад справа -->
         </div>
         
-        <div class="center-sand-wrapper" id="boy-wrapper" onclick="addTestSand()">
+        <div class="center-sand-wrapper" id="boy-wrapper" onclick="showInfoModal('ПЕСЧИНКИ ВРЕМЕНИ', 'Здесь вы можете потратить Песчинки Времени на вращение Врат.')">
             <img id="player-avatar" src="boy1.png" class="player-avatar" alt="Персонаж" onerror="this.style.display='none'">
             <div class="boy-sand-counter" id="sand-counter-ui">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
-                <span id="sand-display">150</span>
+                <span id="sand-display">0</span>
             </div>
         </div>
 
@@ -212,8 +217,8 @@
     </div>
 
     <!-- ОКНО СОБЫТИЯ С ОЖИДАНИЕМ КЛИКА -->
-    <div class="event-overlay" id="event-overlay" onclick="handleOverlayClick()">
-        <div class="event-modal" id="event-modal">
+    <div class="event-overlay" id="event-overlay" onclick="handleOverlayClick(event)">
+        <div class="event-modal" id="event-modal" onclick="event.stopPropagation()">
             <img src="" id="event-img" class="event-img" alt="Событие" onerror="this.style.display='none'">
             <div class="text-panel" id="text-panel">
                 <h2 class="event-title" id="event-title">Год</h2>
@@ -263,7 +268,8 @@
         const db = getFirestore(app);
         const userDocRef = doc(db, "users", userUid);
 
-        window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, pendingPoints: 0, pendingEventObj: null, avatar: 'boy1.png' };
+        // Инициализируем пустой объект до загрузки из облака
+        window.gameData = { sandCount: 0, epochLevel: 1, currentXP: 0, targetXP: 50, pendingPoints: 0, pendingEventObj: null, avatar: 'boy1.png' };
 
         const SPIN_COST = 15; 
         let isMinigamePending = false;
@@ -373,6 +379,7 @@
             1950: "Выпуск Христианских Греческих Писаний в переводе «Новый мир»", 2014: "Начинает работать JW Broadcasting"
         };
 
+        // Загрузка данных пользователя из Firestore
         async function loadDataFromCloud() {
             try {
                 const docSnap = await getDoc(userDocRef);
@@ -422,32 +429,24 @@
             }
         }
 
+        // Сохранение данных в Firestore
         async function saveDataToCloud() {
-            try { await updateDoc(userDocRef, window.gameData); } catch (error) {}
+            try { await updateDoc(userDocRef, window.gameData); } catch (error) { console.error("Save error:", error); }
         }
 
         loadDataFromCloud();
 
         function updateUI() {
             if(window.gameData.avatar) document.getElementById('player-avatar').src = window.gameData.avatar;
-            sandDisplay.innerText = window.gameData.sandCount;
-            levelText.innerText = window.gameData.epochLevel;
-            xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP)} / ${window.gameData.targetXP}`;
-            progressFill.style.width = `${(window.gameData.currentXP / window.gameData.targetXP) * 100}%`;
+            sandDisplay.innerText = window.gameData.sandCount || 0;
+            levelText.innerText = window.gameData.epochLevel || 1;
+            xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP || 0)} / ${window.gameData.targetXP || 50}`;
+            progressFill.style.width = `${((window.gameData.currentXP || 0) / (window.gameData.targetXP || 50)) * 100}%`;
         }
 
-        window.addTestSand = function() {
-            window.gameData.sandCount += 500;
-            sandDisplay.innerText = window.gameData.sandCount;
-            saveDataToCloud();
-            
-            let boy = document.getElementById('boy-wrapper');
-            boy.style.transform = 'scale(1.2) translateY(-10px)';
-            setTimeout(() => { boy.style.transform = 'scale(1) translateY(0)'; }, 200);
-        }
-
-        window.goToLocation = function(url) {
-            saveDataToCloud(); 
+        // Кнопка Назад (Сохраняем и уходим)
+        window.goToLocation = async function(url) {
+            await saveDataToCloud(); 
             clouds.classList.remove('open'); 
             setTimeout(() => { window.location.replace(url); }, 600); 
         }
@@ -458,7 +457,7 @@
                 window.gameData.epochLevel++;
                 levelText.innerText = window.gameData.epochLevel;
                 levelBadge.style.transform = "scale(1.3)"; setTimeout(() => levelBadge.style.transform = "scale(1)", 300);
-                window.gameData.targetXP = 50 * window.gameData.epochLevel; // Простая формула уровня
+                window.gameData.targetXP = 50 * window.gameData.epochLevel; 
                 
                 window.gameData.sandCount += 50;
                 sandDisplay.innerText = window.gameData.sandCount;
@@ -621,7 +620,7 @@
             setTimeout(() => { isClickable = true; }, 500);
         }
 
-        window.handleOverlayClick = function() {
+        window.handleOverlayClick = function(e) {
             if (!isClickable) return;
             isClickable = false; 
             
@@ -634,7 +633,6 @@
         }
 
         function flyCollectionCard() {
-            /* Функция полета карточки в архив - пока оставим заглушку как в оригинале */
             eventOverlay.classList.add('flying');
             eventOverlay.classList.add('show'); 
             textPanel.style.opacity = '0'; 
@@ -678,7 +676,11 @@
         window.payAndSpin = function() {
             if (isSpinning) return;
             if (window.gameData.sandCount < SPIN_COST) { window.showInfoModal("ВНИМАНИЕ", "Недостаточно песчинок времени!"); return; }
-            window.gameData.sandCount -= SPIN_COST; sandDisplay.innerText = window.gameData.sandCount; saveDataToCloud();
+            
+            window.gameData.sandCount -= SPIN_COST; 
+            sandDisplay.innerText = window.gameData.sandCount; 
+            saveDataToCloud();
+            
             isSpinning = true; btn.disabled = true; 
             
             const boy = document.getElementById('boy-wrapper'); const target = btn;
