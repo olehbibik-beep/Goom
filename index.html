@@ -19,7 +19,7 @@
         /* ВЕРХНИЙ БАННЕР */
         .top-banner { position: absolute; top: 0; left: 0; width: 100%; height: auto; z-index: 20; border-bottom: 2px solid #1c1d1e; pointer-events: none; }
 
-        /* ВЕРХНИЙ БЛОК */
+        /* ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ */
         .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
@@ -27,7 +27,6 @@
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        /* ЛИНИЯ ЭПОХИ */
         .top-progress-bar { 
             flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); 
             border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; 
@@ -53,7 +52,6 @@
         .center-sand-wrapper:active { transform: scale(0.95); }
         
         .boy-avatar { width: 60px; height: auto; display: block; margin-bottom: 5px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); }
-        
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
         
@@ -125,8 +123,15 @@
         @keyframes surf-right { 0% { transform: translate(-50%, -50%) rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
         /* ========================================= */
-        /* ДИНАМИЧЕСКИЕ ПОДСКАЗКИ (TOOLTIPS) */
+        /* ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ - БЕЗ НАГРУЗКИ) */
         /* ========================================= */
+        .clouds-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; display: flex; opacity: 1; transition: opacity 0.5s ease; }
+        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.6s, visibility 0s 1.2s; }
+        .cloud-half { width: 50%; height: 100%; background: #2c3e50; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
+        .clouds-transition.open .cloud-half:first-child { transform: translateX(-100%); }
+        .clouds-transition.open .cloud-half:last-child { transform: translateX(100%); }
+
+        /* УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) */
         .floating-tooltip {
             position: fixed; background: #252628; color: #fff; padding: 12px 16px; border-radius: 12px;
             font-size: 14px; font-weight: 500; line-height: 1.4; pointer-events: none;
@@ -185,12 +190,14 @@
     <!-- ВЕРХНИЙ БАННЕР -->
     <img src="TN.png" class="top-banner" alt="" onerror="this.style.display='none'">
 
+    <!-- ПАНЕЛЬ РАЗРАБОТЧИКА (DEV) -->
     <div id="dev-coord-box">
         <div id="dev-controls">
             <button onclick="addDevObject('map-pin', 'pin-new')">+ Метка</button>
             <button onclick="addDevObject('smoke-container', 'smoke-new')">+ Дым</button>
             <button onclick="addDevObject('night-light window-light', 'light-new')">+ Свет</button>
             <button onclick="addDevObject('surf-wave', 'surf-new')">+ Волна</button>
+            <button onclick="toggleDevMode()" style="background:#ff0055; color:#fff; margin-left:auto;">Закрыть DEV</button>
         </div>
         <pre id="dev-coord-text"></pre>
     </div>
@@ -226,7 +233,6 @@
                 <img src="bush.png" alt="Куст" onerror="this.style.display='none'">
             </div>
 
-            <!-- ЗДАНИЯ: ВМЕСТО МОДАЛОК ВЫЗЫВАЕМ ПОДСКАЗКИ РЯДОМ -->
             <div class="map-pin" id="pin-hall" onclick="handleBuildingClick(event, 'hall')"></div>
             <div class="map-pin" id="pin-lib" onclick="handleBuildingClick(event, 'lib')"></div>
             <div class="map-pin" id="pin-mpso" onclick="handleBuildingClick(event, 'mpso')"></div>
@@ -238,9 +244,14 @@
         </div>
     </div>
 
+    <!-- ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) -->
+    <div class="clouds-transition" id="clouds">
+        <div class="cloud-half"></div>
+        <div class="cloud-half"></div>
+    </div>
+
     <!-- ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ -->
     <div class="top-status-container">
-        <!-- По клику вызываем новую систему подсказок -->
         <div class="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения!')">
             <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
@@ -290,12 +301,12 @@
             <div style="display:flex; align-items:center; gap: 15px; margin-bottom: 10px; text-align: left;">
                 <img id="settings-avatar" src="boy1.png" style="width: 70px; height: 70px; border-radius: 12px; background: #1c1d1e; object-fit: cover;" onerror="this.style.display='none'">
                 <div style="flex-grow: 1;">
-                    <!-- БЛОК ИМЕНИ И РЕДАКТИРОВАНИЯ -->
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span id="settings-username" style="color: #fff; font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">Игрок</span>
-                        <img src="pencil.png" onclick="editUserName()" style="width: 16px; height: 16px; cursor: pointer; filter: brightness(0.8);" onerror="this.style.display='none'" alt="✎">
+                    <div style="display: flex; align-items: center;">
+                        <span id="settings-username" style="color: #fff; font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;">Игрок</span>
+                        <!-- Надежная кнопка редактирования -->
+                        <div onclick="editUserName()" style="cursor: pointer; background: #333; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: #dcb254; border: 1px solid #dcb254; margin-left: 10px;">✎ ИЗМЕНИТЬ</div>
                     </div>
-                    <div style="color: #dcb254; font-size: 14px; margin-top: 4px;">Уровень Эпохи: <span id="settings-level" style="font-weight:bold;">1</span></div>
+                    <div style="color: #dcb254; font-size: 14px; margin-top: 6px;">Уровень Эпохи: <span id="settings-level" style="font-weight:bold;">1</span></div>
                 </div>
             </div>
 
@@ -369,7 +380,7 @@
                     window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, avatar: 'boy1.png' };
                 }
 
-                // Генерируем имя, если его нет
+                // Генерируем уникальное имя, если его еще нет
                 if (!window.gameData.userName) {
                     window.gameData.userName = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
                     await saveDataToCloud();
@@ -382,6 +393,9 @@
                 updateUI(); checkDailyStatus(); checkBushVisibility(); 
                 createEnvironmentEffects(); createBirdsFlock(); 
                 setInterval(checkHarvest, 60000); 
+                
+                // Легкое открытие облаков
+                setTimeout(() => { document.getElementById('clouds').classList.add('open'); }, 200);
             }
         }
         loadDataFromCloud();
@@ -390,7 +404,7 @@
             try { await updateDoc(userDocRef, window.gameData); } catch (error) {}
         }
 
-        // DEV МЕНЮ
+        // DEV МЕНЮ И ЛОДКА
         let devTapCount = 0; let devTapTimer = null;
         window.handleSecretDevTap = function(e) {
             if(e) e.stopPropagation(); if(hasMovedMap) return; 
@@ -426,13 +440,13 @@
             setTimeout(() => tt.classList.add('show'), 10);
         };
 
-        // Закрытие тултипа при любом клике
+        // Закрытие тултипа при любом клике мимо
         window.addEventListener('click', () => {
             document.getElementById('floating-tooltip').classList.remove('show');
             setTimeout(() => { document.getElementById('floating-tooltip').style.display = 'none'; }, 200);
         });
 
-        // ЭФФЕКТЫ
+        // ЭФФЕКТЫ ОКРУЖЕНИЯ
         function createEnvironmentEffects() {
             const starsLayer = document.getElementById('stars-layer');
             for(let i=0; i<80; i++) {
@@ -466,10 +480,11 @@
             });
         }
 
-        // ЛОГИКА КАМЕРЫ
+        // ЛОГИКА КАМЕРЫ (Исправлено для DEV-зума)
         const mapWrapper = document.getElementById('map-wrapper');
         const mapContainer = document.getElementById('map-container');
         const devBox = document.getElementById('dev-coord-box');
+        
         devBox.addEventListener('wheel', e => e.stopPropagation(), {passive: false});
         devBox.addEventListener('touchmove', e => e.stopPropagation(), {passive: false});
         devBox.addEventListener('mousedown', e => e.stopPropagation());
@@ -510,8 +525,9 @@
             if (isDraggingMap) { isDraggingMap = false; mapWrapper.style.cursor = 'grab'; setTimeout(() => { hasMovedMap = false; }, 50); }
         });
 
+        // Теперь ЗУМ РАБОТАЕТ И В DEV РЕЖИМЕ
         mapWrapper.addEventListener('wheel', (e) => {
-            if(document.body.classList.contains('dev-mode')) return; e.preventDefault();
+            e.preventDefault();
             mapScale *= (1 + (-e.deltaY * 0.0015)); updateTransform();
         }, { passive: false });
 
@@ -528,16 +544,50 @@
         }
         window.addEventListener('resize', updateTransform); setTimeout(updateTransform, 50);
 
-        // DRAG & DROP DEV
+        // DRAG & DROP DEV (ИСПРАВЛЕНО ДЛЯ ТОЧНОСТИ)
         window.toggleDevMode = function() { document.body.classList.toggle('dev-mode'); updateDevSummary(); };
         window.activeDragEl = null;
 
         function makeDraggable(el) {
             let startX, startY, startLeft, startTop;
-            el.addEventListener('mousedown', e => { if(!document.body.classList.contains('dev-mode')) return; e.stopPropagation(); window.activeDragEl=el; startX=e.clientX; startY=e.clientY; startLeft=parseFloat(el.style.left)||0; startTop=parseFloat(el.style.top)||0; });
-            document.addEventListener('mousemove', e => { if(!window.activeDragEl || window.activeDragEl!==el) return; e.preventDefault(); e.stopPropagation(); let dx=(e.clientX-startX)/mapScale/mapContainer.clientWidth*100; let dy=(e.clientY-startY)/mapScale/mapContainer.clientHeight*100; el.style.left=(startLeft+dx).toFixed(1)+'%'; el.style.top=(startTop+dy).toFixed(1)+'%'; updateDevSummary(); }, {passive: false});
-            document.addEventListener('mouseup', () => { if(window.activeDragEl===el) window.activeDragEl=null; });
-            el.addEventListener('dblclick', e => { if(!document.body.classList.contains('dev-mode')) return; e.stopPropagation(); el.remove(); updateDevSummary(); });
+
+            const onDown = (clientX, clientY, e) => {
+                if (!document.body.classList.contains('dev-mode')) return;
+                e.stopPropagation(); window.activeDragEl = el;
+                startX = clientX; startY = clientY;
+                
+                // Защита от NaN при первом перетаскивании
+                let cLeft = parseFloat(el.style.left); let cTop = parseFloat(el.style.top);
+                if (isNaN(cLeft)) cLeft = (el.offsetLeft / 1440) * 100;
+                if (isNaN(cTop)) cTop = (el.offsetTop / 2560) * 100;
+                
+                startLeft = cLeft; startTop = cTop;
+            };
+
+            const onMove = (clientX, clientY, e) => {
+                if (window.activeDragEl !== el) return;
+                e.preventDefault(); e.stopPropagation();
+                let dx = (clientX - startX) / mapScale / 1440 * 100;
+                let dy = (clientY - startY) / mapScale / 2560 * 100;
+                el.style.left = (startLeft + dx).toFixed(2) + '%';
+                el.style.top = (startTop + dy).toFixed(2) + '%';
+                updateDevSummary();
+            };
+
+            const onUp = () => { if (window.activeDragEl === el) window.activeDragEl = null; };
+
+            el.addEventListener('mousedown', e => onDown(e.clientX, e.clientY, e));
+            document.addEventListener('mousemove', e => onMove(e.clientX, e.clientY, e), {passive: false});
+            document.addEventListener('mouseup', onUp);
+
+            el.addEventListener('touchstart', e => onDown(e.touches[0].clientX, e.touches[0].clientY, e), {passive: false});
+            document.addEventListener('touchmove', e => onMove(e.touches[0].clientX, e.touches[0].clientY, e), {passive: false});
+            document.addEventListener('touchend', onUp);
+
+            el.addEventListener('dblclick', e => {
+                if(!document.body.classList.contains('dev-mode')) return;
+                e.stopPropagation(); el.remove(); updateDevSummary();
+            });
         }
         document.querySelectorAll('.map-pin, .boat-container, .grown-bush-container, .surf-wave, .smoke-container, .night-light, .flock-container').forEach(makeDraggable);
 
@@ -561,7 +611,7 @@
             if (hasMovedMap || document.body.classList.contains('dev-mode')) return;
             document.getElementById('settings-overlay').classList.add('show');
             
-            // Проверка на Гостя для привязки Google
+            // Если Гость - показываем кнопку привязки к Google
             if (auth.currentUser && auth.currentUser.isAnonymous) {
                 document.getElementById('link-google-btn').style.display = 'block';
             } else {
@@ -573,7 +623,7 @@
             document.getElementById('settings-overlay').classList.remove('show');
         };
 
-        // КЛИКИ ПО ЗДАНИЯМ (ТЕПЕРЬ ЧЕРЕЗ ТУЛТИПЫ)
+        // КЛИКИ ПО ЗДАНИЯМ (ТУЛТИПЫ)
         window.handleBuildingClick = function(e, buildingType) {
             if (document.body.classList.contains('dev-mode') || hasMovedMap) return; 
             const level = window.gameData.epochLevel || 1;
@@ -618,15 +668,15 @@
 
         // РЕДАКТИРОВАНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ
         window.editUserName = async function() {
-            let newName = prompt("Введите новое имя:", window.gameData.userName);
+            let newName = prompt("Введите новое имя (максимум 15 символов):", window.gameData.userName);
             if (newName && newName.trim().length > 0) {
-                window.gameData.userName = newName.trim();
+                window.gameData.userName = newName.trim().substring(0, 15);
                 updateUI();
                 await saveDataToCloud();
             }
         };
 
-        // ПРИВЯЗКА GOOGLE
+        // ПРИВЯЗКА GOOGLE (ДЛЯ ГОСТЯ)
         window.linkGoogleAccount = function() {
             if (!auth.currentUser) return;
             const provider = new GoogleAuthProvider();
@@ -667,7 +717,7 @@
             document.getElementById('daily-overlay').classList.remove('show');
         };
 
-        window.goToLocation = function(url) { if (hasMovedMap || document.body.classList.contains('dev-mode')) return; window.location.replace(url); };
+        window.goToLocation = function(url) { if (hasMovedMap || document.body.classList.contains('dev-mode')) return; document.getElementById('clouds').classList.remove('open'); setTimeout(() => { window.location.replace(url); }, 500); };
         window.logout = function() { if(confirm("Выйти из аккаунта?")) { signOut(auth).then(() => { localStorage.removeItem('userUid'); window.location.replace('login.html'); }); } };
     </script>
 </body>
