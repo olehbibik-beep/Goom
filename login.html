@@ -11,7 +11,7 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #000; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
-        /* ОСНОВНОЙ ФОН ИЗ ЛОГОТИПА (ТЕПЕРЬ СТРОГО PNG) */
+        /* ОСНОВНОЙ ФОН ИЗ ЛОГОТИПА */
         .bg-image { 
             position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; 
             background-image: url('Logo.png'); 
@@ -20,11 +20,7 @@
             z-index: 1; 
             filter: blur(0px) brightness(1); 
         }
-        /* Класс, который добавляется при открытии меню */
-        .bg-image.blurred { 
-            filter: blur(12px) brightness(0.4); 
-            transform: scale(1.05); 
-        }
+        .bg-image.blurred { filter: blur(12px) brightness(0.4); transform: scale(1.05); }
 
         /* ЭКРАНЫ */
         .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.4s, transform 0.4s; opacity: 0; visibility: hidden; pointer-events: none; }
@@ -32,73 +28,65 @@
         .screen.hidden-up { transform: translateY(-50px); opacity: 0; }
         .screen.hidden-down { transform: translateY(50px); opacity: 0; }
 
-        /* 1. ЗАСТАВКА (Только загрузка, текст убран) */
+        /* 1. ЗАСТАВКА */
         .loading-container { position: absolute; bottom: 60px; width: 80%; display: flex; flex-direction: column; align-items: center; }
         .loading-text { font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; }
         .loading-bar-bg { width: 100%; height: 4px; background: rgba(0,0,0,0.6); border-radius: 2px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
         .loading-bar-fill { width: 0%; height: 100%; background: #dcb254; transition: width 0.2s ease; box-shadow: 0 0 10px #dcb254; }
 
-        /* ПАНЕЛИ МЕНЮ (Эффект полупрозрачного стекла) */
+        /* ПАНЕЛИ МЕНЮ */
         .auth-panel { 
-            background: rgba(20, 25, 30, 0.35); 
-            padding: 35px 25px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            width: 85%; max-width: 340px; 
-            text-align: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.05); 
-            display: flex; flex-direction: column; gap: 15px; 
+            background: rgba(20, 25, 30, 0.35); padding: 35px 25px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); width: 85%; max-width: 340px; text-align: center; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 15px; 
         }
         .auth-title { font-size: 36px; color: #fff; margin-bottom: 15px; font-weight: 900; letter-spacing: 4px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); cursor: pointer; }
         
         /* КНОПКИ */
         .btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; transition: transform 0.1s, filter 0.2s, background 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; outline: none; }
         .btn:active { transform: scale(0.95); filter: brightness(0.9); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
         .btn-guest { background: rgba(0, 0, 0, 0.5); color: #eef4f7; border: 1px solid rgba(255,255,255,0.2); }
-        .btn-guest:hover { background: rgba(0, 0, 0, 0.7); border-color: rgba(255,255,255,0.4); }
-        
         .btn-google { background: #fff; color: #333; border: 1px solid #ddd; }
         .btn-google img { width: 20px; height: 20px; }
-        
         .btn-email { background: transparent; color: #dcb254; border: 1px solid rgba(220, 178, 84, 0.5); }
-        .btn-email:hover { background: rgba(220, 178, 84, 0.1); border-color: #dcb254; }
-        
         .btn-primary { background: linear-gradient(135deg, #dcb254, #b8860b); color: #000; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
         .btn-secondary { background: transparent; color: #8ba2c2; border: 1px solid rgba(139, 162, 194, 0.3); }
 
-        /* DEV ПАНЕЛЬ */
-        .btn-dev { background: rgba(0, 255, 204, 0.1); color: #00ffcc; border: 1px solid rgba(0, 255, 204, 0.5); }
-        .btn-danger { background: rgba(255, 0, 85, 0.1); color: #ff0055; border: 1px solid rgba(255, 0, 85, 0.5); margin-top: 15px; }
-
-        /* ВВОД ДАННЫХ (EMAIL) */
+        /* ВВОД ДАННЫХ */
         .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
-        .auth-input { width: 100%; padding: 14px 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.3s, background 0.3s; }
+        .auth-input { width: 100%; padding: 14px 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.3s; }
         .auth-input:focus { border-color: #dcb254; background: rgba(0,0,0,0.6); }
-        .auth-input::placeholder { color: rgba(255,255,255,0.4); }
 
         /* СОЗДАНИЕ ПЕРСОНАЖА */
-        .avatar-grid { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; margin-top: 10px; }
-        .avatar-card { width: 90px; height: 110px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10px; cursor: pointer; transition: all 0.2s; }
-        .avatar-card img { width: 80%; height: auto; margin-bottom: 5px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); transition: transform 0.2s; }
-        .avatar-card.selected { border-color: #dcb254; background: rgba(220,178,84,0.15); box-shadow: 0 0 20px rgba(220,178,84,0.3); transform: translateY(-5px); }
-        .avatar-card.selected img { transform: scale(1.15); }
-        .avatar-name { font-size: 13px; font-weight: bold; color: rgba(255,255,255,0.5); }
-        .avatar-card.selected .avatar-name { color: #dcb254; }
+        .avatar-grid { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; margin-top: 5px; }
+        .gender-card { width: 90px; height: 110px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+        .gender-card img { width: 80%; height: auto; margin-bottom: 5px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); transition: transform 0.2s; }
+        .gender-card.selected { border-color: #dcb254; background: rgba(220,178,84,0.15); box-shadow: 0 0 20px rgba(220,178,84,0.3); transform: translateY(-5px); }
+        .gender-card.selected img { transform: scale(1.15); }
+        .gender-name { font-size: 13px; font-weight: bold; color: rgba(255,255,255,0.5); }
+        .gender-card.selected .gender-name { color: #dcb254; }
         
+        /* ВЫБОР КОНКРЕТНОЙ АВАТАРКИ */
+        .sub-avatars-container { display: none; gap: 10px; justify-content: center; margin-bottom: 20px; animation: popIn 0.3s ease; }
+        .sub-avatars-container.active { display: flex; }
+        .sub-avatar { width: 55px; height: 55px; background: rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .sub-avatar img { width: 90%; height: 90%; object-fit: contain; transition: transform 0.2s; }
+        .sub-avatar.selected { border-color: #dcb254; background: rgba(220,178,84,0.2); box-shadow: 0 0 15px rgba(220,178,84,0.4); transform: translateY(-3px); }
+        .sub-avatar.selected img { transform: scale(1.1); }
+
         #btn-start-game { display: none; }
         #btn-start-game.visible { display: flex; animation: popIn 0.3s ease; }
 
         @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        /* DEV ПАНЕЛЬ */
+        .btn-dev { background: rgba(0, 255, 204, 0.1); color: #00ffcc; border: 1px solid rgba(0, 255, 204, 0.5); }
+        .btn-danger { background: rgba(255, 0, 85, 0.1); color: #ff0055; border: 1px solid rgba(255, 0, 85, 0.5); margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div id="game-frame">
-    <!-- ФОН (Логотип) -->
     <div class="bg-image" id="main-bg"></div>
 
     <!-- ЭКРАН 1: ЗАСТАВКА И ЗАГРУЗКА -->
@@ -114,7 +102,6 @@
     <!-- ЭКРАН 2: ВЫБОР АВТОРИЗАЦИИ -->
     <div class="screen" id="screen-auth">
         <div class="auth-panel">
-            <!-- Секретный триггер для разработчика: 5 тапов по заголовку -->
             <h1 class="auth-title" onclick="secretDevTap()">E'O'N</h1>
             
             <button class="btn btn-guest" onclick="loginGuest()">Играть как Гость</button>
@@ -141,27 +128,44 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 4: СОЗДАНИЕ ПЕРСОНАЖА (Аватар) -->
+    <!-- ЭКРАН 4: СОЗДАНИЕ ПЕРСОНАЖА -->
     <div class="screen" id="screen-create">
         <div class="auth-panel">
             <h1 class="auth-title" style="font-size: 24px; letter-spacing: 2px;">КТО ВЫ?</h1>
             
+            <!-- Выбор Пола -->
             <div class="avatar-grid">
-                <div class="avatar-card" id="avatar-boy" onclick="selectAvatar('boy')">
+                <div class="gender-card" id="gender-boy" onclick="selectGender('boy')">
                     <img src="ty.png" alt="Мальчик" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzg4OCI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czEtLjMtNC00LTQtMS43OS00LTR0MS43OS00IDQtNHptMCAybS04IDZjMC0yLjY2IDUuMzMtNCA4LTRzOCAxLjM0IDggNHYyaC0xNnYtMnoiLz48L3N2Zz4='">
-                    <div class="avatar-name">Мальчик</div>
+                    <div class="gender-name">Мальчик</div>
                 </div>
-                <div class="avatar-card" id="avatar-girl" onclick="selectAvatar('girl')">
+                <div class="gender-card" id="gender-girl" onclick="selectGender('girl')">
                     <img src="girl.png" alt="Девочка" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzg4OCI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czEtLjMtNC00LTQtMS43OS00LTR0MS43OS00IDQtNHptMCAybS04IDZjMC0yLjY2IDUuMzMtNCA4LTRzOCAxLjM0IDggNHYyaC0xNnYtMnoiLz48L3N2Zz4='">
-                    <div class="avatar-name">Девочка</div>
+                    <div class="gender-name">Девочка</div>
                 </div>
+            </div>
+
+            <!-- Аватарки для Мальчика -->
+            <div class="sub-avatars-container" id="avatars-boy">
+                <div class="sub-avatar" onclick="selectFinalAvatar('boy1.png', this)"><img src="boy1.png" alt="1" onerror="this.style.display='none'"></div>
+                <div class="sub-avatar" onclick="selectFinalAvatar('boy2.png', this)"><img src="boy2.png" alt="2" onerror="this.style.display='none'"></div>
+                <div class="sub-avatar" onclick="selectFinalAvatar('boy3.png', this)"><img src="boy3.png" alt="3" onerror="this.style.display='none'"></div>
+                <div class="sub-avatar" onclick="selectFinalAvatar('boy4.png', this)"><img src="boy4.png" alt="4" onerror="this.style.display='none'"></div>
+            </div>
+
+            <!-- Аватарки для Девочки -->
+            <div class="sub-avatars-container" id="avatars-girl">
+                <div class="sub-avatar" onclick="selectFinalAvatar('girl1.png', this)"><img src="girl1.png" alt="1" onerror="this.style.display='none'"></div>
+                <div class="sub-avatar" onclick="selectFinalAvatar('girl2.png', this)"><img src="girl2.png" alt="2" onerror="this.style.display='none'"></div>
+                <div class="sub-avatar" onclick="selectFinalAvatar('girl3.png', this)"><img src="girl3.png" alt="3" onerror="this.style.display='none'"></div>
+                <div class="sub-avatar" onclick="selectFinalAvatar('girl4.png', this)"><img src="girl4.png" alt="4" onerror="this.style.display='none'"></div>
             </div>
             
             <button class="btn btn-primary" id="btn-start-game" onclick="finishCreation()">Начать приключение</button>
         </div>
     </div>
 
-    <!-- ЭКРАН 5: ПАНЕЛЬ РАЗРАБОТЧИКА (DEV DASHBOARD) -->
+    <!-- ЭКРАН 5: ПАНЕЛЬ РАЗРАБОТЧИКА -->
     <div class="screen" id="screen-dev">
         <div class="auth-panel" style="border-color: rgba(0, 255, 204, 0.4); box-shadow: 0 0 30px rgba(0, 255, 204, 0.15);">
             <h1 class="auth-title" style="color: #00ffcc; font-size: 22px; letter-spacing: 1px;">🛠 DEV ПАНЕЛЬ</h1>
@@ -196,7 +200,8 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    let selectedAvatar = null;
+    let currentGender = null;
+    let finalAvatarFile = null;
     let currentUserUid = null;
     let currentUserEmail = null;
 
@@ -217,17 +222,17 @@
         if (screenId === 'screen-splash') {
             bg.classList.remove('blurred');
         } else {
-            bg.classList.add('blurred'); // Затемняем и размываем фон для панелей
+            bg.classList.add('blurred'); 
         }
     };
 
-    // --- 1. ЛОГИКА ЗАСТАВКИ (Более плавная и долгая) ---
+    // --- 1. ЛОГИКА ЗАСТАВКИ ---
     let progress = 0;
     const fill = document.getElementById('loading-fill');
     const msg = document.getElementById('loading-msg');
     
     const loadingInterval = setInterval(() => {
-        progress += Math.random() * 8;
+        progress += Math.random() * 8; 
         if(progress > 100) progress = 100;
         fill.style.width = progress + '%';
         
@@ -236,7 +241,7 @@
         
         if (progress >= 100) {
             clearInterval(loadingInterval);
-            checkAuthStatus(); // Проверяем Firebase
+            checkAuthStatus();
         }
     }, 200);
 
@@ -248,18 +253,16 @@
                 currentUserEmail = user.email;
                 localStorage.setItem('userUid', user.uid);
                 
-                // ПРОВЕРКА НА АККАУНТ РАЗРАБОТЧИКА
                 if (currentUserEmail === 'dev@goom.studio') {
                     window.switchScreen('screen-dev');
                     return;
                 }
 
-                // Обычный игрок: Проверяем, есть ли сейв
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
-                    window.location.replace('index.html'); // Идем играть
+                    window.location.replace('index.html'); 
                 } else {
-                    window.switchScreen('screen-create'); // Идем создавать аватара
+                    window.switchScreen('screen-create'); 
                 }
             } else {
                 window.switchScreen('screen-auth');
@@ -297,7 +300,7 @@
         }
     };
 
-    // --- СЕКРЕТНАЯ ПАСХАЛКА (5 тапов для DEV) ---
+    // --- СЕКРЕТНАЯ ПАСХАЛКА (5 тапов) ---
     let devTapCount = 0;
     let devTapTimer = null;
     window.secretDevTap = function() {
@@ -311,24 +314,47 @@
         }
     };
 
-    // --- 4. СОЗДАНИЕ ПЕРСОНАЖА ---
-    window.selectAvatar = function(type) {
-        selectedAvatar = type;
-        document.getElementById('avatar-boy').classList.remove('selected');
-        document.getElementById('avatar-girl').classList.remove('selected');
-        document.getElementById('avatar-' + type).classList.add('selected');
+    // --- 4. СОЗДАНИЕ ПЕРСОНАЖА (ДВУХШАГОВОЕ) ---
+    window.selectGender = function(type) {
+        currentGender = type;
+        
+        // Подсветка выбранного пола
+        document.getElementById('gender-boy').classList.remove('selected');
+        document.getElementById('gender-girl').classList.remove('selected');
+        document.getElementById('gender-' + type).classList.add('selected');
+        
+        // Показ нужных аватарок
+        document.getElementById('avatars-boy').classList.remove('active');
+        document.getElementById('avatars-girl').classList.remove('active');
+        document.getElementById('avatars-' + type).classList.add('active');
+
+        // Сброс финального выбора при смене пола
+        finalAvatarFile = null;
+        document.getElementById('btn-start-game').classList.remove('visible');
+        document.querySelectorAll('.sub-avatar').forEach(el => el.classList.remove('selected'));
+    };
+
+    window.selectFinalAvatar = function(fileName, element) {
+        finalAvatarFile = fileName;
+        
+        // Подсветка выбранной аватарки
+        document.querySelectorAll('.sub-avatar').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        // Показ кнопки старта
         document.getElementById('btn-start-game').classList.add('visible');
     };
 
     window.finishCreation = async function() {
-        if (!selectedAvatar || !currentUserUid) return;
+        if (!finalAvatarFile || !currentUserUid) return;
         
         const btn = document.getElementById('btn-start-game');
         btn.innerText = "Создание...";
         btn.disabled = true;
 
+        // Сохраняем точное имя файла (например, boy2.png)
         const startData = {
-            avatar: selectedAvatar,
+            avatar: finalAvatarFile,
             sandCount: 150, 
             epochLevel: 1, 
             currentXP: 0, 
@@ -360,7 +386,7 @@
         if(confirm("Вы уверены? Весь прогресс (песчинки, уровень) будет удален!")) {
             try {
                 await deleteDoc(doc(db, "users", currentUserUid));
-                alert("Сохранение удалено. Создайте персонажа заново.");
+                alert("Сохранение удалено. Вы можете создать персонажа заново.");
                 window.switchScreen('screen-create');
             } catch (e) {
                 alert("Ошибка удаления: " + e.message);
