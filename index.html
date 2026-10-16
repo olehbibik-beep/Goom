@@ -16,7 +16,7 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #000; overflow: hidden; }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; } }
 
-        /* ВЕРХНИЙ БАННЕР */
+        /* ВЕРХНИЙ БАННЕР НА ОСТРОВЕ */
         .top-banner { position: absolute; top: 0; left: 0; width: 100%; height: auto; z-index: 20; border-bottom: 2px solid #1c1d1e; pointer-events: none; }
 
         /* ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ */
@@ -39,7 +39,7 @@
         .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
 
-        /* ПРАВЫЙ ТУЛБАР (НАСТРОЙКИ) */
+        /* ПРАВЫЙ ТУЛБАР (РЕЙТИНГ И НАСТРОЙКИ) */
         .right-side-menu { position: absolute; top: 85px; right: 15px; display: flex; flex-direction: column; gap: 15px; z-index: 30; pointer-events: none; }
         .side-img-btn { width: 45px; height: auto; cursor: pointer; pointer-events: auto; transition: transform 0.2s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
         .side-img-btn:active { transform: scale(0.95); }
@@ -55,8 +55,8 @@
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
         
-        .square-btn { position: relative; width: 46px; height: 46px; background-color: #252628; border: 2px solid #333; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .square-btn:active { background-color: #333; transform: scale(0.92); border-color: #dcb254; }
+        .square-btn { position: relative; width: 46px; height: 46px; background: #252628; border: 2px solid #333; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+        .square-btn:active { background: #333; transform: scale(0.92); border-color: #dcb254; }
         .square-btn img { position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); width: auto; height: 135%; max-width: none; object-fit: contain; object-position: bottom center; pointer-events: none; }
 
         /* ИНТЕРАКТИВНАЯ КАРТА */
@@ -82,12 +82,11 @@
         #pin-tent { top: 58.4%; left: 51.9%; width: 120px; height: 100px; }    
         #pin-garden { top: 50.6%; left: 52.9%; width: 120px; height: 120px; }  
 
-        /* ИНДИКАТОР УВЕДОМЛЕНИЙ */
         .notification-dot { position: absolute; top: 0px; right: 0px; width: 28px; height: 28px; background: #ff0055; border: 2px solid #fff; border-radius: 50%; display: none; justify-content: center; align-items: center; color: #fff; font-weight: 900; font-size: 16px; }
         .notification-dot::after { content: '!'; }
         .notification-dot.active { display: flex; }
 
-        /* ОГОРОД И ЛОДКА */
+        /* ОГОРОД, ЛОДКА И ПРОЧЕЕ */
         .grown-bush-container { position: absolute; top: 50.6%; left: 52.9%; width: 110px; height: 110px; transform: translate(-50%, -50%); z-index: 20; cursor: pointer; pointer-events: auto; display: none; }
         .grown-bush-container.active { display: block; }
         .grown-bush-container img { width: 100%; height: 100%; object-fit: contain; }
@@ -95,14 +94,9 @@
         .boat-container { position: absolute; top: 66%; left: 69.5%; width: 300px; height: 200px; transform: translate(-50%, -50%); z-index: 14; pointer-events: auto; cursor: pointer; }
         .boat-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* ВОЛНЫ И ДЫМ */
         .surf-wave { position: absolute; width: 100px; height: 20px; border-bottom: 3px solid rgba(255, 255, 255, 0.2); border-radius: 50%; opacity: 0; pointer-events: none; z-index: 12; transform: translate(-50%, -50%); }
-        #surf-l1 { top: 86.0%; left: 39.0%; animation: surf-left 4s infinite linear 0s; } 
-        #surf-l2 { top: 89.0%; left: 43.0%; animation: surf-left 4.5s infinite linear 1.2s; } 
-        #surf-l3 { top: 91.0%; left: 47.0%; animation: surf-left 5s infinite linear 2.5s; }
-        #surf-r1 { top: 91.0%; left: 54.0%; animation: surf-right 4.2s infinite linear 0.8s; } 
-        #surf-r2 { top: 89.0%; left: 58.0%; animation: surf-right 4.8s infinite linear 3s; } 
-        #surf-r3 { top: 86.0%; left: 63.0%; animation: surf-right 5.5s infinite linear 1.5s; }
+        #surf-l1 { top: 86.0%; left: 39.0%; animation: surf-left 4s infinite linear 0s; } #surf-l2 { top: 89.0%; left: 43.0%; animation: surf-left 4.5s infinite linear 1.2s; } #surf-l3 { top: 91.0%; left: 47.0%; animation: surf-left 5s infinite linear 2.5s; }
+        #surf-r1 { top: 91.0%; left: 54.0%; animation: surf-right 4.2s infinite linear 0.8s; } #surf-r2 { top: 89.0%; left: 58.0%; animation: surf-right 4.8s infinite linear 3s; } #surf-r3 { top: 86.0%; left: 63.0%; animation: surf-right 5.5s infinite linear 1.5s; }
         .flock-container { position: absolute; width: 200px; height: 150px; transform: translate(-50%, -50%); pointer-events: none; z-index: 11; opacity: 0.5; }
         #flock-1 { top: 25.0%; left: 30.0%; } #flock-2 { top: 23.2%; left: 72.6%; }
         .tiny-bird { position: absolute; width: 12px; height: 8px; fill: #1a2226; }
@@ -111,7 +105,6 @@
         .smoke-particle { position: absolute; bottom: 0; left: 50%; width: 15px; height: 15px; background: rgba(220, 220, 220, 0.5); border-radius: 50%; animation: smoke-rise 4s infinite linear; opacity: 0; transform: translateX(-50%); }
         .smoke-particle:nth-child(2) { animation-delay: 1.3s; } .smoke-particle:nth-child(3) { animation-delay: 2.6s; }
 
-        /* НОЧНОЙ СВЕТ */
         .night-light { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); display: none; pointer-events: none; z-index: 14; }
         .window-light { width: 40px; height: 40px; background: radial-gradient(circle, rgba(255, 140, 0, 0.8) 0%, rgba(255, 140, 0, 0) 70%); }
         .clock-light { width: 60px; height: 60px; background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0) 70%); }
@@ -122,33 +115,38 @@
         @keyframes surf-left { 0% { transform: translate(-50%, -50%) rotate(-30deg) translate(-10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(-30deg) translate(10px, -5px) scale(1.1); opacity: 0; } }
         @keyframes surf-right { 0% { transform: translate(-50%, -50%) rotate(30deg) translate(10px, 10px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(-50%, -50%) rotate(30deg) translate(-10px, -5px) scale(1.1); opacity: 0; } }
 
-        /* ========================================= */
-        /* ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ - БЕЗ НАГРУЗКИ) */
-        /* ========================================= */
+        /* ПЕРЕХОД ОБЛАКОВ */
         .clouds-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; display: flex; opacity: 1; transition: opacity 0.5s ease; }
         .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.6s, visibility 0s 1.2s; }
         .cloud-half { width: 50%; height: 100%; background: #2c3e50; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
         .clouds-transition.open .cloud-half:first-child { transform: translateX(-100%); }
         .clouds-transition.open .cloud-half:last-child { transform: translateX(100%); }
 
-        /* УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) */
+        /* УМНЫЕ ПОДСКАЗКИ */
         .floating-tooltip {
             position: fixed; background: #252628; color: #fff; padding: 12px 16px; border-radius: 12px;
             font-size: 14px; font-weight: 500; line-height: 1.4; pointer-events: none;
             opacity: 0; visibility: hidden; transition: opacity 0.15s ease; z-index: 1000;
-            max-width: 250px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            max-width: 250px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.8); border: 1px solid #333;
         }
         .floating-tooltip.show { opacity: 1; visibility: visible; }
         .floating-tooltip-title { color: #dcb254; font-weight: 800; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
 
-        /* МОДАЛЬНЫЕ ОКНА (БЕЗ РАМОК, ЧИСТЫЙ АНТРАЦИТ) */
+        /* МОДАЛЬНЫЕ ОКНА (БЕЗ РАМОК) */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 300; display: none; justify-content: center; align-items: center; }
         .modal-overlay.show { display: flex; }
         
-        .daily-modal { background: #252628; border-radius: 16px; width: 85%; max-width: 360px; padding: 25px; text-align: center; display: flex; flex-direction: column; gap: 15px; border: none; }
-        .daily-title { color: #fff; font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px;}
+        .daily-modal { background: #252628; border-radius: 16px; width: 85%; max-width: 360px; text-align: center; display: flex; flex-direction: column; border: none; overflow: hidden; }
         
-        .days-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 10px; }
+        /* ШАПКА ОКНА (С КАРТИНКОЙ TN.png) */
+        .modal-header-img { position: relative; width: 100%; height: 75px; border-bottom: 2px solid #1c1d1e; }
+        .modal-header-img img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-title-over { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 19px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 0; text-shadow: 0 2px 5px rgba(0,0,0,0.9); width: 100%; text-align: center; pointer-events: none; }
+
+        .modal-body-padding { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+        /* СЕТКА НАГРАД */
+        .days-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 5px; }
         .day-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 5px; border-radius: 8px; }
         .day-title { font-size: 16px; color: #888; font-weight: bold; }
         .day-reward { font-size: 18px; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 4px; }
@@ -166,6 +164,14 @@
         .claim-btn { background: #1dc5b4; color: #000; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; width: 100%; outline: none; }
         .claim-btn:active:not(:disabled) { filter: brightness(0.8); }
         .claim-btn:disabled { background: #3a3c40; color: #666; cursor: not-allowed; }
+
+        /* СПИСОК РЕЙТИНГА */
+        .rating-list { display: flex; flex-direction: column; gap: 8px; max-height: 45vh; overflow-y: auto; padding-right: 5px; }
+        .rating-item { background: #1c1d1e; border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; gap: 12px; border: 1px solid #333; text-align: left; }
+        .rating-rank { font-size: 18px; font-weight: 900; width: 22px; text-align: center; }
+        .rating-avatar { width: 40px; height: 40px; border-radius: 8px; background: #252628; object-fit: cover; }
+        .rating-name { flex-grow: 1; font-size: 15px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rating-level { font-size: 14px; font-weight: bold; color: #dcb254; white-space: nowrap; }
 
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; display:flex; justify-content:center; align-items:center; color:#888; font-weight:bold; font-size:14px; text-transform: uppercase; letter-spacing: 2px; }
 
@@ -244,7 +250,7 @@
         </div>
     </div>
 
-    <!-- ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) -->
+    <!-- ЛЕГКИЙ ПЕРЕХОД ОБЛАКОВ -->
     <div class="clouds-transition" id="clouds">
         <div class="cloud-half"></div>
         <div class="cloud-half"></div>
@@ -266,8 +272,9 @@
         </div>
     </div>
 
-    <!-- ПРАВЫЙ ТУЛБАР (НАСТРОЙКИ) -->
+    <!-- ПРАВЫЙ ТУЛБАР (РЕЙТИНГ И НАСТРОЙКИ) -->
     <div class="right-side-menu">
+        <img src="reit.png" class="side-img-btn" onclick="openRatingModal()" alt="Рейтинг" onerror="this.style.display='none'">
         <img src="settings.png" class="side-img-btn" onclick="openSettingsModal()" alt="Настройки" onerror="this.style.display='none'">
     </div>
 
@@ -283,7 +290,7 @@
         </div>
         
         <div class="center-sand-wrapper" onclick="showTooltip(event, 'ПЕСЧИНКИ ВРЕМЕНИ', 'У вас ' + window.gameData.sandCount + ' песчинок!\nТратьте их во Вратах.')">
-            <img src="ty.png" class="boy-avatar" alt="Песчинки" onerror="this.style.display='none'">
+            <img src="ty.png" class="boy-avatar" id="player-avatar-main" alt="Песчинки" onerror="this.style.display='none'">
             <div class="boy-sand-counter">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
                 <span id="sand-display">0</span>
@@ -295,6 +302,21 @@
         </div>
     </div>
 
+    <!-- ОКНО РЕЙТИНГА ИГРОКОВ -->
+    <div class="modal-overlay" id="rating-overlay" onclick="closeRatingModal(event)">
+        <div class="daily-modal" style="padding: 0;" onclick="event.stopPropagation()">
+            <div class="modal-header-img">
+                <img src="TN.png" alt="">
+                <h2 class="modal-title-over">РЕЙТИНГ ЭПОХ</h2>
+            </div>
+            <div class="modal-body-padding">
+                <div class="rating-list" id="rating-list">
+                    <!-- Список загружается скриптом -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ОКНО НАСТРОЕК (ПРОФИЛЬ) -->
     <div class="modal-overlay" id="settings-overlay" onclick="closeSettingsModal(event)">
         <div class="daily-modal" onclick="event.stopPropagation()">
@@ -303,7 +325,6 @@
                 <div style="flex-grow: 1;">
                     <div style="display: flex; align-items: center;">
                         <span id="settings-username" style="color: #fff; font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;">Игрок</span>
-                        <!-- Надежная кнопка редактирования -->
                         <div onclick="editUserName()" style="cursor: pointer; background: #333; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: #dcb254; border: 1px solid #dcb254; margin-left: 10px;">✎ ИЗМЕНИТЬ</div>
                     </div>
                     <div style="color: #dcb254; font-size: 14px; margin-top: 6px;">Уровень Эпохи: <span id="settings-level" style="font-weight:bold;">1</span></div>
@@ -316,12 +337,17 @@
         </div>
     </div>
 
-    <!-- ОКНО ЕЖЕДНЕВНЫХ НАГРАД -->
+    <!-- ОКНО ЕЖЕДНЕВНЫХ НАГРАД (ОБНОВЛЕННАЯ ШАПКА) -->
     <div class="modal-overlay" id="daily-overlay" onclick="closeDailyModal(event)">
-        <div class="daily-modal" onclick="event.stopPropagation()">
-            <h2 class="daily-title">ЕЖЕДНЕВНЫЙ БОНУС</h2>
-            <div class="days-grid" id="days-grid"></div>
-            <button class="claim-btn" id="claim-btn" onclick="claimDailyReward()">Забрать награду</button>
+        <div class="daily-modal" style="padding: 0;" onclick="event.stopPropagation()">
+            <div class="modal-header-img">
+                <img src="TN.png" alt="">
+                <h2 class="modal-title-over">ЕЖЕДНЕВНЫЙ БОНУС</h2>
+            </div>
+            <div class="modal-body-padding">
+                <div class="days-grid" id="days-grid"></div>
+                <button class="claim-btn" id="claim-btn" onclick="claimDailyReward()">Забрать награду</button>
+            </div>
         </div>
     </div>
 
@@ -336,7 +362,7 @@
     <!-- ПОДКЛЮЧЕНИЕ БАЗЫ ДАННЫХ И ЛОГИКА -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
         import { getAuth, signOut, GoogleAuthProvider, linkWithPopup } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
         const userUid = localStorage.getItem('userUid');
@@ -380,7 +406,6 @@
                     window.gameData = { sandCount: 150, epochLevel: 1, currentXP: 0, targetXP: 50, loginStreak: 0, lastClaimDate: null, gardenWaterUsed: 0, lastHarvestTime: null, avatar: 'boy1.png' };
                 }
 
-                // Генерируем уникальное имя, если его еще нет
                 if (!window.gameData.userName) {
                     window.gameData.userName = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
                     await saveDataToCloud();
@@ -393,8 +418,6 @@
                 updateUI(); checkDailyStatus(); checkBushVisibility(); 
                 createEnvironmentEffects(); createBirdsFlock(); 
                 setInterval(checkHarvest, 60000); 
-                
-                // Легкое открытие облаков
                 setTimeout(() => { document.getElementById('clouds').classList.add('open'); }, 200);
             }
         }
@@ -404,7 +427,7 @@
             try { await updateDoc(userDocRef, window.gameData); } catch (error) {}
         }
 
-        // DEV МЕНЮ И ЛОДКА
+        // DEV МЕНЮ
         let devTapCount = 0; let devTapTimer = null;
         window.handleSecretDevTap = function(e) {
             if(e) e.stopPropagation(); if(hasMovedMap) return; 
@@ -413,7 +436,7 @@
             else { devTapTimer = setTimeout(() => { devTapCount = 0; }, 400); }
         };
 
-        // --- УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ---
+        // ТУЛТИПЫ
         window.showTooltip = function(e, title, text) {
             if(e) e.stopPropagation();
             if (document.body.classList.contains('dev-mode') || hasMovedMap) return;
@@ -429,7 +452,6 @@
             let x = e.clientX - rect.width / 2;
             let y = e.clientY - rect.height - 15;
 
-            // Контроль выхода за экран
             if (x < 10) x = 10;
             if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
             if (y < 10) y = e.clientY + 25; 
@@ -440,13 +462,12 @@
             setTimeout(() => tt.classList.add('show'), 10);
         };
 
-        // Закрытие тултипа при любом клике мимо
         window.addEventListener('click', () => {
             document.getElementById('floating-tooltip').classList.remove('show');
             setTimeout(() => { document.getElementById('floating-tooltip').style.display = 'none'; }, 200);
         });
 
-        // ЭФФЕКТЫ ОКРУЖЕНИЯ
+        // ЭФФЕКТЫ
         function createEnvironmentEffects() {
             const starsLayer = document.getElementById('stars-layer');
             for(let i=0; i<80; i++) {
@@ -480,7 +501,7 @@
             });
         }
 
-        // ЛОГИКА КАМЕРЫ (Исправлено для DEV-зума)
+        // ЛОГИКА КАМЕРЫ
         const mapWrapper = document.getElementById('map-wrapper');
         const mapContainer = document.getElementById('map-container');
         const devBox = document.getElementById('dev-coord-box');
@@ -525,7 +546,6 @@
             if (isDraggingMap) { isDraggingMap = false; mapWrapper.style.cursor = 'grab'; setTimeout(() => { hasMovedMap = false; }, 50); }
         });
 
-        // Теперь ЗУМ РАБОТАЕТ И В DEV РЕЖИМЕ
         mapWrapper.addEventListener('wheel', (e) => {
             e.preventDefault();
             mapScale *= (1 + (-e.deltaY * 0.0015)); updateTransform();
@@ -544,26 +564,21 @@
         }
         window.addEventListener('resize', updateTransform); setTimeout(updateTransform, 50);
 
-        // DRAG & DROP DEV (ИСПРАВЛЕНО ДЛЯ ТОЧНОСТИ)
+        // DEV DRAG & DROP
         window.toggleDevMode = function() { document.body.classList.toggle('dev-mode'); updateDevSummary(); };
         window.activeDragEl = null;
 
         function makeDraggable(el) {
             let startX, startY, startLeft, startTop;
-
             const onDown = (clientX, clientY, e) => {
                 if (!document.body.classList.contains('dev-mode')) return;
                 e.stopPropagation(); window.activeDragEl = el;
                 startX = clientX; startY = clientY;
-                
-                // Защита от NaN при первом перетаскивании
                 let cLeft = parseFloat(el.style.left); let cTop = parseFloat(el.style.top);
                 if (isNaN(cLeft)) cLeft = (el.offsetLeft / 1440) * 100;
                 if (isNaN(cTop)) cTop = (el.offsetTop / 2560) * 100;
-                
                 startLeft = cLeft; startTop = cTop;
             };
-
             const onMove = (clientX, clientY, e) => {
                 if (window.activeDragEl !== el) return;
                 e.preventDefault(); e.stopPropagation();
@@ -573,7 +588,6 @@
                 el.style.top = (startTop + dy).toFixed(2) + '%';
                 updateDevSummary();
             };
-
             const onUp = () => { if (window.activeDragEl === el) window.activeDragEl = null; };
 
             el.addEventListener('mousedown', e => onDown(e.clientX, e.clientY, e));
@@ -610,8 +624,6 @@
         window.openSettingsModal = function() {
             if (hasMovedMap || document.body.classList.contains('dev-mode')) return;
             document.getElementById('settings-overlay').classList.add('show');
-            
-            // Если Гость - показываем кнопку привязки к Google
             if (auth.currentUser && auth.currentUser.isAnonymous) {
                 document.getElementById('link-google-btn').style.display = 'block';
             } else {
@@ -623,7 +635,52 @@
             document.getElementById('settings-overlay').classList.remove('show');
         };
 
-        // КЛИКИ ПО ЗДАНИЯМ (ТУЛТИПЫ)
+        // РЕЙТИНГ (ФИРСТОР)
+        window.openRatingModal = async function() {
+            if (hasMovedMap || document.body.classList.contains('dev-mode')) return;
+            document.getElementById('rating-overlay').classList.add('show');
+            const listEl = document.getElementById('rating-list');
+            listEl.innerHTML = '<div style="color:#888; padding:20px; font-weight:bold;">Загрузка рейтингов...</div>';
+
+            try {
+                const q = query(collection(db, "users"), orderBy("epochLevel", "desc"), limit(10));
+                const querySnapshot = await getDocs(q);
+                listEl.innerHTML = '';
+                let rank = 1;
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let name = data.userName || "Игрок";
+                    let lvl = data.epochLevel || 1;
+                    let avatar = data.avatar || "boy1.png";
+
+                    let rankColor = "#888";
+                    if (rank === 1) rankColor = "#ffd700"; 
+                    else if (rank === 2) rankColor = "#c0c0c0"; 
+                    else if (rank === 3) rankColor = "#cd7f32"; 
+
+                    let item = document.createElement('div');
+                    item.className = 'rating-item';
+                    item.innerHTML = `
+                        <div class="rating-rank" style="color: ${rankColor};">${rank}</div>
+                        <img src="${avatar}" class="rating-avatar" onerror="this.src='boy1.png'">
+                        <div class="rating-name">${name}</div>
+                        <div class="rating-level">${lvl} ур.</div>
+                    `;
+                    listEl.appendChild(item);
+                    rank++;
+                });
+                if (rank === 1) listEl.innerHTML = '<div style="color:#888; padding:20px;">Пока нет игроков</div>';
+            } catch(e) {
+                console.error(e);
+                listEl.innerHTML = '<div style="color:#ff0055; padding:20px;">Ошибка загрузки</div>';
+            }
+        };
+        window.closeRatingModal = function(e) {
+            if (e && e.target !== document.getElementById('rating-overlay')) return;
+            document.getElementById('rating-overlay').classList.remove('show');
+        };
+
+        // КЛИКИ ПО ЗДАНИЯМ
         window.handleBuildingClick = function(e, buildingType) {
             if (document.body.classList.contains('dev-mode') || hasMovedMap) return; 
             const level = window.gameData.epochLevel || 1;
@@ -635,7 +692,6 @@
             else if (buildingType === 'garden') goToLocation('garden.html');
         };
 
-        // ИГРОВАЯ ЛОГИКА
         function checkBushVisibility() {
             let t = Math.floor((window.gameData.gardenWaterUsed||0) / 7); let b = document.getElementById('grown-bush');
             if (t >= 1) { b.classList.add('active'); if (!window.gameData.lastHarvestTime) { window.gameData.lastHarvestTime = Date.now(); saveDataToCloud(); } checkHarvest(); } 
@@ -656,7 +712,10 @@
         };
         
         function updateUI() {
-            if (window.gameData.avatar) document.getElementById('settings-avatar').src = window.gameData.avatar;
+            if (window.gameData.avatar) {
+                document.getElementById('settings-avatar').src = window.gameData.avatar;
+                document.getElementById('player-avatar-main').src = window.gameData.avatar;
+            }
             if (window.gameData.userName) document.getElementById('settings-username').innerText = window.gameData.userName;
             
             document.getElementById('settings-level').innerText = window.gameData.epochLevel || 1;
@@ -666,7 +725,6 @@
             document.getElementById('progress-fill').style.width = ((window.gameData.currentXP / window.gameData.targetXP) * 100) + '%';
         }
 
-        // РЕДАКТИРОВАНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ
         window.editUserName = async function() {
             let newName = prompt("Введите новое имя (максимум 15 символов):", window.gameData.userName);
             if (newName && newName.trim().length > 0) {
@@ -676,7 +734,6 @@
             }
         };
 
-        // ПРИВЯЗКА GOOGLE (ДЛЯ ГОСТЯ)
         window.linkGoogleAccount = function() {
             if (!auth.currentUser) return;
             const provider = new GoogleAuthProvider();
@@ -688,7 +745,6 @@
             });
         };
 
-        // ДЕЙЛИКИ
         function checkDailyStatus() {
             let can = (window.gameData.lastClaimDate !== new Date().toDateString());
             if (can) document.getElementById('daily-dot').classList.add('active'); else document.getElementById('daily-dot').classList.remove('active');
