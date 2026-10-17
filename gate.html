@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Врата Времени</title>
     <style>
-        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ (ЕДИНЫЙ СТИЛЬ) */
+        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
         html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
@@ -17,7 +17,7 @@
         /* ЗАДНИЙ ФОН */
         .full-screen-bg { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background-image: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 12, 14, 0.8) 100%), url('casy_2.jpg'); background-size: cover; background-position: center; z-index: 0; pointer-events: none; }
 
-        /* ВЕРХНИЙ БЛОК (СИНХРОНИЗИРОВАН С ДЕРЕВНЕЙ) */
+        /* ВЕРХНИЙ БЛОК */
         .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
@@ -36,11 +36,6 @@
         .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
         .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
         .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
-
-        /* --- БОКОВОЕ МЕНЮ СПРАВА --- */
-        .right-side-menu { position: absolute; top: 85px; right: 15px; display: flex; flex-direction: column; gap: 15px; z-index: 30; }
-        .side-img-btn { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
-        .side-img-btn:active { transform: scale(0.95); }
 
         /* --- КОРПУС ЧАСОВ --- */
         .clock-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; aspect-ratio: 1 / 1; }
@@ -86,16 +81,23 @@
         .bottom-menu { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px 20px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; pointer-events: none; }
         .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; pointer-events: auto; }
         
-        .menu-icon-img { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
-        .menu-icon-img:active { transform: scale(0.95); }
-
         .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; }
         .center-sand-wrapper:active { transform: scale(0.95); }
+        
+        /* КЛАССИЧЕСКАЯ ИКОНКА ПЕСЧИНОК (ty.png) */
         .player-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
 
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; }
         .boy-sand-counter img { width: 16px; height: 16px; object-fit: contain; }
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
+
+        /* КВАДРАТНАЯ КНОПКА НАЗАД */
+        .square-btn { 
+            position: relative; width: 46px; height: 46px; background-color: #252628; border: 2px solid #333; 
+            border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; 
+            pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: transform 0.2s;
+        }
+        .square-btn:active { background-color: #333; transform: scale(0.92); border-color: #dcb254; }
 
         /* --- ВСПЛЫВАЮЩИЕ ОКНА (OVERLAY) --- */
         .event-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.7); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
@@ -125,14 +127,15 @@
         .event-modal.splash-mode .event-desc { color: #ffffff; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); margin: 0; width: 55%; text-align: center; line-height: 1.2; }
         .event-modal.splash-mode .timeline-container { display: none; }
 
-        /* ИНФО-ОКНО */
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 300; display: none; justify-content: center; align-items: center; }
-        .modal-overlay.show { display: flex; }
-        .info-modal { background: #252628; border: none; width: 80%; max-width: 320px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-align: center; }
-        .info-modal-header { background: #1c1d1e; color: #dcb254; padding: 15px; font-weight: 800; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; }
-        .info-modal-body { color: #fff; padding: 25px 15px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
-        .info-modal-footer { background: #1dc5b4; color: #000; padding: 15px; cursor: pointer; font-weight: bold; font-size: 15px; }
-        .info-modal-footer:active { filter: brightness(0.8); }
+        /* УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ДЛЯ ГЛАВНОГО ЭКРАНА */
+        .floating-tooltip {
+            position: fixed; background: #252628; color: #fff; padding: 12px 16px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; line-height: 1.4; pointer-events: none;
+            opacity: 0; visibility: hidden; transition: opacity 0.15s ease; z-index: 1000;
+            max-width: 250px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.8); border: 1px solid #333;
+        }
+        .floating-tooltip.show { opacity: 1; visibility: visible; }
+        .floating-tooltip-title { color: #dcb254; font-weight: 800; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
 
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; display:flex; justify-content:center; align-items:center; color:#888; font-weight:bold; font-size:14px; text-transform: uppercase; letter-spacing: 2px; }
         
@@ -160,7 +163,7 @@
     <div class="full-screen-bg"></div>
 
     <div class="top-status-container">
-        <div class="level-badge" onclick="showInfoModal('УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
+        <div class="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
             <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-text">1</span>
         </div>
@@ -172,11 +175,6 @@
             <img src="gear.png" class="level-up-gear" alt="" onerror="this.style.display='none'">
             <span class="level-up-arrow">↑</span>
         </div>
-    </div>
-
-    <div class="right-side-menu">
-        <img src="castle.png" class="side-img-btn" onclick="showInfoModal('ЗАЛ СЛАВЫ', 'В разработке!')" alt="Топ Игроков" onerror="this.style.display='none'">
-        <img src="mail.png" class="side-img-btn" onclick="showInfoModal('ПОЧТА', 'В разработке!')" alt="Сообщения" onerror="this.style.display='none'">
     </div>
 
     <div class="clock-wrapper" id="wrapper">
@@ -200,12 +198,12 @@
 
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
-            <!-- Левая часть пустая, чтобы сбалансировать Назад справа -->
+            <!-- Левая часть пустая -->
         </div>
         
-        <!-- Убран чит на добавление песчинок, добавлена подсказка -->
-        <div class="center-sand-wrapper" id="boy-wrapper" onclick="showInfoModal('ПЕСЧИНКИ ВРЕМЕНИ', 'Здесь вы можете потратить Песчинки Времени на вращение Врат.')">
-            <img id="player-avatar" src="boy1.png" class="player-avatar" alt="Персонаж" onerror="this.style.display='none'">
+        <!-- Песчинки (ty.png) и счетчик -->
+        <div class="center-sand-wrapper" id="boy-wrapper" onclick="showTooltip(event, 'ПЕСЧИНКИ ВРЕМЕНИ', 'Здесь вы можете потратить Песчинки Времени на вращение Врат.')">
+            <img src="ty.png" class="player-avatar" alt="Песчинки" onerror="this.style.display='none'">
             <div class="boy-sand-counter" id="sand-counter-ui">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
                 <span id="sand-display">0</span>
@@ -213,9 +211,17 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end; padding-right: 10px;">
-            <!-- Кнопка Назад (возврат на Остров) с сохранением данных -->
-            <img src="back.png" class="menu-icon-img" alt="Назад" onclick="goToLocation('index.html')" onerror="this.style.display='none'">
+            <!-- Квадратная кнопка Назад -->
+            <div class="square-btn" onclick="goToLocation('index.html')">
+                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: #dcb254;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </div>
         </div>
+    </div>
+
+    <!-- УМНАЯ ВСПЛЫВАЮЩАЯ ПОДСКАЗКА (TOOLTIP) -->
+    <div id="floating-tooltip" class="floating-tooltip">
+        <div id="ft-title" class="floating-tooltip-title"></div>
+        <div id="ft-text"></div>
     </div>
 
     <!-- ОКНО СОБЫТИЯ С ОЖИДАНИЕМ КЛИКА -->
@@ -238,15 +244,6 @@
         </div>
     </div>
 
-    <!-- УНИВЕРСАЛЬНОЕ ИНФО-ОКНО -->
-    <div class="modal-overlay" id="info-modal-overlay" onclick="closeInfoModal(event)">
-        <div class="info-modal" onclick="event.stopPropagation()">
-            <div class="info-modal-header" id="info-modal-title">Внимание</div>
-            <div class="info-modal-body" id="info-modal-text">Текст сообщения</div>
-            <div class="info-modal-footer" onclick="closeInfoModal()">ОК</div>
-        </div>
-    </div>
-
   </div>
 
     <!-- ПОДКЛЮЧЕНИЕ БАЗЫ ДАННЫХ И ЛОГИКА -->
@@ -255,23 +252,24 @@
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
         // ==========================================
-        // МЕНЕДЖЕР ЗВУКА (РАБОТАЕТ ИЗ ИНТЕРНЕТА)
+        // МЕНЕДЖЕР ЗВУКА (С КАСТОМНЫМ КЛИКОМ)
         // ==========================================
         window.SoundManager = {
             isMuted: localStorage.getItem('isMuted') === 'true',
             bgMusic: new Audio('https://upload.wikimedia.org/wikipedia/commons/b/b5/A_short_song.ogg'), 
             sfx: {
-                click: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'),
+                // ВАШ ФАЙЛ С PIXABAY (нужно назвать click.mp3 и положить в папку)
+                click: new Audio('click.mp3'),
                 coin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'),   
                 spin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3')    
             },
             init() {
                 this.bgMusic.loop = true;
                 this.bgMusic.volume = 0.2; 
-                for (let key in this.sfx) this.sfx[key].volume = 0.6; 
+                for (let key in this.sfx) this.sfx[key].volume = 0.8; 
 
                 const startAudio = () => {
-                    if (!this.isMuted) this.bgMusic.play().catch(e => console.log("Ждем клика"));
+                    if (!this.isMuted) this.bgMusic.play().catch(e => {});
                     document.removeEventListener('click', startAudio);
                     document.removeEventListener('touchstart', startAudio);
                 };
@@ -468,13 +466,49 @@
         loadDataFromCloud();
 
         function updateUI() {
-            if(window.gameData.avatar) document.getElementById('player-avatar').src = window.gameData.avatar;
             sandDisplay.innerText = window.gameData.sandCount || 0;
             levelText.innerText = window.gameData.epochLevel || 1;
             xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP || 0)} / ${window.gameData.targetXP || 50}`;
             progressFill.style.width = `${((window.gameData.currentXP || 0) / (window.gameData.targetXP || 50)) * 100}%`;
         }
 
+        // --- УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ---
+        window.showTooltip = function(e, title, text) {
+            if(e) e.stopPropagation();
+            window.SoundManager.playSFX('click');
+            
+            const tt = document.getElementById('floating-tooltip');
+            document.getElementById('ft-title').innerText = title;
+            document.getElementById('ft-text').innerText = text;
+            document.getElementById('ft-title').style.display = title ? 'block' : 'none';
+
+            tt.style.display = 'block'; 
+            const rect = tt.getBoundingClientRect();
+            
+            let x = e.clientX - rect.width / 2;
+            let y = e.clientY - rect.height - 15;
+
+            // Контроль выхода за экран
+            if (x < 10) x = 10;
+            if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
+            if (y < 10) y = e.clientY + 25; 
+
+            tt.style.left = x + 'px';
+            tt.style.top = y + 'px';
+            
+            setTimeout(() => tt.classList.add('show'), 10);
+        };
+
+        // Закрытие тултипа при любом клике мимо
+        window.addEventListener('click', () => {
+            const tt = document.getElementById('floating-tooltip');
+            if(tt) {
+                tt.classList.remove('show');
+                setTimeout(() => { tt.style.display = 'none'; }, 200);
+            }
+        });
+
+        // Кнопка Назад (Сохраняем и уходим)
         window.goToLocation = async function(url) {
             window.SoundManager.playSFX('click');
             await saveDataToCloud(); 
@@ -583,18 +617,6 @@
                 element.style.textShadow = '0 0 20px #ff4500, 0 2px 4px #000';
             }
         }
-
-        window.showInfoModal = function(title, text) {
-            window.SoundManager.playSFX('click');
-            document.getElementById('info-modal-title').innerText = title;
-            document.getElementById('info-modal-text').innerText = text;
-            document.getElementById('info-modal-overlay').classList.add('show');
-        };
-
-        window.closeInfoModal = function(e) {
-            if (e && e.target !== document.getElementById('info-modal-overlay') && e.target.className !== 'info-modal-footer') return;
-            document.getElementById('info-modal-overlay').classList.remove('show');
-        };
 
         function showEventModal(year, description, rarity) {
             let isConstruction = description.toLowerCase().includes("строительств");
@@ -707,7 +729,7 @@
 
         window.payAndSpin = function() {
             if (isSpinning) return;
-            if (window.gameData.sandCount < SPIN_COST) { window.showInfoModal("ВНИМАНИЕ", "Недостаточно песчинок времени!"); return; }
+            if (window.gameData.sandCount < SPIN_COST) { window.showTooltip(event, "ВНИМАНИЕ", "Недостаточно песчинок времени!"); return; }
             
             window.SoundManager.playSFX('spin');
             
