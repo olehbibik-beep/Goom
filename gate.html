@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Врата Времени</title>
     <style>
-        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ */
+        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ (ЕДИНЫЙ СТИЛЬ) */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
         html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
@@ -14,9 +14,10 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #181c1d; overflow: hidden; }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.9); } }
 
+        /* ЗАДНИЙ ФОН */
         .full-screen-bg { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background-image: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 12, 14, 0.8) 100%), url('casy_2.jpg'); background-size: cover; background-position: center; z-index: 0; pointer-events: none; }
 
-        /* --- ВЕРХНИЙ БЛОК --- */
+        /* ВЕРХНИЙ БЛОК (СИНХРОНИЗИРОВАН С ДЕРЕВНЕЙ) */
         .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
@@ -24,7 +25,11 @@
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        .top-progress-bar { flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
+        .top-progress-bar { 
+            flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); 
+            border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; 
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; 
+        }
         .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
 
@@ -81,8 +86,8 @@
         .bottom-menu { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px 20px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; pointer-events: none; }
         .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; pointer-events: auto; }
         
-        .square-btn { position: relative; width: 46px; height: 46px; background-color: #252628; border: 2px solid #333; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .square-btn:active { background-color: #333; transform: scale(0.92); border-color: #dcb254; }
+        .menu-icon-img { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
+        .menu-icon-img:active { transform: scale(0.95); }
 
         .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; }
         .center-sand-wrapper:active { transform: scale(0.95); }
@@ -195,12 +200,12 @@
 
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
-            <!-- Левая часть пустая -->
+            <!-- Левая часть пустая, чтобы сбалансировать Назад справа -->
         </div>
         
+        <!-- Убран чит на добавление песчинок, добавлена подсказка -->
         <div class="center-sand-wrapper" id="boy-wrapper" onclick="showInfoModal('ПЕСЧИНКИ ВРЕМЕНИ', 'Здесь вы можете потратить Песчинки Времени на вращение Врат.')">
-            <!-- Крупная иконка песчинок (ty.png) вместо аватара -->
-            <img src="ty.png" class="player-avatar" alt="Песчинки" onerror="this.style.display='none'">
+            <img id="player-avatar" src="boy1.png" class="player-avatar" alt="Персонаж" onerror="this.style.display='none'">
             <div class="boy-sand-counter" id="sand-counter-ui">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
                 <span id="sand-display">0</span>
@@ -208,10 +213,8 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end; padding-right: 10px;">
-            <!-- Надежная встроенная SVG кнопка НАЗАД -->
-            <div class="square-btn" onclick="goToLocation('index.html')">
-                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: #dcb254;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </div>
+            <!-- Кнопка Назад (возврат на Остров) с сохранением данных -->
+            <img src="back.png" class="menu-icon-img" alt="Назад" onclick="goToLocation('index.html')" onerror="this.style.display='none'">
         </div>
     </div>
 
@@ -251,6 +254,38 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
+        // ==========================================
+        // МЕНЕДЖЕР ЗВУКА (РАБОТАЕТ ИЗ ИНТЕРНЕТА)
+        // ==========================================
+        window.SoundManager = {
+            isMuted: localStorage.getItem('isMuted') === 'true',
+            bgMusic: new Audio('https://upload.wikimedia.org/wikipedia/commons/b/b5/A_short_song.ogg'), 
+            sfx: {
+                click: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'),
+                coin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'),   
+                spin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3')    
+            },
+            init() {
+                this.bgMusic.loop = true;
+                this.bgMusic.volume = 0.2; 
+                for (let key in this.sfx) this.sfx[key].volume = 0.6; 
+
+                const startAudio = () => {
+                    if (!this.isMuted) this.bgMusic.play().catch(e => console.log("Ждем клика"));
+                    document.removeEventListener('click', startAudio);
+                    document.removeEventListener('touchstart', startAudio);
+                };
+                document.addEventListener('click', startAudio);
+                document.addEventListener('touchstart', startAudio);
+            },
+            playSFX(name) {
+                if (this.isMuted || !this.sfx[name]) return;
+                this.sfx[name].currentTime = 0; 
+                this.sfx[name].play().catch(e => {});
+            }
+        };
+        window.SoundManager.init();
+
         const userUid = localStorage.getItem('userUid');
         if (!userUid) { window.location.replace('login.html'); }
 
@@ -267,7 +302,6 @@
         const db = getFirestore(app);
         const userDocRef = doc(db, "users", userUid);
 
-        // Инициализируем пустой объект до загрузки из облака
         window.gameData = { sandCount: 0, epochLevel: 1, currentXP: 0, targetXP: 50, pendingPoints: 0, pendingEventObj: null, avatar: 'boy1.png' };
 
         const SPIN_COST = 15; 
@@ -378,7 +412,6 @@
             1950: "Выпуск Христианских Греческих Писаний в переводе «Новый мир»", 2014: "Начинает работать JW Broadcasting"
         };
 
-        // Загрузка данных пользователя из Firestore
         async function loadDataFromCloud() {
             try {
                 const docSnap = await getDoc(userDocRef);
@@ -428,7 +461,6 @@
             }
         }
 
-        // Сохранение данных в Firestore
         async function saveDataToCloud() {
             try { await updateDoc(userDocRef, window.gameData); } catch (error) { console.error("Save error:", error); }
         }
@@ -436,14 +468,15 @@
         loadDataFromCloud();
 
         function updateUI() {
+            if(window.gameData.avatar) document.getElementById('player-avatar').src = window.gameData.avatar;
             sandDisplay.innerText = window.gameData.sandCount || 0;
             levelText.innerText = window.gameData.epochLevel || 1;
             xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP || 0)} / ${window.gameData.targetXP || 50}`;
             progressFill.style.width = `${((window.gameData.currentXP || 0) / (window.gameData.targetXP || 50)) * 100}%`;
         }
 
-        // Кнопка Назад (Сохраняем и уходим)
         window.goToLocation = async function(url) {
+            window.SoundManager.playSFX('click');
             await saveDataToCloud(); 
             clouds.classList.remove('open'); 
             setTimeout(() => { window.location.replace(url); }, 600); 
@@ -552,6 +585,7 @@
         }
 
         window.showInfoModal = function(title, text) {
+            window.SoundManager.playSFX('click');
             document.getElementById('info-modal-title').innerText = title;
             document.getElementById('info-modal-text').innerText = text;
             document.getElementById('info-modal-overlay').classList.add('show');
@@ -674,6 +708,8 @@
         window.payAndSpin = function() {
             if (isSpinning) return;
             if (window.gameData.sandCount < SPIN_COST) { window.showInfoModal("ВНИМАНИЕ", "Недостаточно песчинок времени!"); return; }
+            
+            window.SoundManager.playSFX('spin');
             
             window.gameData.sandCount -= SPIN_COST; 
             sandDisplay.innerText = window.gameData.sandCount; 
