@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Врата Времени</title>
     <style>
-        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ (ЕДИНЫЙ СТИЛЬ) */
+        /* СБРОС И БАЗОВЫЕ НАСТРОЙКИ */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
         html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior: none; }
@@ -14,10 +14,9 @@
         #game-frame { position: relative; width: 100%; height: 100%; max-width: 540px; max-height: 960px; background-color: #181c1d; overflow: hidden; }
         @media (min-width: 540px) and (min-height: 960px) { #game-frame { border-radius: 12px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.9); } }
 
-        /* ЗАДНИЙ ФОН */
         .full-screen-bg { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; background-image: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 12, 14, 0.8) 100%), url('casy_2.jpg'); background-size: cover; background-position: center; z-index: 0; pointer-events: none; }
 
-        /* ВЕРХНИЙ БЛОК (СИНХРОНИЗИРОВАН С ДЕРЕВНЕЙ) */
+        /* --- ВЕРХНИЙ БЛОК --- */
         .top-status-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; display: flex; align-items: center; z-index: 30; pointer-events: none; }
         
         .level-badge { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; z-index: 3; cursor: pointer; pointer-events: auto; }
@@ -25,11 +24,7 @@
         .level-gear-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;}
         .level-text { position: relative; z-index: 2; color: #ffffff; font-weight: 900; font-size: 26px; transform: translateY(-2px); line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 2px 4px rgba(0,0,0,0.8); }
 
-        .top-progress-bar { 
-            flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); 
-            border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; 
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; 
-        }
+        .top-progress-bar { flex-grow: 1; height: 18px; background: repeating-linear-gradient(-45deg, #222222, #222222 10px, #1a1c1d 10px, #1a1c1d 20px); border: 1px solid #4a433a; border-radius: 6px; position: relative; margin-left: -15px; padding-left: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.9); overflow: hidden; z-index: 1; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
         .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
 
@@ -86,10 +81,11 @@
         .bottom-menu { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px 20px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; pointer-events: none; }
         .menu-side-group { flex: 1; display: flex; justify-content: space-around; padding-bottom: 5px; align-items: center; pointer-events: auto; }
         
-        .menu-icon-img { width: 45px; height: auto; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); transition: transform 0.2s; }
-        .menu-icon-img:active { transform: scale(0.95); }
+        .square-btn { position: relative; width: 46px; height: 46px; background-color: #252628; border: 2px solid #333; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+        .square-btn:active { background-color: #333; transform: scale(0.92); border-color: #dcb254; }
 
-        .center-sand-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        .center-sand-wrapper { position: relative; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; transition: transform 0.2s; }
+        .center-sand-wrapper:active { transform: scale(0.95); }
         .player-avatar { width: 60px; height: auto; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8)); margin-bottom: 5px; }
 
         .boy-sand-counter { background: #252628; border: 1px solid #dcb254; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); z-index: 15; white-space: nowrap; }
@@ -97,7 +93,7 @@
         .boy-sand-counter span { color: #fcebbb; font-size: 15px; font-weight: bold; }
 
         /* --- ВСПЛЫВАЮЩИЕ ОКНА (OVERLAY) --- */
-        .event-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 100; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .event-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 13, 16, 0.7); backdrop-filter: blur(10px); z-index: 100; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .event-overlay.show { opacity: 1; pointer-events: auto; visibility: visible; cursor: pointer; }
         .event-overlay.flying { background: transparent !important; backdrop-filter: none !important; }
 
@@ -137,7 +133,7 @@
         
         /* ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) */
         .clouds-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; display: flex; justify-content: space-between; opacity: 1; transition: opacity 0.5s ease; overflow: hidden; }
-        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.6s, visibility 0s 1.2s; }
+        .clouds-transition.open { opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.8s, visibility 0s 1.3s; }
         .cloud-left, .cloud-right { position: relative; width: 60%; height: 100%; background: #2c3e50; transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1); }
         .cloud-left::before, .cloud-left::after, .cloud-right::before, .cloud-right::after { content: ''; position: absolute; border-radius: 50%; background: inherit; }
         .cloud-left::before { width: 90%; aspect-ratio: 1; right: -25%; top: 15%; } .cloud-left::after { width: 110%; aspect-ratio: 1; right: -35%; top: 50%; }
@@ -199,11 +195,12 @@
 
     <div class="bottom-menu">
         <div class="menu-side-group" style="justify-content: flex-start; padding-left: 10px;">
-            <!-- Левая часть пустая, чтобы сбалансировать Назад справа -->
+            <!-- Левая часть пустая -->
         </div>
         
         <div class="center-sand-wrapper" id="boy-wrapper" onclick="showInfoModal('ПЕСЧИНКИ ВРЕМЕНИ', 'Здесь вы можете потратить Песчинки Времени на вращение Врат.')">
-            <img id="player-avatar" src="boy1.png" class="player-avatar" alt="Персонаж" onerror="this.style.display='none'">
+            <!-- Крупная иконка песчинок (ty.png) вместо аватара -->
+            <img src="ty.png" class="player-avatar" alt="Песчинки" onerror="this.style.display='none'">
             <div class="boy-sand-counter" id="sand-counter-ui">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
                 <span id="sand-display">0</span>
@@ -211,8 +208,10 @@
         </div>
 
         <div class="menu-side-group" style="justify-content: flex-end; padding-right: 10px;">
-            <!-- Кнопка Назад (возврат на Остров) -->
-            <img src="back.png" class="menu-icon-img" alt="Назад" onclick="goToLocation('index.html')" onerror="this.style.display='none'">
+            <!-- Надежная встроенная SVG кнопка НАЗАД -->
+            <div class="square-btn" onclick="goToLocation('index.html')">
+                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: #dcb254;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </div>
         </div>
     </div>
 
@@ -437,7 +436,6 @@
         loadDataFromCloud();
 
         function updateUI() {
-            if(window.gameData.avatar) document.getElementById('player-avatar').src = window.gameData.avatar;
             sandDisplay.innerText = window.gameData.sandCount || 0;
             levelText.innerText = window.gameData.epochLevel || 1;
             xpTextDisplay.innerText = `${Math.floor(window.gameData.currentXP || 0)} / ${window.gameData.targetXP || 50}`;
