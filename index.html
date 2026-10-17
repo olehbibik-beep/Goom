@@ -257,7 +257,6 @@
 
     <!-- ВЕРХНИЙ БЛОК И ЛИНИЯ ЭПОХИ -->
     <div class="top-status-container">
-        <!-- Клик вызывает умную подсказку -->
         <div class="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
             <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-display">1</span>
@@ -290,7 +289,7 @@
         </div>
         
         <div class="center-sand-wrapper" onclick="showTooltip(event, 'ПЕСЧИНКИ ВРЕМЕНИ', 'У вас ' + window.gameData.sandCount + ' песчинок!\nТратьте их во Вратах.')">
-            <img src="ty.png" class="boy-avatar" alt="Песчинки" onerror="this.style.display='none'">
+            <img src="ty.png" class="boy-avatar" id="player-avatar-main" alt="Песчинки" onerror="this.style.display='none'">
             <div class="boy-sand-counter">
                 <img src="ty.png" style="width:16px; height:16px; object-fit:contain;" alt="">
                 <span id="sand-display">0</span>
@@ -366,25 +365,27 @@
         import { getAuth, signOut, GoogleAuthProvider, linkWithPopup } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
         // ==========================================
-        // МЕНЕДЖЕР ЗВУКА (РАБОТАЕТ ИЗ ИНТЕРНЕТА)
+        // МЕНЕДЖЕР ЗВУКА (С КАСТОМНЫМ КЛИКОМ И ЭМБИЕНТОМ)
         // ==========================================
         window.SoundManager = {
             isMuted: localStorage.getItem('isMuted') === 'true',
             
             // Фоновая музыка и эмбиент (ветер/море/птицы)
-            bgMusic: new Audio('https://upload.wikimedia.org/wikipedia/commons/b/b5/A_short_song.ogg'), 
+            bgMusic: new Audio('https://upload.wikimedia.org/wikipedia/commons/b/ba/Wind-chimes.ogg'), 
             ambient: new Audio('https://upload.wikimedia.org/wikipedia/commons/7/7b/Ocean_waves_and_birds.ogg'), 
+            
             sfx: {
-                click: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'),
+                // ВАШ ФАЙЛ С PIXABAY (нужно назвать click.mp3 и положить в папку)
+                click: new Audio('click.mp3'),
                 coin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3')
             },
             init() {
                 this.bgMusic.loop = true;
                 this.bgMusic.volume = 0.15;
                 this.ambient.loop = true;
-                this.ambient.volume = 0.3; // Громкость шума волн
+                this.ambient.volume = 0.3; 
                 
-                for (let key in this.sfx) this.sfx[key].volume = 0.6; 
+                for (let key in this.sfx) this.sfx[key].volume = 0.8; 
 
                 const startAudio = () => {
                     if (!this.isMuted) {
@@ -496,7 +497,7 @@
             else { devTapTimer = setTimeout(() => { devTapCount = 0; }, 400); }
         };
 
-        // ТУЛТИПЫ
+        // --- УМНЫЕ ПОДСКАЗКИ (TOOLTIPS) ---
         window.showTooltip = function(e, title, text) {
             if(e) e.stopPropagation();
             if (document.body.classList.contains('dev-mode') || hasMovedMap) return;
@@ -514,6 +515,7 @@
             let x = e.clientX - rect.width / 2;
             let y = e.clientY - rect.height - 15;
 
+            // Контроль выхода за экран
             if (x < 10) x = 10;
             if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
             if (y < 10) y = e.clientY + 25; 
@@ -524,6 +526,7 @@
             setTimeout(() => tt.classList.add('show'), 10);
         };
 
+        // Закрытие тултипа при любом клике мимо
         window.addEventListener('click', () => {
             const tt = document.getElementById('floating-tooltip');
             if(tt) {
@@ -789,6 +792,7 @@
         function updateUI() {
             if (window.gameData.avatar) {
                 document.getElementById('settings-avatar').src = window.gameData.avatar;
+                document.getElementById('player-avatar-main').src = window.gameData.avatar;
             }
             if (window.gameData.userName) document.getElementById('settings-username').innerText = window.gameData.userName;
             
