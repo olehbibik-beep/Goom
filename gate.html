@@ -33,9 +33,9 @@
         .xp-text { position: relative; z-index: 5; font-size: 13px; font-weight: bold; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); letter-spacing: 0.5px; white-space: nowrap; pointer-events: none; transform: translateY(-1px); line-height: 1;}
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #dcb254, #dcb254 10px, #ffdf00 10px, #ffdf00 20px); background-size: 28px 28px; border-radius: 4px; transition: width 0.5s ease-out; box-shadow: 0 0 10px rgba(255, 223, 0, 0.5); }
 
-        .level-up-badge { position: relative; width: 34px; height: 34px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+        .level-up-badge { position: relative; width: 42px; height: 42px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; margin-left: -12px; z-index: 3; pointer-events: auto; filter: none; }
         .level-up-gear { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
-        .level-up-arrow { position: relative; z-index: 2; color: #181c1d; font-weight: 900; font-size: 18px; transform: translateY(-2px); line-height: 1; }
+        .level-up-arrow { position: relative; z-index: 2; color: #fff; font-weight: 900; font-size: 30px; transform: translateY(-2px); line-height: 1; text-shadow: 0 0 4px #000, 0 0 8px rgba(255,255,255,0.9); }
 
         /* --- КОРПУС ЧАСОВ --- */
         .clock-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; aspect-ratio: 1 / 1; }
@@ -43,6 +43,22 @@
         .ring-inner { top: 28%; left: 28%; right: 28%; bottom: 28%; box-shadow: inset 0 0 30px 10px rgba(255,255,255,0.9), 0 0 30px 10px rgba(255,255,255,0.7); }
         .ring-middle { top: 15%; left: 15%; right: 15%; bottom: 15%; box-shadow: inset 0 0 35px 10px rgba(0,150,255,0.9), 0 0 30px 10px rgba(0,150,255,0.6); }
         .ring-outer { top: 2%; left: 2%; right: 2%; bottom: 2%; box-shadow: inset 0 0 40px 12px rgba(255,60,60,0.9), 0 0 35px 10px rgba(32,178,170,0.8); }
+        .clock-wrapper.rarity-common #ring-inner,
+        .clock-wrapper.rarity-rare #ring-inner,
+        .clock-wrapper.rarity-rare #ring-middle,
+        .clock-wrapper.rarity-epic #ring-inner,
+        .clock-wrapper.rarity-epic #ring-middle,
+        .clock-wrapper.rarity-epic #ring-outer,
+        .clock-wrapper.rarity-legendary #ring-inner,
+        .clock-wrapper.rarity-legendary #ring-middle,
+        .clock-wrapper.rarity-legendary #ring-outer { animation: rarity-ring-pulse 0.9s ease-in-out infinite alternate; }
+        @keyframes rarity-ring-pulse { from { filter: saturate(1) brightness(1); } to { filter: saturate(2.4) brightness(1.45); } }
+        .clock-wrapper.rarity-common #ring-inner { transform: scale(1.08); }
+        .clock-wrapper.rarity-rare #ring-middle { transform: scale(1.85); box-shadow: inset 0 0 55px 18px rgba(0,150,255,0.95), 0 0 90px 42px rgba(0,150,255,0.72); }
+        .clock-wrapper.rarity-epic #ring-middle { transform: scale(2.05); box-shadow: inset 0 0 65px 20px rgba(0,150,255,0.95), 0 0 105px 48px rgba(0,150,255,0.78); }
+        .clock-wrapper.rarity-epic #ring-outer { transform: scale(1.65); box-shadow: inset 0 0 60px 18px rgba(255,60,60,0.95), 0 0 95px 42px rgba(255,60,60,0.72); }
+        .clock-wrapper.rarity-legendary #ring-outer { transform: scale(2.6); box-shadow: inset 0 0 90px 28px rgba(255,40,40,1), 0 0 150px 70px rgba(255,40,40,0.9), 0 0 260px 110px rgba(255,80,20,0.5); }
+        .clock-wrapper.rarity-legendary #ring-middle { transform: scale(2.15); box-shadow: inset 0 0 65px 20px rgba(0,150,255,0.85), 0 0 110px 48px rgba(0,150,255,0.55); }
 
         .sparks-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 14; pointer-events: none; }
         .spark { position: absolute; width: 2px; height: 10px; border-radius: 2px; background: var(--c1); box-shadow: 0 0 6px var(--c1), 0 0 10px var(--c2); pointer-events: none; will-change: transform, opacity; animation: spark-fly cubic-bezier(0.1, 1, 0.3, 1) forwards; }
@@ -55,12 +71,12 @@
 
         .hand { position: absolute; bottom: 50%; left: 50%; border: none; filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.8)); transform-origin: bottom center; transform: translateX(-50%) rotate(0deg); display: flex; justify-content: center; }
         .hand::after { content: ''; position: absolute; bottom: 0; background: #fcebbb; box-shadow: 0 0 6px #dcb254, 0 0 12px #ffdf00; z-index: 2; border-radius: 2px; }
-        .hand-thick { width: 18px; height: 22%; background: #9ca196; z-index: 13; clip-path: polygon(50% 0%, 100% 20%, 100% 100%, 0% 100%, 0% 20%); transition: transform 9s cubic-bezier(0.6, 0, 0.1, 1) 0s; }
+        .hand-thick { width: 18px; height: 22%; background: #9ca196; z-index: 13; clip-path: polygon(50% 0%, 100% 20%, 100% 100%, 0% 100%, 0% 20%); transition: transform 5.5s cubic-bezier(0.6, 0, 0.1, 1) 0s; }
         .hand-thick::after { width: 2px; height: 65%; }
-        .hand-medium { width: 22px; height: 38%; background: #9ca196; z-index: 12; transition: transform 11s cubic-bezier(0.6, 0, 0.1, 1) 0.8s; }
+        .hand-medium { width: 22px; height: 38%; background: #9ca196; z-index: 12; transition: transform 7s cubic-bezier(0.6, 0, 0.1, 1) 0.4s; }
         .hand-medium::before { content: ''; position: absolute; top: 10%; bottom: 10%; left: -4px; right: -4px; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 6px, #9ca196 6px, #9ca196 10px); z-index: -1; }
         .hand-medium::after { width: 2px; height: 75%; }
-        .hand-thin { width: 6px; height: 44%; background: #8b7968; z-index: 11; transition: transform 15s cubic-bezier(0.5, 0, 0.1, 1) 1.8s; }
+        .hand-thin { width: 6px; height: 44%; background: #8b7968; z-index: 11; transition: transform 8.5s cubic-bezier(0.65, 0, 0.15, 1) 0.8s; }
         .hand-thin::after { width: 4px; height: 98%; }
 
         .center-gear-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85px; height: 85px; background: transparent; border: none; outline: none; cursor: pointer; z-index: 20; transition: transform 0.2s ease; animation: gear-pulse 2s infinite alternate; }
@@ -76,6 +92,8 @@
         .center-gear-btn:disabled .gear-bg-img { filter: grayscale(50%) brightness(0.6); }
         .center-gear-btn:disabled .cost-text { color: #aaaaaa; text-shadow: none; }
         .center-gear-btn:disabled .mini-hourglass { filter: grayscale(100%); }
+        .center-gear-btn.launching { animation: gear-launch 0.8s cubic-bezier(0.2, 0.85, 0.35, 1) both; }
+        @keyframes gear-launch { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 35% { transform: translate(-50%, calc(-50% - 9px)) rotate(180deg) scale(1.12); } 62% { transform: translate(-50%, calc(-50% - 3px)) rotate(180deg) scale(1.04); } 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } }
 
         /* --- НИЖНЕЕ МЕНЮ --- */
         .bottom-menu { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px 20px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 30; pointer-events: none; }
@@ -137,6 +155,7 @@
         .floating-tooltip.show { opacity: 1; visibility: visible; }
         .floating-tooltip-title { color: #dcb254; font-weight: 800; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
 
+
         #loading-screen { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; display:flex; justify-content:center; align-items:center; color:#888; font-weight:bold; font-size:14px; text-transform: uppercase; letter-spacing: 2px; }
         
         /* ПЕРЕХОД ОБЛАКОВ (1 СЛОЙ) */
@@ -163,7 +182,7 @@
     <div class="full-screen-bg"></div>
 
     <div class="top-status-container">
-        <div class="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
+        <div class="level-badge" id="level-badge" onclick="showTooltip(event, 'УРОВЕНЬ ЭПОХИ', 'Копите опыт (XP) для повышения уровня!')">
             <img src="gear.png" class="level-gear-icon" alt="" onerror="this.style.display='none'">
             <span class="level-text" id="level-text">1</span>
         </div>
@@ -172,8 +191,7 @@
             <span class="xp-text" id="xp-text">0 / 50</span>
         </div>
         <div class="level-up-badge">
-            <img src="gear.png" class="level-up-gear" alt="" onerror="this.style.display='none'">
-            <span class="level-up-arrow">↑</span>
+                <span class="level-up-arrow">↑</span>
         </div>
     </div>
 
@@ -191,7 +209,6 @@
             <img src="buttom.png" class="gear-bg-img" alt="Запуск" onerror="this.style.display='none'">
             <div class="cost-overlay">
                 <span class="cost-text">15</span>
-                <img src="ty.png" class="mini-hourglass" alt="" onerror="this.style.display='none'">
             </div>
         </button>
     </div>
@@ -255,31 +272,84 @@
         // МЕНЕДЖЕР ЗВУКА (С КАСТОМНЫМ КЛИКОМ)
         // ==========================================
         window.SoundManager = {
-            isMuted: localStorage.getItem('isMuted') === 'true',
-            bgMusic: new Audio('https://upload.wikimedia.org/wikipedia/commons/b/b5/A_short_song.ogg'), 
+            musicMuted: localStorage.getItem('musicMuted') === 'true',
+            sfxMuted: localStorage.getItem('sfxMuted') === 'true',
+            bgMusic: new Audio('https://commons.wikimedia.org/wiki/Special:FilePath/Reverie.ogg'), 
             sfx: {
-                // ВАШ ФАЙЛ С PIXABAY (нужно назвать click.mp3 и положить в папку)
-                click: new Audio('click.mp3'),
-                coin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'),   
-                spin: new Audio('https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3')    
+                // Внешние звуки из Google Actions Sound Library
+                click: new Audio('https://actions.google.com/sounds/v1/water/large_bubbles_surfacing.ogg'),
+                coin: new Audio('https://actions.google.com/sounds/v1/foley/child_toy_chime_clinck_and_clanks.ogg'),   
+                activate: new Audio('https://actions.google.com/sounds/v1/alarms/winding_alarm_clock.ogg'),
+                start: new Audio('https://actions.google.com/sounds/v1/household/wall_light_switch_close.ogg'),
+                birds: new Audio('https://actions.google.com/sounds/v1/animals/june_songbirds.ogg'),
+                clock: new Audio('https://actions.google.com/sounds/v1/household/clock_ticking.ogg'),
+                gong: new Audio('https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring.ogg'),
+                pebbles: new Audio('https://actions.google.com/sounds/v1/impacts/stone_drop.ogg')
             },
             init() {
                 this.bgMusic.loop = true;
-                this.bgMusic.volume = 0.2; 
-                for (let key in this.sfx) this.sfx[key].volume = 0.8; 
+                this.bgMusic.volume = 0.09; 
+                for (let key in this.sfx) this.sfx[key].volume = key === 'clock' ? 0.65 : (key === 'start' ? 0.3 : (key === 'birds' ? 0.22 : (key === 'pebbles' ? 0.85 : (key === 'click' ? 0.9 : 0.8)))); 
+                this.tickTimer = null;
 
+                let startAudioDone = false;
                 const startAudio = () => {
-                    if (!this.isMuted) this.bgMusic.play().catch(e => {});
-                    document.removeEventListener('click', startAudio);
-                    document.removeEventListener('touchstart', startAudio);
+                    if (startAudioDone) return;
+                    if (!this.musicMuted) {
+                        this.bgMusic.play().catch(e => {});
+                    }
+                    if (!this.sfxMuted) {
+                        this.sfx.start.currentTime = 0;
+                        const startPromise = this.sfx.start.play();
+                        this.sfx.birds.currentTime = 0;
+                        this.sfx.birds.play().catch(e => {});
+                        setTimeout(() => this.stopSFX('birds'), 2200);
+                        if (startPromise && startPromise.then) {
+                            startPromise.then(() => {
+                                startAudioDone = true;
+                                document.removeEventListener('click', startAudio);
+                                document.removeEventListener('touchstart', startAudio);
+                            }).catch(() => {});
+                        }
+                    }
+                    if (startAudioDone) {
+                        document.removeEventListener('click', startAudio);
+                        document.removeEventListener('touchstart', startAudio);
+                    }
                 };
+                setTimeout(startAudio, 80);
                 document.addEventListener('click', startAudio);
                 document.addEventListener('touchstart', startAudio);
             },
             playSFX(name) {
-                if (this.isMuted || !this.sfx[name]) return;
+                if (this.sfxMuted || !this.sfx[name]) return;
                 this.sfx[name].currentTime = 0; 
                 this.sfx[name].play().catch(e => {});
+                if (name === 'click' || name === 'coin') {
+                    clearTimeout(this.clickStopTimer);
+                    this.clickStopTimer = setTimeout(() => this.stopSFX(name), name === 'click' ? 1000 : 900);
+                }
+            },
+            stopSFX(name) {
+                if (!this.sfx[name]) return;
+                this.sfx[name].pause();
+                this.sfx[name].currentTime = 0;
+            },
+            startClock() {
+                if (this.sfxMuted) return;
+                this.stopClock();
+                const tick = () => {
+                    if (this.sfxMuted) return;
+                    this.playSFX('clock');
+                    this.tickTimer = setTimeout(tick, 650);
+                };
+                tick();
+            },
+            stopClock() {
+                if (this.tickTimer) clearTimeout(this.tickTimer);
+                this.tickTimer = null;
+                this.sfx.clock.pause();
+                this.sfx.clock.currentTime = 0;
             }
         };
         window.SoundManager.init();
@@ -318,7 +388,7 @@
         const ringOuter = document.getElementById('ring-outer');
         const wrapper = document.getElementById('wrapper'); const btn = document.getElementById('spinButton'); 
         const sandDisplay = document.getElementById('sand-display'); const progressFill = document.getElementById('progress-fill'); 
-        const levelText = document.getElementById('level-text'); const levelBadge = document.getElementById('level-badge');
+        const levelText = document.getElementById('level-text'); const levelBadge = document.getElementById('level-badge') || document.querySelector('.level-badge');
         const xpTextDisplay = document.getElementById('xp-text');
         
         const eventOverlay = document.getElementById('event-overlay'); const eventImg = document.getElementById('event-img');
@@ -496,13 +566,19 @@
             tt.style.left = x + 'px';
             tt.style.top = y + 'px';
             
+            clearTimeout(window.tooltipHideTimer);
             setTimeout(() => tt.classList.add('show'), 10);
+            window.tooltipHideTimer = setTimeout(() => {
+                tt.classList.remove('show');
+                setTimeout(() => { tt.style.display = 'none'; }, 200);
+            }, 2800);
         };
 
         // Закрытие тултипа при любом клике мимо
         window.addEventListener('click', () => {
             const tt = document.getElementById('floating-tooltip');
             if(tt) {
+                clearTimeout(window.tooltipHideTimer);
                 tt.classList.remove('show');
                 setTimeout(() => { tt.style.display = 'none'; }, 200);
             }
@@ -510,6 +586,7 @@
 
         // Кнопка Назад (Сохраняем и уходим)
         window.goToLocation = async function(url) {
+            if (isSpinning) return;
             window.SoundManager.playSFX('click');
             await saveDataToCloud(); 
             clouds.classList.remove('open'); 
@@ -527,16 +604,18 @@
                 window.gameData.sandCount += 50;
                 sandDisplay.innerText = window.gameData.sandCount;
                 let sandCounterUI = document.getElementById('sand-counter-ui');
-                sandCounterUI.style.transform = 'translateX(-50%) scale(1.3)';
+                sandCounterUI.style.transform = 'scale(1.3)';
                 sandCounterUI.style.color = '#ffdf00';
                 setTimeout(() => { 
-                    sandCounterUI.style.transform = 'translateX(-50%) scale(1)'; 
+                    sandCounterUI.style.transform = 'scale(1)'; 
                     sandCounterUI.style.color = '';
                 }, 600);
                 
-                progressFill.style.transition = 'none'; progressFill.style.width = `0%`;
-                void progressFill.offsetWidth; 
-                setTimeout(() => { checkXP(); }, 100); 
+                progressFill.style.transition = 'none';
+                progressFill.style.width = '0%';
+                xpTextDisplay.innerText = `0 / ${window.gameData.targetXP}`;
+                void progressFill.offsetWidth;
+                setTimeout(() => { checkXP(); }, 100);
             } else {
                 progressFill.style.transition = 'width 0.5s ease-out';
                 progressFill.style.width = `${(window.gameData.currentXP / window.gameData.targetXP) * 100}%`;
@@ -564,6 +643,8 @@
         }
 
         function flyXPToBar(amount) {
+            window.SoundManager.playSFX('pebbles');
+            window.SoundManager.playSFX('coin');
             const target = document.getElementById('progress-bar-container');
             const startRect = btn.getBoundingClientRect();
             const endRect = target.getBoundingClientRect();
@@ -669,7 +750,7 @@
             
             isClickable = false;
             eventOverlay.classList.add('show');
-            saveDataToCloud();
+            saveDataToCloud(); 
             
             setTimeout(() => { isClickable = true; }, 500);
         }
@@ -709,7 +790,7 @@
             let pts = window.gameData.pendingPoints;
             window.gameData.pendingPoints = 0;
             let isCommon = window.gameData.pendingEventObj && window.gameData.pendingEventObj.rarity === 'common';
-            saveDataToCloud();
+            saveDataToCloud(); 
 
             if (isCommon) {
                 eventOverlay.classList.remove('show');
@@ -731,7 +812,12 @@
             if (isSpinning) return;
             if (window.gameData.sandCount < SPIN_COST) { window.showTooltip(event, "ВНИМАНИЕ", "Недостаточно песчинок времени!"); return; }
             
-            window.SoundManager.playSFX('spin');
+            window.SoundManager.playSFX('click');
+            window.SoundManager.startClock();
+            btn.classList.remove('launching');
+            void btn.offsetWidth;
+            btn.classList.add('launching');
+            setTimeout(() => btn.classList.remove('launching'), 850);
             
             window.gameData.sandCount -= SPIN_COST; 
             sandDisplay.innerText = window.gameData.sandCount; 
@@ -748,6 +834,7 @@
             let endX = endRect.left - frameRect.left + endRect.width/2;
             let endY = endRect.top - frameRect.top + endRect.height/2;
 
+            window.SoundManager.playSFX('pebbles');
             for (let i = 0; i < 12; i++) {
                 setTimeout(() => {
                     let particle = document.createElement('div'); particle.className = 'sand-particle';
@@ -791,10 +878,10 @@
         }
 
         function renderPhysics() {
-            let elapsed = Date.now() - startTime; if (elapsed > 16000) return; 
+            let elapsed = Date.now() - startTime; if (elapsed > 10000) return; 
 
-            let progress = elapsed / 4000; if (progress > 1) progress = 1;
-            let fadeOut = elapsed > 9000 ? (16800 - elapsed) / 7800 : 1; if (fadeOut < 0) fadeOut = 0;
+            let progress = elapsed / 3000; if (progress > 1) progress = 1;
+            let fadeOut = elapsed > 6000 ? (10000 - elapsed) / 4000 : 1; if (fadeOut < 0) fadeOut = 0;
             let baseOpacity = progress * fadeOut * 0.8;
 
             ringInner.style.opacity = baseOpacity;
@@ -847,6 +934,8 @@
                 currentActiveRings = 3;
             }
 
+            wrapper.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary');
+            wrapper.classList.add(`rarity-${rarity}`);
             saveDataToCloud(); 
 
             currentRotation3 += (360 * 6) + Math.floor(Math.random() * 360); 
@@ -861,9 +950,13 @@
             startTime = Date.now(); cancelAnimationFrame(animationFrameId); requestAnimationFrame(renderPhysics);
 
             setTimeout(() => {
+                window.SoundManager.stopClock();
+                window.SoundManager.playSFX('gong');
+                setTimeout(() => window.SoundManager.stopSFX('gong'), 1400);
+                wrapper.classList.remove('rarity-common', 'rarity-rare', 'rarity-epic', 'rarity-legendary');
                 isSpinning = false; btn.disabled = false;
                 showEventModal(randomYear, description, rarity);
-            }, 16800); 
+            }, 10500); 
         }
 
         function startIdleAnimation() {
